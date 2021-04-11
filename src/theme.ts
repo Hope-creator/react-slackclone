@@ -13,6 +13,9 @@ export const theme = createMuiTheme({
       "Arial",
       "sans-serif",
     ],
+    h3: {
+      fontWeight: 700
+    }
   },
   palette: {
     primary: {
@@ -43,6 +46,9 @@ export const theme = createMuiTheme({
         "&:focus": {
           boxShadow: "0px 0px 0px 4px rgba(29,155,209, 0.3)",
         },
+        "&:hover": {
+          color: "#4285f4"
+        }
       },
     },
   },
