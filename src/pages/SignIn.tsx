@@ -1,14 +1,13 @@
 import {
   Button,
-  FormControlLabel,
-  FormLabel,
+  Divider,
   Link,
   makeStyles,
-  Radio,
-  RadioGroup,
   TextField,
   Typography,
 } from "@material-ui/core";
+import GTranslateIcon from "@material-ui/icons/GTranslate";
+import FlareIcon from "@material-ui/icons/Flare";
 import React from "react";
 import { LoginFooter } from "../components/LoginFooter";
 import { LoginHeader } from "../components/LoginHeader";
@@ -21,19 +20,46 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: "column",
     width: "100%",
     alignItems: "center",
+  },
+  dividerContainer: {
+    display: "flex",
     justifyContent: "center",
+    alignItems: "center",
+    paddingTop: 20,
+    paddingBottom: 20,
+  },
+  divider: {
+    width: "44%",
+    margin: "10px",
+  },
+  signInTitle: {
+    fontWeight: 700,
+  },
+  signInText: {
+    marginBottom: 32,
   },
   button: {
     fontWeight: 700,
-    marginBottom: 20,
-  },
-  input: {
-    margin: "0 0 20px",
   },
   signInForm: {
     maxWidth: "400px",
     marginTop: "40px",
     marginBottom: "20px",
+  },
+  emailPrompt: {
+    textAlign: "left",
+    display: "flex",
+    backgroundColor: "rgba(29,28,29,.05)",
+    padding: "12px 24px",
+    marginTop: "20px",
+    borderRadius: "8px",
+  },
+  emailPromptIcon: {
+    fontSize: "15px",
+    paddingRight: "10px",
+  },
+  input: {
+    margin: "0 0 20px",
   },
   inputFocused: {
     transition: theme.transitions.create(["border", "box-shadow"], {
@@ -41,21 +67,22 @@ const useStyles = makeStyles((theme) => ({
     }),
     boxShadow: "0px 0px 0px 4px rgba(29,155,209, 0.3)",
   },
-  radioCheckWrapper: {
-    textAlign: "start",
+  signInFooter: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
   },
-  formLegend: {
-    fontSize: "0.9rem",
-    color: "#1d1c1d",
-    fontWeight: 700,
-  },
-  formTsAndCs: {
-    textAlign: "start",
-    margin: "20px 0 70px 0",
+  footerLink: {
+    marginRight: "16px",
     color: "#696969",
-    "&>a": {
-      color: "#696969"
-    }
+    "&:hover": {
+      color: theme.palette.secondary.main,
+    },
+  },
+  newToSlackWrapper: {
+    display: "flex",
+    flexDirection: "column",
+    textAlign: "right",
   },
 }));
 
@@ -64,8 +91,22 @@ export const SignIn = () => {
 
   return (
     <div className={classes.wrapper}>
-      <LoginHeader newToSlackShow={false} title={"First, enter your email"} />
+      <LoginHeader newToSlackShow={true} title={"Sign in to Slack"}/>
       <div className={classes.signInForm}>
+        <Button
+          className={classes.button}
+          variant="outlined"
+          color="secondary"
+          startIcon={<GTranslateIcon />}
+          fullWidth
+        >
+          Sign in with Google
+        </Button>
+        <div className={classes.dividerContainer}>
+          <Divider className={classes.divider} />
+          OR
+          <Divider className={classes.divider} />
+        </div>
         <TextField
           className={classes.input}
           InputProps={{
@@ -86,34 +127,18 @@ export const SignIn = () => {
           color="primary"
           fullWidth
         >
-          Continue
+          Sign in with Email
         </Button>
-        <FormLabel className={classes.formLegend} component="legend">
-          Can we send you email with Slack tips, news, and offers?
-        </FormLabel>
-        <RadioGroup
-          aria-label="Can we send you email with Slack tips, news, and offers?"
-          name="emailoffers"
-        >
-          <FormControlLabel
-            value="Sure!"
-            control={<Radio size="small" />}
-            label="Sure!"
-          />
-          <FormControlLabel
-            value="No thanks"
-            control={<Radio size="small" />}
-            label="No thanks"
-          />
-        </RadioGroup>
-        <Typography variant="body2" className={classes.formTsAndCs}>
-          By continuing, you’re agreeing to our{" "}
-          <Link>Customer Terms of Service</Link>, <Link>Privacy Policy</Link>,
-          and <Link>Cookie Policy</Link>.
-        </Typography>
-      </div>
 
+        <div className={classes.emailPrompt}>
+          <FlareIcon className={classes.emailPromptIcon} />
+          <Typography variant="subtitle2">
+            We’ll email you a magic code for a password-free sign in. Or you can{" "}
+            <Link color="secondary">sign in manually instead.</Link>
+          </Typography>
+        </div>
+      </div>
       <LoginFooter />
     </div>
   );
-};
+}
