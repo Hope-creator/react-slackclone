@@ -1,7 +1,6 @@
 // @ts-nocheck
 
 import { createMuiTheme } from "@material-ui/core/styles";
-import { Palette } from "@material-ui/icons";
 
 export const theme = createMuiTheme({
   typography: {
@@ -20,6 +19,7 @@ export const theme = createMuiTheme({
   palette: {
     primary: {
       main: "#611f69",
+      dark: "#4A154B"
     },
     secondary: {
       main: "#4285f4",
@@ -51,5 +51,11 @@ export const theme = createMuiTheme({
         }
       },
     },
+    MuiSvgIcon: {
+      fontSizeSmall:
+      {
+        fontSize: 11
+      }
+    }
   },
 });
