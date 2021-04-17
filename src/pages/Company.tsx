@@ -8,23 +8,30 @@ import {
   Toolbar,
   Tooltip,
   Typography,
-  Badge,
   Avatar,
   Paper,
   MenuItem,
-  Divider
+  Divider,
+  List,
 } from "@material-ui/core";
 import {
   createStyles,
   Theme,
   makeStyles,
-  withStyles,
 } from "@material-ui/core/styles";
+
 import AccessTimeIcon from "@material-ui/icons/AccessTime";
 import HelpOutlineIcon from "@material-ui/icons/HelpOutline";
-import { CompanyMenuButton } from "../components/CompanyMenuButton";
 import DeveloperBoardIcon from "@material-ui/icons/DeveloperBoard";
+
 import { SimplePopover } from "../components/SimplePopover";
+import { CompanyMenuButton } from "../components/CompanyMenuButton";
+import { SidebarListCreator } from "../functions/SidebarListCreator";
+import { MoreMenu } from "../components/MoreMenu";
+import { NestedList } from "../components/NestedList";
+import { Channel } from "../components/Channel";
+import { DirectMessageListItem } from "../components/DirectMessageListItem";
+import { StyledBadge } from "../components/StyledBadge";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -76,53 +83,36 @@ const useStyles = makeStyles((theme: Theme) =>
     submenuContainer: {
       width: 300,
       padding: "17px 0",
-      backgroundColor: "rgba(248,248,248,1)"
+      backgroundColor: "rgba(248,248,248,1)",
     },
     captionText: {
-      paddingLeft: "16px"
+      paddingLeft: "16px",
     },
     companyMenuButton: {
       backgroundColor: "#FBFAF7",
+      height: 64,
       justifyContent: "start",
       fontWeight: 700,
+      borderBottom: "1px solid rgb(233,227,230)",
+      boxShadow: "none",
       color: theme.palette.primary.main,
       "&:hover": {
-        backgroundColor: "#DCEEE4"
-      }
-    }
+        backgroundColor: theme.palette.secondary.light,
+      },
+    },
+    channelSidebar: {
+      backgroundColor: "#FBFAF7",
+      height: "100vh",
+    },
+    workspace: {
+      height: "100vh",
+      borderLeft: "1px solid rgb(233,227,230)",
+      borderRight: "1px solid rgb(233,227,230)",
+    },
   })
 );
 
-const StyledBadge = withStyles((theme: Theme) =>
-  createStyles({
-    badge: {
-      backgroundColor: "#44b700",
-      color: "#44b700",
-      boxShadow: `0 0 0 2px ${theme.palette.background.paper}`,
-      "&::after": {
-        position: "absolute",
-        top: 0,
-        left: 0,
-        width: "100%",
-        height: "100%",
-        borderRadius: "50%",
-        animation: "$ripple 1.2s infinite ease-in-out",
-        border: "1px solid currentColor",
-        content: '""',
-      },
-    },
-    "@keyframes ripple": {
-      "0%": {
-        transform: "scale(.8)",
-        opacity: 1,
-      },
-      "100%": {
-        transform: "scale(2.4)",
-        opacity: 0,
-      },
-    },
-  })
-)(Badge);
+
 
 export const Company = () => {
   const classes = useStyles();
@@ -179,8 +169,11 @@ export const Company = () => {
         </Toolbar>
       </AppBar>
       <Grid container>
-        <Grid item xs={3}>
-          <CompanyMenuButton buttonClassName={classes.companyMenuButton} companyName="Test company">
+        <Grid item xs={3} className={classes.channelSidebar}>
+          <CompanyMenuButton
+            buttonClassName={classes.companyMenuButton}
+            companyName="Test company"
+          >
             <Grid
               wrap="nowrap"
               alignItems="center"
@@ -199,24 +192,37 @@ export const Company = () => {
             <MenuItem>Invite people to Test Company**</MenuItem>
             <MenuItem>Create a channel</MenuItem>
             <Divider />
-              <SimplePopover
-                text="Administration"
-                anchorOriginBlockVertical="center"
-                anchorOriginBlockHorizontal="right"
-                anchorPopupBlockVertical="center"
-                anchorPopupBlockHorizontal="center"
-              >
-                <Paper className={classes.submenuContainer}>
-                  <Typography className={classes.captionText} variant="caption">Administration</Typography>
-                  <MenuItem>Manage members</MenuItem>
-                  <MenuItem>Manage apps</MenuItem>
-                </Paper>
-              </SimplePopover>
-              <Divider />
-              <MenuItem>Sign out of Test company</MenuItem>
+            <SimplePopover
+              text="Administration"
+              anchorOriginBlockVertical="center"
+              anchorOriginBlockHorizontal="right"
+              anchorPopupBlockVertical="center"
+              anchorPopupBlockHorizontal="center"
+            >
+              <Paper className={classes.submenuContainer}>
+                <Typography className={classes.captionText} variant="caption">
+                  Administration
+                </Typography>
+                <MenuItem>Manage members</MenuItem>
+                <MenuItem>Manage apps</MenuItem>
+              </Paper>
+            </SimplePopover>
+            <MenuItem>Sign out of Test company</MenuItem>
           </CompanyMenuButton>
+          <List>
+            {["Mentions & reactions", "Saved items", "More"].map((item) => (
+              <SidebarListCreator componentName={item} />
+            ))}
+            <MoreMenu />
+          </List>
+          <NestedList buttonText="Add channel" listTitle="Channels">
+            {["general","project"].map(item=><Channel name={item} />)}
+          </NestedList>
+          <NestedList listTitle="Direct messages" buttonText="Add teammate">
+              {["Ivan", "Bob"].map(user=><DirectMessageListItem name={user} />)}
+          </NestedList>
         </Grid>
-        <Grid item xs>
+        <Grid item xs className={classes.workspace}>
           123
         </Grid>
         <Grid item xs={3}>
