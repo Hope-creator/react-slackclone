@@ -18,6 +18,7 @@ export const theme = createMuiTheme({
   },
   palette: {
     primary: {
+      light: "#A493A7",
       main: "#611f69",
       dark: "#4A154B"
     },
@@ -55,6 +56,26 @@ export const theme = createMuiTheme({
       fontSizeSmall:
       {
         fontSize: 11
+      }
+    },
+    MuiMenuItem:{
+      root: {
+        "&:hover": {
+          backgroundColor: "#4285f4",
+          color: "#fff"
+        }
+      }
+    },
+    MuiListItem: {
+      button: {
+        "&:hover": {
+          backgroundColor: "rgba(29,155,209, 0.3)"
+        }
+      }
+    },
+    MuiListItemIcon: {
+      root: {
+        minWidth: 35
       }
     }
   },
