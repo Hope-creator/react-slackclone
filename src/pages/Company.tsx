@@ -13,16 +13,17 @@ import {
   MenuItem,
   Divider,
   List,
+  Link,
 } from "@material-ui/core";
-import {
-  createStyles,
-  Theme,
-  makeStyles,
-} from "@material-ui/core/styles";
+import { createStyles, Theme, makeStyles } from "@material-ui/core/styles";
 
 import AccessTimeIcon from "@material-ui/icons/AccessTime";
 import HelpOutlineIcon from "@material-ui/icons/HelpOutline";
 import DeveloperBoardIcon from "@material-ui/icons/DeveloperBoard";
+import StarBorderIcon from "@material-ui/icons/StarBorder";
+import ErrorOutlineIcon from "@material-ui/icons/ErrorOutline";
+import PersonAddIcon from "@material-ui/icons/PersonAdd";
+import QuestionAnswerOutlinedIcon from "@material-ui/icons/QuestionAnswerOutlined";
 
 import { SimplePopover } from "../components/SimplePopover";
 import { CompanyMenuButton } from "../components/CompanyMenuButton";
@@ -32,6 +33,7 @@ import { NestedList } from "../components/NestedList";
 import { Channel } from "../components/Channel";
 import { DirectMessageListItem } from "../components/DirectMessageListItem";
 import { StyledBadge } from "../components/StyledBadge";
+import MessagePane from "../components/MessagePane";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -109,10 +111,28 @@ const useStyles = makeStyles((theme: Theme) =>
       borderLeft: "1px solid rgb(233,227,230)",
       borderRight: "1px solid rgb(233,227,230)",
     },
+    workspaceHeader: {
+      borderBottom: "1px solid rgb(233,227,230)",
+      height: 63,
+      padding: "0 16px",
+    },
+    addTopicText: {
+      cursor: "pointer",
+      color: "#696969",
+      "&:hover": {
+        color: theme.palette.secondary.main,
+      },
+    },
+    headerStarButton: {
+      fontSize: "1rem",
+    },
+    workspaceContent: {
+      padding: 20,
+      overflowY: "scroll",
+      height: "70%",
+    },
   })
 );
-
-
 
 export const Company = () => {
   const classes = useStyles();
@@ -168,7 +188,7 @@ export const Company = () => {
           </Grid>
         </Toolbar>
       </AppBar>
-      <Grid container>
+      <Grid container wrap="nowrap">
         <Grid item xs={3} className={classes.channelSidebar}>
           <CompanyMenuButton
             buttonClassName={classes.companyMenuButton}
@@ -216,17 +236,97 @@ export const Company = () => {
             <MoreMenu />
           </List>
           <NestedList buttonText="Add channel" listTitle="Channels">
-            {["general","project"].map(item=><Channel name={item} />)}
+            {["general", "project"].map((item) => (
+              <Channel name={item} />
+            ))}
           </NestedList>
           <NestedList listTitle="Direct messages" buttonText="Add teammate">
-              {["Ivan", "Bob"].map(user=><DirectMessageListItem name={user} />)}
+            {["Ivan", "Bob"].map((user) => (
+              <DirectMessageListItem name={user} />
+            ))}
           </NestedList>
         </Grid>
         <Grid item xs className={classes.workspace}>
-          123
+          <Grid
+            container
+            justify="space-between"
+            alignItems="center"
+            className={classes.workspaceHeader}
+          >
+            <Grid item>
+              <Grid container direction="column">
+                <Grid item>
+                  <Link>#general</Link>
+                  <Tooltip title="Star channel" aria-label="Star channel">
+                    <IconButton size="small">
+                      <StarBorderIcon className={classes.headerStarButton} />
+                    </IconButton>
+                  </Tooltip>
+                </Grid>
+                <Grid item>
+                  <Typography
+                    variant="body2"
+                    className={classes.addTopicText}
+                    onClick={() => console.log("type")}
+                  >
+                    Add a topic
+                  </Typography>
+                </Grid>
+              </Grid>
+            </Grid>
+            <Grid item>
+              <Tooltip
+                title="View all 12 members"
+                aria-label="Add people to #general"
+              >
+                <IconButton>12</IconButton>
+              </Tooltip>
+              <Tooltip
+                title="Add people to #general"
+                aria-label="Add people to #general"
+              >
+                <IconButton size="small">
+                  <PersonAddIcon />
+                </IconButton>
+              </Tooltip>
+              <Tooltip
+                title="Show channel details"
+                aria-label="Show channel details"
+              >
+                <IconButton size="small">
+                  <ErrorOutlineIcon />
+                </IconButton>
+              </Tooltip>
+            </Grid>
+          </Grid>
+          <Grid
+            container
+            direction="column"
+            className={classes.workspaceContent}
+            justify="flex-end"
+            wrap="nowrap"
+          >
+            <MessagePane
+              header="This space is just for you"
+              icon={<QuestionAnswerOutlinedIcon />}
+            >
+              123
+            </MessagePane>
+            {new Array(20).fill({
+              header: "Ivan",
+              avatarSrc:
+                "https://images.unsplash.com/photo-1568602471122-7832951cc4c5?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=750&q=80",
+            }).map(item=> <MessagePane header={item.header} avatarSrc={item.avatarSrc}><Typography></Typography>MessageMessageMessageMessageMessageMessageMessage MessageMessageMessageMessageMessageMessageMessageMessageMessageMessageMessage</MessagePane>)}
+            <MessagePane
+              header="Ivan"
+              avatarSrc="https://images.unsplash.com/photo-1568602471122-7832951cc4c5?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=750&q=80"
+            >
+              Hello
+            </MessagePane>
+          </Grid>
         </Grid>
         <Grid item xs={3}>
-          123
+          third
         </Grid>
       </Grid>
     </div>

@@ -58,6 +58,11 @@ export const theme = createMuiTheme({
         fontSize: 11
       }
     },
+    MuiIconButton: {
+      root: {
+        borderRadius: 0
+      }
+    },
     MuiMenuItem:{
       root: {
         "&:hover": {
