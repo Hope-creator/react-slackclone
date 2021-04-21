@@ -12,14 +12,21 @@ interface MessagePaneProps {
 
 const useStyles = makeStyles(() =>
   createStyles({
-        avatar: {
-            marginRight: 12,
-        },
-        icon: {
-            marginRight: 8,
-            padding: 10,
-            backgroundColor: "rgb(244, 237, 228)",
-        }
+    avatar: {
+      marginRight: 12,
+    },
+    icon: {
+      marginRight: 8,
+      padding: 10,
+      backgroundColor: "rgb(244, 237, 228)",
+    },
+    maxWidthContent: {
+      width: "inherit",
+      maxWidth: "88%",
+    },
+    maxWidthText: {
+      width: "100%",
+    },
   })
 );
 
@@ -29,24 +36,32 @@ export const MessagePane: React.FC<MessagePaneProps> = ({
   header,
   children,
 }: MessagePaneProps): React.ReactElement => {
-
-    const classes = useStyles();
+  const classes = useStyles();
 
   return (
     <Grid container wrap="nowrap">
-      <Grid item className={icon ? classes.icon : classes.avatar }>
+      <Grid
+        item
+        xs={1}
+        sm={2}
+        lg={1}
+        className={icon ? classes.icon : classes.avatar}
+      >
         {avatarSrc ? (
           <Avatar alt={`profile__picture__${avatarSrc}`} src={avatarSrc} />
         ) : icon ? (
           icon
         ) : null}
       </Grid>
-      <Grid item>
-      <Grid container direction="column">
-        <Grid item>{header}</Grid>
-        <Grid item>{children}</Grid>
+      <Grid item xs={11} sm={10} lg={11} className={classes.maxWidthContent}>
+        <Grid container direction="column">
+          <Grid item className={classes.maxWidthText}>
+            {header}
+          </Grid>
+          <Grid item className={classes.maxWidthText}>
+            {children}
+          </Grid>
         </Grid>
-
       </Grid>
     </Grid>
   );
