@@ -34,11 +34,15 @@ import { Channel } from "../components/Channel";
 import { DirectMessageListItem } from "../components/DirectMessageListItem";
 import { StyledBadge } from "../components/StyledBadge";
 import MessagePane from "../components/MessagePane";
+import TextareaAutosize from "@material-ui/core/TextareaAutosize";
+import { useResize } from "../components/hooks/useResize";
+import { RightSideBlock } from "../components/RightSideBlock";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     companyWrapper: {
       height: "100vh",
+      overflowX: "hidden"
     },
     appBar: {
       height: 38,
@@ -110,10 +114,11 @@ const useStyles = makeStyles((theme: Theme) =>
       height: "100vh",
       borderLeft: "1px solid rgb(233,227,230)",
       borderRight: "1px solid rgb(233,227,230)",
+      maxHeight: "100vh",
     },
     workspaceHeader: {
       borderBottom: "1px solid rgb(233,227,230)",
-      height: 63,
+      height: 64,
       padding: "0 16px",
     },
     addTopicText: {
@@ -126,11 +131,23 @@ const useStyles = makeStyles((theme: Theme) =>
     headerStarButton: {
       fontSize: "1rem",
     },
-    workspaceContent: {
+    workspaceContentGrid: {
       padding: 20,
-      overflowY: "scroll",
-      height: "70%",
+      display: "grid",
+      gridTemplateColumns: "1fr",
+      gridTemplateRows: "10fr 2fr",
+      height: "90vh",
     },
+    workspaceContentMessages: {
+      overflowY: "auto",
+    },
+    textareaSize: {
+      resize: "none",
+      width: "100%",
+    },
+    message: {
+      wordWrap: "break-word"
+    }
   })
 );
 
@@ -213,11 +230,12 @@ export const Company = () => {
             <MenuItem>Create a channel</MenuItem>
             <Divider />
             <SimplePopover
-              text="Administration"
+              itemChildren="Administration"
               anchorOriginBlockVertical="center"
               anchorOriginBlockHorizontal="right"
               anchorPopupBlockVertical="center"
               anchorPopupBlockHorizontal="center"
+              arrow
             >
               <Paper className={classes.submenuContainer}>
                 <Typography className={classes.captionText} variant="caption">
@@ -302,31 +320,53 @@ export const Company = () => {
           <Grid
             container
             direction="column"
-            className={classes.workspaceContent}
-            justify="flex-end"
+            className={classes.workspaceContentGrid}
             wrap="nowrap"
           >
-            <MessagePane
-              header="This space is just for you"
-              icon={<QuestionAnswerOutlinedIcon />}
-            >
-              123
-            </MessagePane>
-            {new Array(20).fill({
-              header: "Ivan",
-              avatarSrc:
-                "https://images.unsplash.com/photo-1568602471122-7832951cc4c5?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=750&q=80",
-            }).map(item=> <MessagePane header={item.header} avatarSrc={item.avatarSrc}><Typography></Typography>MessageMessageMessageMessageMessageMessageMessage MessageMessageMessageMessageMessageMessageMessageMessageMessageMessageMessage</MessagePane>)}
-            <MessagePane
-              header="Ivan"
-              avatarSrc="https://images.unsplash.com/photo-1568602471122-7832951cc4c5?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=750&q=80"
-            >
-              Hello
-            </MessagePane>
+            <Grid
+              container
+              item
+              className={classes.workspaceContentMessages}
+              direction="column"
+              wrap="nowrap"
+            > 
+              <MessagePane
+                header="This space is just for you"
+                icon={<QuestionAnswerOutlinedIcon />}
+              >
+                123
+              </MessagePane>
+              {new Array(20)
+                .fill({
+                  header: "Ivan",
+                  avatarSrc:
+                    "https://images.unsplash.com/photo-1568602471122-7832951cc4c5?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=750&q=80",
+                })
+                .map((item) => (
+                  <MessagePane header={item.header} avatarSrc={item.avatarSrc}>
+                    <Typography className={classes.message}>MessageMessageMessageMessageMessageMessageMessage
+                    MessageMessageMessageMessageMessageMessageMessageMessageMessageMessageMessage
+                  </Typography>
+                    </MessagePane>
+                ))}
+              <MessagePane
+                header="Ivan"
+                avatarSrc="https://images.unsplash.com/photo-1568602471122-7832951cc4c5?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=750&q=80"
+              >
+                Hello
+              </MessagePane>
+            </Grid>
+            <Grid item>
+              <TextareaAutosize
+                aria-label="Send message"
+                placeholder="Send message to Me"
+                className={classes.textareaSize}
+              />
+            </Grid>
           </Grid>
         </Grid>
         <Grid item xs={3}>
-          third
+          <RightSideBlock type="profile"/>
         </Grid>
       </Grid>
     </div>
