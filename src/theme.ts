@@ -60,7 +60,12 @@ export const theme = createMuiTheme({
     },
     MuiIconButton: {
       root: {
-        borderRadius: 0
+        borderRadius: 0,
+        fontSize: "0.8rem"
+      },
+      label: {
+        flexDirection: "column",
+        maxWidth: "fit-content"
       }
     },
     MuiMenuItem:{
@@ -82,6 +87,16 @@ export const theme = createMuiTheme({
       root: {
         minWidth: 35
       }
+    },
+    MuiAccordion: {
+      root:{
+        
+        '&$expanded': {
+          margin: 'auto',
+        }
+        
+      }
+      
     }
   },
 });
