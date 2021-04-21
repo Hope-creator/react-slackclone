@@ -34,7 +34,7 @@ export const NestedList: React.FC<NestedListProps> = ({
   children,
 }: NestedListProps): React.ReactElement => {
   const classes = useStyles();
-  const [open, setOpen] = React.useState<boolean>(true);
+  const [open, setOpen] = React.useState<boolean>(false);
 
   const handleClick = () => {
     setOpen(!open);
