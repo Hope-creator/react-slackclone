@@ -2,24 +2,26 @@ import React from "react";
 import Popover from "@material-ui/core/Popover";
 import { MenuItem } from "@material-ui/core";
 import ArrowForwardIosIcon from "@material-ui/icons/ArrowForwardIos";
-import ArrowBackIosIcon from "@material-ui/icons/ArrowBackIos";
+
 
 interface SimplePopOverProps {
-  text: string;
+  itemChildren: React.ReactNode;
   children: React.ReactNode;
   anchorOriginBlockVertical: "top" | "center" | "bottom";
   anchorOriginBlockHorizontal: "left" | "center" | "right";
   anchorPopupBlockVertical: "top" | "center" | "bottom";
   anchorPopupBlockHorizontal: "left" | "center" | "right";
+  arrow?: boolean;
 }
 
 export const SimplePopover: React.FC<SimplePopOverProps> = ({
-  text,
+  itemChildren,
   children,
   anchorOriginBlockVertical,
   anchorOriginBlockHorizontal,
   anchorPopupBlockVertical,
   anchorPopupBlockHorizontal,
+  arrow = false
 }: SimplePopOverProps): React.ReactElement => {
   const [anchorEl, setAnchorEl] = React.useState<HTMLLIElement | null>(null);
 
@@ -37,11 +39,8 @@ export const SimplePopover: React.FC<SimplePopOverProps> = ({
   return (
     <div>
       <MenuItem aria-describedby={id} onClick={handleClick}>
-        {anchorOriginBlockHorizontal === "center" && (
-          <ArrowBackIosIcon fontSize="small" />
-        )}
-        {text}
-        {anchorOriginBlockHorizontal === "right" && (
+        {itemChildren}
+        {arrow && (
           <ArrowForwardIosIcon fontSize="small" />
         )}
       </MenuItem>
