@@ -11,6 +11,8 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { SimplePopover } from "../../SimplePopover";
 import Grid from "@material-ui/core/Grid/Grid";
 import { Avatar } from "@material-ui/core";
+import MenuItem from "@material-ui/core/MenuItem";
+
 
 interface User {
   name: string;
@@ -39,17 +41,16 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 export const Members: React.FC<MembersProps> = ({ users = [] }) => {
-
   const classes = useStyles();
 
   const members = users.map((user) => (
     <>
       <SimplePopover
-        itemChildren={
-          <>
+        opener={
+          <MenuItem aria-describedby="Administation">
             <Avatar className={classes.smallAvatar} src={user.avatar} />
             {user.displayName ? user.displayName : user.name}
-          </>
+          </MenuItem>
         }
         anchorOriginBlockVertical="center"
         anchorOriginBlockHorizontal="left"
@@ -69,8 +70,8 @@ export const Members: React.FC<MembersProps> = ({ users = [] }) => {
         id="panel1a-header"
       >
         <Grid container justify="space-between">
-        <Typography variant="body1">Members</Typography>
-        <Typography variant="body1">{members.length}</Typography>
+          <Typography variant="body1">Members</Typography>
+          <Typography variant="body1">{members.length}</Typography>
         </Grid>
       </AccordionSummary>
       <AccordionDetails>
