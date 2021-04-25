@@ -11,9 +11,17 @@ export const theme = createMuiTheme({
       "Tahoma",
       "Arial",
       "sans-serif",
-    ],
+    ].join(","),
     h3: {
       fontWeight: 700
+    },
+    h5: {
+      fontWeight: 700
+    },
+    h6: {
+      fontSize: "1rem",
+      fontWeight: 700,
+      color: "#5B5A5B"
     }
   },
   palette: {
@@ -90,13 +98,19 @@ export const theme = createMuiTheme({
     },
     MuiAccordion: {
       root:{
-        
         '&$expanded': {
           margin: 'auto',
         }
-        
       }
-      
+    },
+    MuiTypography: {
+      body1: {
+        fontSize: "0.9rem",
+        wordBreak: "break-word"
+      },
+      subtitle2: {
+        fontWeight: 700
+      }
     }
   },
 });
