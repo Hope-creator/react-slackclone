@@ -3,29 +3,26 @@ import Popover from "@material-ui/core/Popover";
 import { MenuItem } from "@material-ui/core";
 import ArrowForwardIosIcon from "@material-ui/icons/ArrowForwardIos";
 
-
 interface SimplePopOverProps {
-  itemChildren: React.ReactNode;
   children: React.ReactNode;
   anchorOriginBlockVertical: "top" | "center" | "bottom";
   anchorOriginBlockHorizontal: "left" | "center" | "right";
   anchorPopupBlockVertical: "top" | "center" | "bottom";
   anchorPopupBlockHorizontal: "left" | "center" | "right";
-  arrow?: boolean;
+  opener: React.ReactNode;
 }
 
 export const SimplePopover: React.FC<SimplePopOverProps> = ({
-  itemChildren,
   children,
   anchorOriginBlockVertical,
   anchorOriginBlockHorizontal,
   anchorPopupBlockVertical,
   anchorPopupBlockHorizontal,
-  arrow = false
+  opener
 }: SimplePopOverProps): React.ReactElement => {
-  const [anchorEl, setAnchorEl] = React.useState<HTMLLIElement | null>(null);
+  const [anchorEl, setAnchorEl] = React.useState<HTMLDivElement | null>(null);
 
-  const handleClick = (event: React.MouseEvent<HTMLLIElement>) => {
+  const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
     setAnchorEl(event.currentTarget);
   };
 
@@ -38,12 +35,9 @@ export const SimplePopover: React.FC<SimplePopOverProps> = ({
 
   return (
     <div>
-      <MenuItem aria-describedby={id} onClick={handleClick}>
-        {itemChildren}
-        {arrow && (
-          <ArrowForwardIosIcon fontSize="small" />
-        )}
-      </MenuItem>
+      <div onClick={handleClick} style={{cursor: "pointer"}}>
+        {opener}
+      </div>
       <Popover
         id={id}
         open={open}
