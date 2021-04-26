@@ -1,0 +1,12 @@
+{
+    "user": {
+            "id": 123123,
+            "team_id": 123,
+            "name": "spengler",
+            "real_name": "Egon Spengler",
+            "avatar": "ge3b51ca72de",
+            "email": "spengler@ghostbusters.example.com",
+            "is_admin": false,
+            "updated": 1502138686
+    }
+}
