@@ -10,6 +10,7 @@ import CloseIcon from "@material-ui/icons/Close";
 import { createStyles, makeStyles } from "@material-ui/core/styles";
 
 interface HeaderProps {
+  headerTitle: string;
   headerSubText?: string;
   handleClick?: () => void;
 }
@@ -29,6 +30,7 @@ const useStyles = makeStyles(() =>
 );
 
 export const Header: React.FC<HeaderProps> = ({
+  headerTitle,
   headerSubText,
   handleClick,
 }) => {
@@ -43,7 +45,7 @@ export const Header: React.FC<HeaderProps> = ({
     >
       <Grid>
         <Typography variant="subtitle2" className={classes.headerTitle}>
-          Details
+          {headerTitle}
         </Typography>
         <Typography>{headerSubText}</Typography>
       </Grid>
