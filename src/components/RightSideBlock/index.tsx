@@ -16,33 +16,28 @@ interface RightSideBlockProps {
 export const RightSideBlock: React.FC<RightSideBlockProps> = ({
   type,
   headerSubText,
-  content
+  content,
 }) => {
-
-  if(type === 'channel') {
+  if (type === "channel") {
     return (
       <Box>
-      <Header headerTitle="Details" />
-      <ContentButtons />
-      <Accordeons />
-      <Files />
-    </Box>
-    )
+        <Header headerTitle="Details" />
+        <ContentButtons />
+        <Accordeons />
+        <Files />
+      </Box>
+    );
   }
-  if(type === 'profile'){
-
-  const profile = {
-    
+  if (type === "profile") {
+    return (
+      <Box>
+        <Header headerTitle="Profile" />
+        <ProfileInfo
+          user={content}
+        />
+      </Box>
+    );
   }
 
-  return (
-    <Box>
-    <Header headerTitle="Profile" />
-    <ProfileInfo
-    
-    />
-  </Box>
-  );}
-
-  return null
+  return null;
 };
