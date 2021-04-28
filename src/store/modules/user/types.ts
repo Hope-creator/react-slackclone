@@ -6,6 +6,8 @@ export interface IUser {
   avatar: string;
   email: string;
   is_admin: boolean;
+  work?: string;
+  phone?: number;
   updated: number;
 }
 
