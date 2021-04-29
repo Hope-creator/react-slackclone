@@ -1,7 +1,5 @@
 import React from "react";
 import Popover from "@material-ui/core/Popover";
-import { MenuItem } from "@material-ui/core";
-import ArrowForwardIosIcon from "@material-ui/icons/ArrowForwardIos";
 
 interface SimplePopOverProps {
   children: React.ReactNode;

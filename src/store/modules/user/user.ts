@@ -1,6 +1,5 @@
 import { IUser, IUserState, LoadingUserState } from "./types";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { Action } from "redux";
 
 const initialState = { user: null, loadingState: "NEVER" } as IUserState;
 

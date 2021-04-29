@@ -1,6 +1,5 @@
 import { ICompany, ICompanyState, LoadingCompanyState } from "./types";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { Action } from "redux";
 
 const initialState = { company: null, loadingState: "NEVER" } as ICompanyState;
 
