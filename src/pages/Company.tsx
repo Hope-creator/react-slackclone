@@ -1,13 +1,10 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 import {
   Grid,
   IconButton,
   Tooltip,
   Typography,
-  Paper,
-  MenuItem,
-  Divider,
   List,
   Link,
   Box,
@@ -30,10 +27,17 @@ import { DirectMessageListItem } from "../components/DirectMessageListItem";
 import MessagePane from "../components/MessagePane";
 import TextareaAutosize from "@material-ui/core/TextareaAutosize";
 import { RightSideBlock } from "../components/RightSideBlock";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Redirect } from "react-router";
 import CompanyHeader from "../components/CompanyHeader";
 import { CompanyMenuContent } from "../components/CompanyMenuContent";
+import { fetchCompany } from "../store/modules/company/company";
+import {
+  selectCompany,
+  selectCompanyLoadingState,
+} from "../store/modules/company/selectors";
+import { LoadingCompanyState } from "../store/modules/company/types";
+import CircularProgress from "@material-ui/core/CircularProgress/CircularProgress";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -135,9 +139,19 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export const Company = () => {
   const classes = useStyles();
+  const dispatch = useDispatch();
 
   const user = useSelector(selectUser);
+  const company = useSelector(selectCompany);
+  const companyLoadingState = useSelector(selectCompanyLoadingState);
 
+  useEffect(() => {
+    dispatch(fetchCompany());
+  }, [dispatch]);
+
+  if (!company || companyLoadingState === LoadingCompanyState.LOADING) {
+    return <CircularProgress disableShrink />;
+  }
   if (!user) {
     return <Redirect to="/get-started" />;
   } else {
@@ -148,9 +162,9 @@ export const Company = () => {
           <Grid item xs={3} className={classes.channelSidebar}>
             <CompanyMenuButton
               buttonClassName={classes.companyMenuButton}
-              companyName="Test company"
+              companyName={company.name}
             >
-              <CompanyMenuContent />
+              <CompanyMenuContent company={company} />
             </CompanyMenuButton>
             <Box className={classes.channelSideBarItemsWrapper}>
               <List>
