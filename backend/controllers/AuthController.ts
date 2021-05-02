@@ -3,8 +3,9 @@ import { validationResult } from "express-validator/src/validation-result";
 import { sendEmail } from "../core/mailer";
 import { CodeModel } from "../models/SecretCodeModel";
 import { UserModel } from "../models/UserModel";
-import { hashText } from "../utils/bcrypt";
+import { hashText, promisifyCompare } from "../utils/bcrypt";
 import cryptoRandomString from "crypto-random-string";
+import { tokenCreate } from "../utils/tokenCreate";
 
 class AuthController {
   async create(req: express.Request, res: express.Response): Promise<void> {
@@ -27,6 +28,8 @@ class AuthController {
         password: hashedPw,
       });
       const user = await newUser.save();
+      const token = tokenCreate(user._id);
+      req.session.token = token;
       const baseUrl = req.protocol + "://" + req.get("host");
       const secretCode = cryptoRandomString(6);
       const newCode = new CodeModel({
@@ -89,6 +92,50 @@ class AuthController {
         status: "error",
         error: JSON.stringify(error),
       });
+    }
+  }
+
+  async login(req: express.Request, res: express.Response): Promise<void> {
+    try {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        res.status(400).json({ status: "error", errors: errors.array() });
+        return;
+      }
+
+      const { email, password } = req.body as {
+        email: string;
+        password: string;
+      };
+
+      const user = await UserModel.findOne({ email: email }).select("+password");
+      if (!user) {
+        res.status(404).json({
+          status: "error",
+          message: "Email or password do not match.",
+        });
+      } else {
+        const pwCheckSuccess = await promisifyCompare(password, user.password);
+        if (!pwCheckSuccess) {
+          res.status(400).json({
+            status: "error",
+            message: "Email or password do not match.",
+          });
+        } else {
+          const token = tokenCreate(user._id);
+          req.session.token = token;
+          res.json({
+            status: "success",
+            data: user,
+          });
+        }
+      }
+    } catch (error) {
+      res.status(500).json({
+        status: "error",
+        errors: JSON.stringify(error),
+      });
+      console.log("Error on AuthController / login:", error);
     }
   }
 }
