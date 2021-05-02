@@ -1,5 +1,11 @@
-import { Schema } from "mongoose";
+import { Schema, Document } from "mongoose";
 import { mongoose } from "../core/db";
+import { IUser } from "./UserModel";
+
+export interface ISecretCode extends Document {
+    email: IUser['email'],
+    code: string
+}
 
 const secretCode = new Schema({
     email: {
@@ -17,4 +23,4 @@ const secretCode = new Schema({
     },
 });
 
-export const CodeModel = mongoose.model("Code", secretCode);
+export const CodeModel = mongoose.model<ISecretCode>("Code", secretCode);
