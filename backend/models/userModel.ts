@@ -29,6 +29,7 @@ const UserSchema = new Schema({
   status: {
     type: String,
     default: "pending",
+    select: false
   },
   isAdmin: {
     type: Boolean,
@@ -37,9 +38,11 @@ const UserSchema = new Schema({
   password: {
     require: true,
     type: String,
+    select:false
   },
   displayName: String,
   avatar: String,
-});
+  
+}, {versionKey: false});
 
 export const UserModel = mongoose.model<IUser>("User", UserSchema);
