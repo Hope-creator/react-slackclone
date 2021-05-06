@@ -1,4 +1,3 @@
-import { ICompanyState } from './modules/company/types';
 import { IUserState } from './modules/user/types';
 import { createStore, compose, applyMiddleware } from "redux";
 import createSagaMiddleware from "redux-saga";
@@ -12,7 +11,6 @@ const sagaMiddleware = createSagaMiddleware();
 
 export interface IRootState {
   user: IUserState,
-  company: ICompanyState
 }
 
 export const store = createStore(
