@@ -1,37 +1,38 @@
 import React from "react";
 import { GetStarted } from "./pages/GetStarted";
 import { SignIn } from "./pages/SignIn";
-import { Route, Switch, useHistory } from "react-router";
+import { Redirect, Route, Switch } from "react-router";
 import { Company } from "./pages/Company";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchUser } from "./store/modules/user/user";
-import { selectIsUserLoaded, selectUser } from "./store/modules/user/selectors";
-import CircularProgress from "@material-ui/core/CircularProgress";
+import { fetchMe } from "./store/modules/user/user";
+import {
+  selectUser,
+  selectUserLoadingState,
+} from "./store/modules/user/selectors";
+import { LoadingUserState } from "./store/modules/user/types";
+import { CentralCircularProgress } from "./components/CentralCircularProgress";
 
 function App() {
   const dispatch = useDispatch();
   const user = useSelector(selectUser);
-  const isUserLoaded = useSelector(selectIsUserLoaded);
-  const history = useHistory();
+  const userLoadingState = useSelector(selectUserLoadingState);
 
   React.useEffect(() => {
-    dispatch(fetchUser());
+    dispatch(fetchMe());
   }, [dispatch]);
 
-  React.useEffect(() => {
-    if (user && user.companyId) {
-      history.push(`/${user.companyId}`);
-    }
-  }, [user, history]);
-
-  if (!isUserLoaded) return <CircularProgress disableShrink />;
-
+  if (
+    userLoadingState !== LoadingUserState.LOADED
+  )
+    return <CentralCircularProgress size={80} />;
   return (
     <div>
       <Switch>
         <Route path="/signin" component={SignIn} />
         <Route path="/get-started" component={GetStarted} />
-        <Route path="/:teamId" component={Company} />
+        <Route path={["/", "/:teamId"]} component={Company}>
+          {!user && <Redirect to="signin" />}
+        </Route>
       </Switch>
     </div>
   );
