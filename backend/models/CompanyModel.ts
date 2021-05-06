@@ -2,8 +2,7 @@ import { IUser } from './../../src/store/modules/user/types';
 import { Schema, Document } from "mongoose";
 import { mongoose } from "../core/db";
 
-export interface ICompany extends Document {
-  _id: string,
+export interface ICompany {
   name: string,
   primary_owner: {
     user_id: string,
@@ -11,6 +10,8 @@ export interface ICompany extends Document {
   },
   members: IUser[] | never[]
 }
+
+export interface ICompanyDocument extends ICompany, Document {}
 
 const CompanySchema = new Schema({
   _id: {
@@ -35,4 +36,4 @@ const CompanySchema = new Schema({
   members: []
 }, {versionKey: false});
 
-export const CompanyModel = mongoose.model<ICompany>("Company", CompanySchema);
+export const CompanyModel = mongoose.model<ICompanyDocument>("Company", CompanySchema);
