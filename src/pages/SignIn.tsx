@@ -1,16 +1,19 @@
+import React from "react";
 import {
   Button,
   Divider,
   Link,
   makeStyles,
-  TextField,
   Typography,
 } from "@material-ui/core";
 import GTranslateIcon from "@material-ui/icons/GTranslate";
 import FlareIcon from "@material-ui/icons/Flare";
-import React from "react";
 import { LoginFooter } from "../components/LoginFooter";
 import { LoginHeader } from "../components/LoginHeader";
+import { SignInForm } from "../components/SignInForm";
+
+
+
 
 const useStyles = makeStyles((theme) => ({
   wrapper: {
@@ -38,9 +41,7 @@ const useStyles = makeStyles((theme) => ({
   signInText: {
     marginBottom: 32,
   },
-  button: {
-    fontWeight: 700,
-  },
+  
   signInForm: {
     maxWidth: "400px",
     marginTop: "40px",
@@ -58,14 +59,8 @@ const useStyles = makeStyles((theme) => ({
     fontSize: "15px",
     paddingRight: "10px",
   },
-  input: {
-    margin: "0 0 20px",
-  },
-  inputFocused: {
-    transition: theme.transitions.create(["border", "box-shadow"], {
-      duration: "80ms",
-    }),
-    boxShadow: "0px 0px 0px 4px rgba(29,155,209, 0.3)",
+  button: {
+    fontWeight: 700,
   },
   signInFooter: {
     display: "flex",
@@ -88,10 +83,11 @@ const useStyles = makeStyles((theme) => ({
 
 export const SignIn = () => {
   const classes = useStyles();
+  
 
   return (
     <div className={classes.wrapper}>
-      <LoginHeader newToSlackShow={true} title={"Sign in to Slack"}/>
+      <LoginHeader newToSlackShow={true} title={"Sign in to Slack"} />
       <div className={classes.signInForm}>
         <Button
           className={classes.button}
@@ -107,29 +103,7 @@ export const SignIn = () => {
           OR
           <Divider className={classes.divider} />
         </div>
-        <TextField
-          className={classes.input}
-          InputProps={{
-            classes: {
-              focused: classes.inputFocused,
-            },
-          }}
-          label="name@work-email.com"
-          id="outlined-basic"
-          color="secondary"
-          size="small"
-          variant="outlined"
-          fullWidth
-        />
-        <Button
-          className={classes.button}
-          variant="contained"
-          color="primary"
-          fullWidth
-        >
-          Sign in with Email
-        </Button>
-
+        <SignInForm />
         <div className={classes.emailPrompt}>
           <FlareIcon className={classes.emailPromptIcon} />
           <Typography variant="subtitle2">
@@ -141,4 +115,4 @@ export const SignIn = () => {
       <LoginFooter />
     </div>
   );
-}
+};
