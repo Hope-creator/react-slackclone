@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 
 import {
   Grid,
@@ -27,17 +27,10 @@ import { DirectMessageListItem } from "../components/DirectMessageListItem";
 import MessagePane from "../components/MessagePane";
 import TextareaAutosize from "@material-ui/core/TextareaAutosize";
 import { RightSideBlock } from "../components/RightSideBlock";
-import { useDispatch, useSelector } from "react-redux";
-import { Redirect } from "react-router";
+import { useSelector } from "react-redux";
+import { useHistory } from "react-router";
 import CompanyHeader from "../components/CompanyHeader";
 import { CompanyMenuContent } from "../components/CompanyMenuContent";
-import { fetchCompany } from "../store/modules/company/company";
-import {
-  selectCompany,
-  selectCompanyLoadingState,
-} from "../store/modules/company/selectors";
-import { LoadingCompanyState } from "../store/modules/company/types";
-import CircularProgress from "@material-ui/core/CircularProgress/CircularProgress";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -139,22 +132,13 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export const Company = () => {
   const classes = useStyles();
-  const dispatch = useDispatch();
-
   const user = useSelector(selectUser);
-  const company = useSelector(selectCompany);
-  const companyLoadingState = useSelector(selectCompanyLoadingState);
-
-  useEffect(() => {
-    dispatch(fetchCompany());
-  }, [dispatch]);
-
-  if (!company || companyLoadingState === LoadingCompanyState.LOADING) {
-    return <CircularProgress disableShrink />;
-  }
+  const history = useHistory();
   if (!user) {
-    return <Redirect to="/get-started" />;
+    history.push("/get-started");
+    return null;
   } else {
+    const company = user.company;
     return (
       <div className={classes.companyWrapper}>
         <CompanyHeader user={user} />
