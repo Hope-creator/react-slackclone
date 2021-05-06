@@ -2,7 +2,7 @@ import React from "react";
 
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import { Grid } from "@material-ui/core";
-import { ICompany } from "../store/modules/company/types";
+import { ICompany } from "../store/modules/user/types";
 import MenuItem from "@material-ui/core/MenuItem/MenuItem";
 import Typography from "@material-ui/core/Typography/Typography";
 import { SimplePopover } from "./SimplePopover";
