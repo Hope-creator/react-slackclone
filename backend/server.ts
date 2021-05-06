@@ -32,6 +32,7 @@ import { CompanyCtrl } from './controllers/CompanyController';
 app.get("/api/users", UserCtrl.index);
 app.get("/api/users/:id",authencticateToken, UserCtrl.show);
 app.get("/api/company/:id",authencticateToken, CompanyCtrl.show);
+app.get("/api/auth/me",authencticateToken, AuthCtrl.getMe)
 app.post("/api/auth/login",loginValidators, AuthCtrl.login)
 app.post("/api/auth/register", registerValidators, AuthCtrl.create);
 app.get("/api/auth/verification/verify-account/:userId/:secretCode", authencticateToken, AuthCtrl.verify);
