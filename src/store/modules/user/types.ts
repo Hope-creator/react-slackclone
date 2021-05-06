@@ -1,6 +1,17 @@
+export interface ICompany {
+  _id: string,
+  name: string,
+  primary_owner: {
+    user_id: string,
+    email: string,
+  },
+  members: IUser[] | never[]
+}
+
+
 export interface IUser {
-  id: number;
-  companyId: number;
+  _id: string;
+  company: ICompany;
   name: string;
   real_name: string;
   avatar: string;
@@ -8,7 +19,6 @@ export interface IUser {
   is_admin: boolean;
   work?: string;
   phone?: number;
-  updated: number;
 }
 
 export enum LoadingUserState {
