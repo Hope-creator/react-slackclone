@@ -1,21 +1,29 @@
+import { ICompany } from './CompanyModel';
 import { Schema, Document } from "mongoose";
 import { mongoose } from "../core/db";
 
-export interface IUser extends Document {
-  companyId: string,
+export interface IUser {
+  company: ICompany | string,
   name: string,
   email: string,
   status: string,
-  isAdmin: boolean,
-  password: string,
-  displayName?: string,
-  avatar?: string
+  is_admin: boolean,
+  display_name?: string,
+  avatar?: string,
+  work?: string,
+  password?: string,
+  phone?: number
+}
+
+export interface IUserDocument extends IUser , Document {
+  password: string
 }
 
 const UserSchema = new Schema({
-  companyId: {
+  company: {
     type: String,
     default: "T01TE7T5WEV",
+    ref: 'Company'
   },
   name: {
     required: true,
@@ -31,7 +39,7 @@ const UserSchema = new Schema({
     default: "pending",
     select: false
   },
-  isAdmin: {
+  is_admin: {
     type: Boolean,
     default: true,
   },
@@ -40,9 +48,10 @@ const UserSchema = new Schema({
     type: String,
     select:false
   },
-  displayName: String,
+  display_name: String,
   avatar: String,
-  
+  work: String,
+  phone: Number
 }, {versionKey: false});
 
-export const UserModel = mongoose.model<IUser>("User", UserSchema);
+export const UserModel = mongoose.model<IUserDocument>("User", UserSchema);
