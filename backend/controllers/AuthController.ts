@@ -36,8 +36,8 @@ class AuthController {
         email: email,
         code: secretCode,
       });
-
       await newCode.save();
+      const savedUser = await UserModel.findById(user._id).populate("company");
       await sendEmail({
         email: email,
         baseUrl: baseUrl,
@@ -50,7 +50,7 @@ class AuthController {
           } else {
             res.json({
               status: "success",
-              data: user,
+              data: savedUser,
             });
           }
         },
@@ -108,7 +108,9 @@ class AuthController {
         password: string;
       };
 
-      const user = await UserModel.findOne({ email: email }).select("+password");
+      const user = await UserModel.findOne({ email: email }).select(
+        "+password"
+      ).populate("company");
       if (!user) {
         res.status(404).json({
           status: "error",
@@ -136,6 +138,23 @@ class AuthController {
         errors: JSON.stringify(error),
       });
       console.log("Error on AuthController / login:", error);
+    }
+  }
+
+  async getMe(req: express.Request, res: express.Response): Promise<void> {
+    try {
+      const id = req.userId;
+      const user = await UserModel.findById(id).populate("company");
+      res.json({
+        status: "success",
+        data: user,
+      });
+    } catch (error) {
+      res.status(500).json({
+        status: "error",
+        data: JSON.stringify(error),
+      });
+      console.log("Error on AuthController / getMe:", error);
     }
   }
 }
