@@ -1,5 +1,6 @@
 import React from "react";
 import { Link, Grid, Typography } from "@material-ui/core";
+import { NavLink } from "react-router-dom";
 
 interface LoginHeaderProps {
   newToSlackShow: boolean;
@@ -15,8 +16,8 @@ export const LoginHeader: React.FC<LoginHeaderProps> = ({
       {newToSlackShow && (
         <Grid container alignItems="flex-end" direction="column">
           <Typography variant="caption">New to Slack?</Typography>
-          <Link variant="caption" color="secondary">
-            Create an account
+          <Link component="div" variant="caption" color="secondary">
+            <NavLink to="/get-started">Create an account</NavLink>
           </Link>
         </Grid>
       )}
