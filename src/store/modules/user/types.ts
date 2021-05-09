@@ -13,10 +13,10 @@ export interface IUser {
   _id: string;
   company: ICompany;
   name: string;
-  real_name: string;
   avatar: string;
   email: string;
   is_admin: boolean;
+  display_name?: string;
   work?: string;
   phone?: number;
 }
