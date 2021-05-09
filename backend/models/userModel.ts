@@ -1,6 +1,7 @@
 import { ICompany } from './CompanyModel';
 import { Schema, Document } from "mongoose";
 import { mongoose } from "../core/db";
+import differenceInMinutes from "date-fns/differenceInMinutes"
 
 export interface IUser {
   company: ICompany | string,
@@ -12,7 +13,8 @@ export interface IUser {
   avatar?: string,
   work?: string,
   password?: string,
-  phone?: number
+  phone?: number,
+  last_seen: Date
 }
 
 export interface IUserDocument extends IUser , Document {
@@ -51,7 +53,19 @@ const UserSchema = new Schema({
   display_name: String,
   avatar: String,
   work: String,
-  phone: Number
+  phone: Number,
+  last_seen: {
+    type: Date,
+    default: new Date(),
+  },
 }, {versionKey: false});
+
+UserSchema.virtual("isOnline").get(function (this: any) {
+  return differenceInMinutes(new Date(), this.last_seen) < 5;
+});
+
+UserSchema.set("toJSON", {
+  virtuals: true,
+});
 
 export const UserModel = mongoose.model<IUserDocument>("User", UserSchema);
