@@ -1,4 +1,4 @@
-import { Avatar, Grid } from "@material-ui/core";
+import { Avatar, Grid, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { createStyles } from "@material-ui/core/styles";
 import React from "react";
@@ -26,6 +26,9 @@ const useStyles = makeStyles(() =>
     },
     maxWidthText: {
       width: "100%",
+    },
+    message: {
+      wordWrap: "break-word",
     },
   })
 );
@@ -59,7 +62,9 @@ export const MessagePane: React.FC<MessagePaneProps> = ({
             {header}
           </Grid>
           <Grid item className={classes.maxWidthText}>
+            <Typography className={classes.message}>
             {children}
+            </Typography>
           </Grid>
         </Grid>
       </Grid>
