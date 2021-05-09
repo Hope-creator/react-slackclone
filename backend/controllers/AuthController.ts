@@ -159,4 +159,4 @@ class AuthController {
   }
 }
 
-export const AuthCtrl = new AuthController();
+export default AuthController;

@@ -24,4 +24,4 @@ class CompanyController {
   }
 }
 
-export const CompanyCtrl = new CompanyController();
+export default CompanyController;
