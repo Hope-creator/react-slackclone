@@ -47,7 +47,7 @@ export const ProfileInfo: React.FC<IProfileInfoProps> = ({
       <Box>
         <Box className={classes.profileName}>
           <Typography variant="h6" color="textPrimary">
-            {user.real_name}
+            {user.name}
           </Typography>
           {user.work ? (
             <Typography>{user.work}</Typography>
@@ -67,10 +67,10 @@ export const ProfileInfo: React.FC<IProfileInfoProps> = ({
           )}
         </Box>
         <Box>
-          {user.name ? (
+          {user.display_name ? (
             <Box className={classes.profileField}>
               <Typography variant="caption">Display name</Typography>
-              <Typography>{user.name}</Typography>
+              <Typography>{user.display_name}</Typography>
             </Box>
           ) : null}
           {user.phone ? (
