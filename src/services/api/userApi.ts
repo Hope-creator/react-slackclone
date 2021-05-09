@@ -1,10 +1,6 @@
 import { IUser } from './../../store/modules/user/types';
 import axios from "axios"; 
-
-export interface IResponse<T> {
-    status: string,
-    data: T
-}
+import { IResponse } from './types';
 
 export const userApi = {
     async fetchUser (id: string): Promise<IUser> {
