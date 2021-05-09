@@ -1,5 +1,5 @@
 import axios from "axios"; 
-import { IResponse } from './userApi';
+import { IResponse } from './types';
 import { IUser } from '../../store/modules/user/types';
 import { ILoginForm } from "../../components/SignInForm";
 
