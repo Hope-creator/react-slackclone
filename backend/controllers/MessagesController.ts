@@ -2,6 +2,7 @@ import express from "express";
 import { isValidObjectId } from "mongoose";
 import socket from "socket.io";
 import { ConversationModel } from "../models/ConversationModel";
+import { MarkedMessageModel } from "../models/MarkedMessageModel";
 import { MessageModel } from "../models/MessageModel";
 
 class MessagesController {
@@ -30,8 +31,25 @@ class MessagesController {
             .status(400)
             .json({ status: "error", data: "Conversations doesn't exist" });
         } else {
-          const messages = await MessageModel.find({ dest: conversation._id })
-            .populate("creator");
+          const query = await MessageModel.find({
+            dest: conversation._id,
+          })
+            .populate("creator")
+            .lean();
+          const messages = await Promise.all(
+            query.map(async (message) => {
+              const isMarked = await MarkedMessageModel.exists({
+                user: userId,
+                markedMessage: message._id,
+              });
+              if (isMarked) {
+                message.marked = true;
+              } else {
+                message.marked = false;
+              }
+              return message;
+            })
+          );
           res.json({ status: "success", data: messages });
         }
       } catch (error) {
