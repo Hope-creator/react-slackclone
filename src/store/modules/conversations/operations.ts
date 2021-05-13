@@ -5,7 +5,6 @@ import {
   fetchConverastions,
   setConversations,
   setConversationsLoadingState,
-  fetchCurrentConversation
 } from "./conversations";
 
 function* fetchConversationsSaga() {
@@ -19,18 +18,6 @@ function* fetchConversationsSaga() {
   }
 }
 
-function* fetchCurrentConversationSaga() {
-  try {
-    const conversation: IConversation = yield call(
-      conversationsApi.fetchConversations
-    );
-    yield put(setConversations(conversations));
-  } catch (e) {
-    yield put(setConversationsLoadingState(LoadingConversationsState.ERROR));
-  }
-}
-
 export function* conversationsSaga() {
   yield takeEvery(fetchConverastions.type, fetchConversationsSaga);
-  yield takeEvery(fetchCurrentConversation.type, fetchCurrentConversationSaga);
 }
