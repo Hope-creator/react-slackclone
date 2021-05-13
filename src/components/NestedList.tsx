@@ -8,11 +8,14 @@ import Collapse from "@material-ui/core/Collapse";
 import ArrowRightIcon from "@material-ui/icons/ArrowRight";
 import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown";
 import AddBoxOutlinedIcon from "@material-ui/icons/AddBoxOutlined";
+import { SimplePopover } from "./SimplePopover";
+import { CreateConversation } from "./CreateConversation";
 
 interface NestedListProps {
   listTitle: string;
   children: React.ReactNode | React.ReactNode[];
-  buttonText: string;
+  buttonText?: string;
+  buttonHandleClick?: () => void;
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -24,6 +27,7 @@ const useStyles = makeStyles((theme: Theme) =>
     nested: {
       paddingLeft: theme.spacing(4),
     },
+    
   })
 );
 
@@ -31,6 +35,7 @@ export const NestedList: React.FC<NestedListProps> = ({
   listTitle,
   buttonText,
   children,
+  buttonHandleClick,
 }: NestedListProps): React.ReactElement => {
   const classes = useStyles();
   const [open, setOpen] = React.useState<boolean>(false);
@@ -59,14 +64,25 @@ export const NestedList: React.FC<NestedListProps> = ({
       <Collapse in={open} timeout="auto" unmountOnExit>
         <List component="div" disablePadding>
           {children}
-          <ListItem dense button>
-            <ListItemIcon>
-              <AddBoxOutlinedIcon color="primary" />
-            </ListItemIcon>
-            <ListItemText primaryTypographyProps={{ color: "primary" }}>
-              {buttonText}
-            </ListItemText>
-          </ListItem>
+          {buttonText && <SimplePopover
+            opener={
+              <ListItem dense button onClick={buttonHandleClick}>
+                <ListItemIcon>
+                  <AddBoxOutlinedIcon color="primary" />
+                </ListItemIcon>
+                <ListItemText primaryTypographyProps={{ color: "primary" }}>
+                  {buttonText}
+                </ListItemText>
+              </ListItem>
+            }
+            anchorOriginBlockVertical="center"
+            anchorOriginBlockHorizontal="center"
+            anchorPopupBlockVertical="top"
+            anchorPopupBlockHorizontal="center"
+            children={
+              <CreateConversation />
+            }
+          />}
         </List>
       </Collapse>
     </List>
