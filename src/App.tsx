@@ -21,15 +21,17 @@ function App() {
     dispatch(fetchMe());
   }, [dispatch]);
 
-  if (
-    userLoadingState !== LoadingUserState.LOADED
-  )
+  if (userLoadingState !== LoadingUserState.LOADED)
     return <CentralCircularProgress size={80} />;
   return (
     <div>
       <Switch>
-        <Route path="/signin" component={SignIn} />
-        <Route path="/get-started" component={GetStarted} />
+        <Route path="/signin" component={SignIn}>
+          {user && <Redirect to="/" />}
+        </Route>
+        <Route path="/get-started" component={GetStarted}>
+          {user && <Redirect to="/" />}
+        </Route>
         <Route path={["/", "/:teamId"]} component={Company}>
           {!user && <Redirect to="signin" />}
         </Route>
