@@ -76,6 +76,7 @@ export const CompanyHeader: React.FC<ICompanyHeaderProps> = ({ user }) => {
               root: classes.grid,
             }}
             container
+            item
             alignItems="center"
             justify="flex-end"
             xs={9}
@@ -94,7 +95,7 @@ export const CompanyHeader: React.FC<ICompanyHeaderProps> = ({ user }) => {
               </IconButton>
             </Tooltip>
           </Grid>
-          <Grid container justify="flex-end" xs={3}>
+          <Grid container item justify="flex-end" xs={3}>
             <SimplePopover
               opener={
                 <StyledBadge
