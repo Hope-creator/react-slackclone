@@ -7,8 +7,16 @@ export const conversationsApi = {
         const response = await axios.get<IResponse<IConversation[] | []>>(`/api/conversations`);
         return response.data.data
     },
-    async fetchCurrentConversation (): Promise<IConversation[] | []> {
-        const response = await axios.get<IResponse<IConversation[] | []>>(`/api/conversations`);
+    async fetchCurrentConversation (id: string): Promise<IConversation> {
+        const response = await axios.get<IResponse<IConversation>>(`/api/conversations/${id}`);
+        return response.data.data
+    },
+    async createChannel (name: string): Promise<IConversation> {
+        const response = await axios.post<IResponse<IConversation>>(`/api/conversations/`, {
+            name: name,
+            isChannel: true
+        });
+        console.log(response)
         return response.data.data
     },
 }
