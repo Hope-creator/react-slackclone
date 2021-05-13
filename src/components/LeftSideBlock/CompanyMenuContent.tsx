@@ -64,30 +64,9 @@ export const CompanyMenuContent: React.FC<ICompanyMenuItemProps> = ({
         <Typography variant="body1">Create a channel</Typography>
       </MenuItem>
       <Divider />
-      <SimplePopover
-        opener={
-          <MenuItem aria-describedby="Administation">
-            <Typography variant="body1">Administration</Typography>
-            <ArrowForwardIosIcon fontSize="small" />
-          </MenuItem>
-        }
-        anchorOriginBlockVertical="center"
-        anchorOriginBlockHorizontal="right"
-        anchorPopupBlockVertical="center"
-        anchorPopupBlockHorizontal="center"
-      >
-        <Paper className={classes.submenuContainer}>
-          <Typography className={classes.captionText} variant="caption">
-            Administration
-          </Typography>
-          <MenuItem>
-            <Typography variant="body1">Manage members</Typography>
-          </MenuItem>
-          <MenuItem>
-            <Typography variant="body1">Manage apps</Typography>
-          </MenuItem>
-        </Paper>
-      </SimplePopover>
+      <MenuItem>
+        <Typography variant="body1">Members</Typography>
+      </MenuItem>
       <MenuItem>
         <Typography variant="body1">Sign out of {company.name}</Typography>
       </MenuItem>
