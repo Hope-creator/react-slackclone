@@ -4,7 +4,8 @@ import createSagaMiddleware from "redux-saga";
 import { rootReducer } from "./rootReducer";
 import rootSaga from "./rootSaga";
 import { IConversationsState } from './modules/conversations/types';
-import { IMessagesState } from './modules/messages/types';
+import { ICurrentConversationState } from './modules/currentConversation/types';
+import { ICurrentInfoState } from './modules/currentInfo/types';
 
 const composeEnhancers =
   (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
@@ -14,7 +15,8 @@ const sagaMiddleware = createSagaMiddleware();
 export interface IRootState {
   user: IUserState,
   conversations: IConversationsState,
-  messages: IMessagesState
+  currentConversation: ICurrentConversationState,
+  currentInfo: ICurrentInfoState
 }
 
 export const store = createStore(
