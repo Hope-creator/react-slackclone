@@ -64,7 +64,7 @@ export const CompanyMenuButton: React.FC<CompanyMenuButtonProps> = ({
             <ArrowDropDownIcon />
           </Grid>
           <Grid item>
-            <IconButton id="iconbtn" onClick={handleIconClick} color="primary">
+            <IconButton component="div" id="iconbtn" onClick={handleIconClick} color="primary">
               <CreateIcon />
             </IconButton>
           </Grid>
