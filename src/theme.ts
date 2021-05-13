@@ -111,6 +111,11 @@ export const theme = createMuiTheme({
       subtitle2: {
         fontWeight: 700
       }
+    },
+    MuiPaper: {
+      elevation4: {
+        boxShadow: 0
+      }
     }
   },
 });
