@@ -36,8 +36,8 @@ export const Navbar: React.FC<INavbarProps> = ({
   const classes = useStyles();
   const standartList = useCallback(
     () =>
-      ["Mentions & reactions", "Saved items", "More"].map((item) => (
-        <SidebarListCreator componentName={item} />
+      ["Saved items", "More"].map((item) => (
+        <SidebarListCreator key={item} componentName={item} />
       )),
     []
   );
@@ -56,14 +56,16 @@ export const Navbar: React.FC<INavbarProps> = ({
         {standartList()}
         <MoreMenu />
       </List>
-      <NestedList buttonText="Add channel" listTitle="Channels">
+      <NestedList buttonHandleClick={()=>console.log()} buttonText="Add channel" listTitle="Channels">
         {channels().map((channel) => (
-          <Channel channel={channel} />
+          <Channel key={channel._id} channel={channel} />
         ))}
       </NestedList>
-      <NestedList listTitle="Direct messages" buttonText="Add teammate">
+      <NestedList buttonHandleClick={()=>{
+
+      }} listTitle="Direct messages">
         {directMessages().map((dm) => (
-          <DirectMessageListItem name={dm.name} />
+          <DirectMessageListItem conversation={dm} />
         ))}
       </NestedList>
     </Box>
