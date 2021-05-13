@@ -1,24 +1,30 @@
-import { Avatar, Grid, Typography } from "@material-ui/core";
+import React from "react";
+
+import { Avatar, Grid, IconButton, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { createStyles } from "@material-ui/core/styles";
-import React from "react";
+import BookmarkBorderIcon from "@material-ui/icons/BookmarkBorder";
+import BookmarkIcon from "@material-ui/icons/Bookmark";
+import ClearIcon from "@material-ui/icons/Clear";
 
 interface MessagePaneProps {
   avatarSrc?: string;
   icon?: React.ReactNode;
   header: string;
   children: React.ReactNode;
+  marked: boolean;
 }
 
 const useStyles = makeStyles(() =>
   createStyles({
     avatar: {
-      marginRight: 12,
+      margin: "0 auto"
     },
     icon: {
       marginRight: 8,
       padding: 10,
       backgroundColor: "rgb(244, 237, 228)",
+      margin: "0 auto"
     },
     maxWidthContent: {
       width: "inherit",
@@ -30,6 +36,11 @@ const useStyles = makeStyles(() =>
     message: {
       wordWrap: "break-word",
     },
+    messageContainer: {
+      "&:hover": {
+        backgroundColor: "rgba(221,221,221, 01)",
+      },
+    },
   })
 );
 
@@ -38,11 +49,12 @@ export const MessagePane: React.FC<MessagePaneProps> = ({
   icon,
   header,
   children,
+  marked,
 }: MessagePaneProps): React.ReactElement => {
   const classes = useStyles();
 
   return (
-    <Grid container wrap="nowrap">
+    <Grid container wrap="nowrap" className={classes.messageContainer}>
       <Grid
         item
         xs={1}
@@ -56,16 +68,37 @@ export const MessagePane: React.FC<MessagePaneProps> = ({
           icon
         ) : null}
       </Grid>
-      <Grid item xs={11} sm={10} lg={11} className={classes.maxWidthContent}>
-        <Grid container direction="column">
-          <Grid item className={classes.maxWidthText}>
-            {header}
+      <Grid
+        item
+        container
+        wrap="nowrap"
+        alignItems="center"
+        justify="space-between"
+        className={classes.maxWidthContent}
+      >
+        <Grid item lg={10}>
+          <Grid container direction="column">
+            <Grid item className={classes.maxWidthText}>
+              <Typography variant="subtitle2">{header}</Typography>
+            </Grid>
+            <Grid item className={classes.maxWidthText}>
+              <Typography className={classes.message}>{children}</Typography>
+            </Grid>
           </Grid>
-          <Grid item className={classes.maxWidthText}>
-            <Typography className={classes.message}>
-            {children}
-            </Typography>
-          </Grid>
+        </Grid>
+        <Grid item container wrap="nowrap" justify="center" lg={2}>
+          {marked ? (
+            <IconButton size="small" onClick={() => console.log("Bookmark")}>
+              <BookmarkIcon color="primary" />
+            </IconButton>
+          ) : (
+            <IconButton size="small" onClick={() => console.log("Bookmark")}>
+              <BookmarkBorderIcon color="primary" />
+            </IconButton>
+          )}
+          <IconButton size="small" onClick={() => console.log("Clear")}>
+            <ClearIcon color="primary" />
+          </IconButton>
         </Grid>
       </Grid>
     </Grid>
