@@ -1,4 +1,4 @@
-import { IMessage } from "../messages/types";
+import { IMessage } from "../currentConversation/types";
 import { IUser } from "../user/types";
 
 export interface IPurpose {
@@ -18,7 +18,7 @@ export interface IConversation {
   topic?: ITopic;
   messages: IMessage[];
   is_private: boolean;
-  members: IUser[] | string[];
+  members: string[];
   num_members: number;
   unread_count: number;
 }
@@ -33,6 +33,5 @@ export enum LoadingConversationsState {
 export interface IConversationsState {
   conversations: IConversation[] | [];
   loadingState: LoadingConversationsState;
-  currentConversation: IConversation | undefined;
   loadingCurrentConversationState: LoadingConversationsState;
 }
