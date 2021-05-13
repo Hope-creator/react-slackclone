@@ -59,11 +59,11 @@ export const MoreMenu: React.FC = (): React.ReactElement => {
       >
         <Paper className={classes.paper}>
           {["All unreads", "All DMs"].map((item) => (
-            <SidebarListCreator componentName={item} />
+            <SidebarListCreator key={item} componentName={item} />
           ))}
           <Divider />
           {["Channel browser", "People & user groups"].map((item) => (
-            <SidebarListCreator componentName={item} />
+            <SidebarListCreator key={item} componentName={item} />
           ))}
         </Paper>
       </Popover>
