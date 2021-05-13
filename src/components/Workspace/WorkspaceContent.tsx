@@ -4,7 +4,8 @@ import Grid from "@material-ui/core/Grid";
 
 import TextareaAutosize from "@material-ui/core/TextareaAutosize";
 import { MessagePane } from "../MessagePane";
-import { IMessage } from "../../store/modules/messages/types";
+import { IMessage } from "../../store/modules/currentConversation/types";
+import defaultAvatar from "../../images/defaultAvatar.png"
 
 
 interface IWorkspaceContentProps {
@@ -47,7 +48,8 @@ export const WorkspaceContent: React.FC<IWorkspaceContentProps> = ({
     messages.map((message) => (
       <MessagePane
         header={message.creator.name}
-        avatarSrc={message.creator.avatar}
+        avatarSrc={message.creator.avatar || defaultAvatar}
+        marked={message.marked}
       >
         {message.text}
       </MessagePane>
