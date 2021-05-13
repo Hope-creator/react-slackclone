@@ -20,25 +20,13 @@ const conversationsSlice = createSlice({
       state.loadingState = LoadingConversationsState.LOADED;
     },
     setConversations(state, action: PayloadAction<IConversation[] | []>) {
-      state.conversations = [...state.conversations, ...action.payload];
+      state.conversations = [...action.payload, ...state.conversations ];
     },
     setConversationsLoadingState(
       state,
       action: PayloadAction<LoadingConversationsState>
     ) {
       state.loadingState = action.payload;
-    },
-    fetchCurrentConversation(state, payload: PayloadAction<string>) {
-      state.loadingCurrentConversationState = LoadingConversationsState.LOADING;
-    },
-    setCurrentConversations(state, action: PayloadAction<IConversation>) {
-      state.currentConversation = action.payload;
-    },
-    setCurrentConversationsLoadingState(
-      state,
-      action: PayloadAction<LoadingConversationsState>
-    ) {
-      state.loadingCurrentConversationState = action.payload;
     },
   },
 });
@@ -47,8 +35,5 @@ export const {
   fetchConverastions,
   setConversations,
   setConversationsLoadingState,
-  fetchCurrentConversation,
-  setCurrentConversations,
-  setCurrentConversationsLoadingState
 } = conversationsSlice.actions;
 export default conversationsSlice.reducer;
