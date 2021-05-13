@@ -50,7 +50,7 @@ export const WorkspaceHeader: React.FC<IWorkspaceHeaderProps> = ({
       <Grid item>
         <Grid container direction="column">
           <Grid item>
-            <Link>{conversation && conversation.name}</Link>
+            {conversation && <Link>{conversation.name}</Link>}
             {conversation && (
               <Tooltip title="Star channel" aria-label="Star channel">
                 <IconButton size="small">
@@ -90,14 +90,14 @@ export const WorkspaceHeader: React.FC<IWorkspaceHeaderProps> = ({
             <PersonAddIcon />
           </IconButton>
         </Tooltip>
-        <Tooltip
+       { <Tooltip
           title="Show conversation details"
           aria-label="Show conversation details"
         >
           <IconButton size="small">
             <ErrorOutlineIcon />
           </IconButton>
-        </Tooltip>
+        </Tooltip>}
       </Grid>
     </Grid>
   );
