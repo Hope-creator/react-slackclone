@@ -4,6 +4,7 @@ import {
   AuthController,
   CompanyController,
   ConversationController,
+  MarkedMessageController,
   UserController,
 } from "../controllers";
 import MessagesController from "../controllers/MessagesController";
@@ -17,6 +18,8 @@ const createRoutes = (app: express.Express, io: socket.Server) => {
   const ConversationCtrl = new ConversationController(io);
   const UserCtrl = new UserController();
   const MessagesCtrl = new MessagesController(io);
+  const MarkedMessageCtrl = new MarkedMessageController(io);
+
   // # Users
   app.get("/api/users", UserCtrl.index);
   app.get("/api/users/:id", authencticateToken, UserCtrl.show);
@@ -36,12 +39,17 @@ const createRoutes = (app: express.Express, io: socket.Server) => {
 
   //# Conversation
   app.get("/api/conversations", authencticateToken, ConversationCtrl.index);
+  app.get("/api/conversations/:id", authencticateToken, ConversationCtrl.show);
   app.post("/api/conversations", authencticateToken, ConversationCtrl.create);
 
-  //#Messages 
-  app.get("/api/conversations/:id", authencticateToken, MessagesCtrl.index);
-  app.post("/api/conversations/:id", authencticateToken, MessagesCtrl.create);
+  //# Messages 
+  app.get("/api/messages/:id", authencticateToken, MessagesCtrl.index);
+  app.post("/api/messages/:id", authencticateToken, MessagesCtrl.create);
 
+  //# Mark Messages 
+  app.get("/api/mark", authencticateToken, MarkedMessageCtrl.index);
+  app.post("/api/mark", authencticateToken, MarkedMessageCtrl.create);
+  app.delete("/api/mark/:id", authencticateToken, MarkedMessageCtrl.delete);
 };
 
 export default createRoutes;
