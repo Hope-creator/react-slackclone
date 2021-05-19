@@ -17,11 +17,17 @@ const currentInfoSlicer = createSlice({
   name: "CurrentInfo",
   initialState,
   reducers: {
+    fetchCurrentInfoChannel(state, action: PayloadAction<string>) {
+      state.loadingState = LoadingCurrentInfoState.LOADING;
+    },
+    fetchCurrentInfoProfile(state, action: PayloadAction<string>) {
+      state.loadingState = LoadingCurrentInfoState.LOADING;
+    },
     setCurrentInfoChannel(state, action: PayloadAction<IConversation>) {
       state.item = action.payload;
       state.type = InfoItemTypeState.CHANNEL;
     },
-    setCurrentInfoUser(state, action: PayloadAction<IUser>) {
+    setCurrentInfoProfile(state, action: PayloadAction<IUser>) {
       state.item = action.payload;
       state.type = InfoItemTypeState.PROFILE;
     },
@@ -31,12 +37,18 @@ const currentInfoSlicer = createSlice({
     ) {
       state.loadingState = action.payload;
     },
+    clearCurrentInfo() {
+      return initialState
+    },
   },
 });
 
 export const {
+  fetchCurrentInfoChannel,
+  fetchCurrentInfoProfile,
   setCurrentInfoChannel,
-  setCurrentInfoUser,
+  setCurrentInfoProfile,
   setCurrentInfoLoadingState,
+  clearCurrentInfo
 } = currentInfoSlicer.actions;
 export default currentInfoSlicer.reducer;
