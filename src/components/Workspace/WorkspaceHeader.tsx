@@ -10,6 +10,10 @@ import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import Link from "@material-ui/core/Link";
 import { IConversation } from "../../store/modules/conversations/types";
+import { useDispatch } from "react-redux";
+import { fetchCurrentInfoChannel } from "../../store/modules/currentInfo/currentInfo";
+import { MembersModal } from "../MembersModal";
+import { IUser } from "../../store/modules/user/types";
 
 interface IWorkspaceHeaderProps {
   conversation?: IConversation;
@@ -32,6 +36,13 @@ const useStyles = makeStyles((theme: Theme) =>
         color: theme.palette.secondary.main,
       },
     },
+    name: {
+      wordBreak: "break-word",
+      width: "500px",
+      whiteSpace: "nowrap",
+      overflow: "hidden",
+      textOverflow: "ellipsis",
+    },
   })
 );
 
@@ -39,6 +50,10 @@ export const WorkspaceHeader: React.FC<IWorkspaceHeaderProps> = ({
   conversation,
 }: IWorkspaceHeaderProps) => {
   const classes = useStyles();
+  const dispatch = useDispatch();
+  const infoButtonHandleClick = () => {
+    if (conversation) dispatch(fetchCurrentInfoChannel(conversation._id));
+  };
 
   return (
     <Grid
@@ -46,11 +61,16 @@ export const WorkspaceHeader: React.FC<IWorkspaceHeaderProps> = ({
       justify="space-between"
       alignItems="center"
       className={classes.workspaceHeader}
+      wrap="nowrap"
     >
-      <Grid item>
+      <Grid item xs={10}>
         <Grid container direction="column">
-          <Grid item>
-            {conversation && <Link>{conversation.name}</Link>}
+          <Grid item container wrap="nowrap">
+            {conversation && (
+              <Link component="div" className={classes.name}>
+                #{conversation.name}
+              </Link>
+            )}
             {conversation && (
               <Tooltip title="Star channel" aria-label="Star channel">
                 <IconButton size="small">
@@ -73,31 +93,32 @@ export const WorkspaceHeader: React.FC<IWorkspaceHeaderProps> = ({
           </Grid>
         </Grid>
       </Grid>
-      <Grid item>
+      <Grid item container xs={2} wrap="nowrap">
         {conversation && (
           <Tooltip
             title={`View all ${conversation.num_members} members`}
-            aria-label={`Add people to ${conversation.name}`}
+            aria-label={`View all ${conversation.num_members} members`}
           >
-            <IconButton>{conversation.num_members}</IconButton>
+            <MembersModal
+              name={conversation.name}
+              users={conversation.members as IUser[]}
+              opener={<IconButton>{conversation.num_members}</IconButton>}
+            />
           </Tooltip>
         )}
-        <Tooltip
-          title={`Add people to ${conversation?.name || ""}`}
-          aria-label={`Add people to ${conversation?.name || ""} `}
-        >
+        <Tooltip title={`Add people`} aria-label={`Add people`}>
           <IconButton size="small">
             <PersonAddIcon />
           </IconButton>
         </Tooltip>
-       { <Tooltip
+        <Tooltip
           title="Show conversation details"
           aria-label="Show conversation details"
         >
-          <IconButton size="small">
+          <IconButton size="small" onClick={infoButtonHandleClick}>
             <ErrorOutlineIcon />
           </IconButton>
-        </Tooltip>}
+        </Tooltip>
       </Grid>
     </Grid>
   );
