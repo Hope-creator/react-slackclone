@@ -8,7 +8,8 @@ import AccordionSummary from "@material-ui/core/AccordionSummary";
 import AccordionDetails from "@material-ui/core/AccordionDetails";
 import Typography from "@material-ui/core/Typography";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-import { Avatar, Container, Grid, IconButton, Link } from "@material-ui/core";
+import { Avatar, Button, Container, Grid, IconButton, Link } from "@material-ui/core";
+import { IConversation } from "../../../store/modules/conversations/types";
 
 interface AboutProps {
   user?: {
@@ -17,13 +18,7 @@ interface AboutProps {
     phoneNumber?: number;
     email?: string;
   };
-  channel?: {
-    name: string;
-    topic?: string;
-    description?: string;
-    dateCreated: Date;
-    channelOwner: object;
-  };
+  channel?: IConversation
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -43,6 +38,20 @@ const useStyles = makeStyles((theme: Theme) =>
     smallButton: {
         padding: 0,
         borderRadius: "50%"
+    },
+    channelAboutHeaderText: {
+      color: "rgba(28,28,28,0.7)",
+      fontSize: 13,
+      fontWeight: 700
+    },
+    channelAboutContentText: {
+      color: "rgba(28,28,28,0.7)",
+      fontSize: 15
+    },
+    channelAboutButton: {
+      padding: 0,
+      color: theme.palette.secondary.main,
+      width: "100%"
     }
   })
 );
@@ -61,24 +70,6 @@ export const About: React.FC<AboutProps> = ({ user, channel }) => {
               <Typography variant="subtitle2">{user.displayName}</Typography>
             </Grid>
           )}
-          {user.localTime && (
-            <Grid container direction="column">
-              <Typography variant="subtitle1">Local time</Typography>
-              <Typography variant="subtitle2">{}</Typography>
-            </Grid>
-          )}
-          {user.displayName && (
-            <Grid container direction="column">
-              <Typography variant="subtitle1">Display name</Typography>
-              <Typography variant="subtitle2">{}</Typography>
-            </Grid>
-          )}
-          {user.displayName && (
-            <Grid container direction="column">
-              <Typography variant="subtitle1">Display name</Typography>
-              <Typography variant="subtitle2">{}</Typography>
-            </Grid>
-          )}
         </>
       );
     };
@@ -87,25 +78,25 @@ export const About: React.FC<AboutProps> = ({ user, channel }) => {
       return (
         <Grid direction="column" className={classes.fullWidht} >
           <Container disableGutters className={classes.channelAboutItem}>
-            <Typography variant="subtitle1">Topic</Typography>
-            <Typography variant="subtitle2">
+            <Typography className={classes.channelAboutHeaderText}>Topic</Typography>
+            <Typography className={classes.channelAboutContentText}>
               {channel.topic ? channel.topic : "What's up for discussion?"}
             </Typography>
-            <button>Edit</button>
+            <Button size="small" className={classes.channelAboutButton}>Edit</Button>
           </Container>
           <Container disableGutters className={classes.channelAboutItem}>
-            <Typography variant="subtitle1">Description</Typography>
-            <Typography variant="subtitle2">
-              {channel.description
-                ? channel.description
+            <Typography className={classes.channelAboutHeaderText}>Description</Typography>
+            <Typography className={classes.channelAboutContentText}>
+              {channel.purpose
+                ? channel.purpose
                 : "Describe what this channel is so people can find it."}
             </Typography>
-            <button>Edit</button>
+            <Button className={classes.channelAboutButton}>Edit</Button>
           </Container>
           <Grid container justify="space-between" wrap="nowrap" alignItems="center" className={classes.channelAboutItem}>
             <IconButton disableRipple className={classes.smallButton}><Avatar className={classes.small}  alt="User photo" src={defaultAvatar} /></IconButton>
             <Link variant="subtitle2">
-              Created on {channel.dateCreated.toDateString()}
+              Created on {new Date(channel.createdAt).toDateString()}
             </Link>
           </Grid>
         </Grid>
@@ -113,7 +104,6 @@ export const About: React.FC<AboutProps> = ({ user, channel }) => {
     };
 }
 
-console.log(content)
   return (
     <Accordion square>
       <AccordionSummary
