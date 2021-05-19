@@ -10,6 +10,7 @@ import {
   Typography,
 } from "@material-ui/core";
 import React from "react";
+import { GetStartedForm } from "../components/GetStartedForm";
 import { LoginFooter } from "../components/LoginFooter";
 import { LoginHeader } from "../components/LoginHeader";
 
@@ -54,58 +55,19 @@ const useStyles = makeStyles((theme) => ({
     margin: "20px 0 70px 0",
     color: "#696969",
     "&>a": {
-      color: "#696969"
-    }
+      color: "#696969",
+    },
   },
 }));
 
-export const GetStarted: React.FC  = (): React.ReactElement => {
+export const GetStarted: React.FC = (): React.ReactElement => {
   const classes = useStyles();
 
   return (
     <div className={classes.wrapper}>
       <LoginHeader newToSlackShow={false} title={"First, enter your email"} />
       <div className={classes.signInForm}>
-        <TextField
-          className={classes.input}
-          InputProps={{
-            classes: {
-              focused: classes.inputFocused,
-            },
-          }}
-          label="name@work-email.com"
-          id="outlined-basic"
-          color="secondary"
-          size="small"
-          variant="outlined"
-          fullWidth
-        />
-        <Button
-          className={classes.button}
-          variant="contained"
-          color="primary"
-          fullWidth
-        >
-          Continue
-        </Button>
-        <FormLabel className={classes.formLegend} component="legend">
-          Can we send you email with Slack tips, news, and offers?
-        </FormLabel>
-        <RadioGroup
-          aria-label="Can we send you email with Slack tips, news, and offers?"
-          name="emailoffers"
-        >
-          <FormControlLabel
-            value="Sure!"
-            control={<Radio size="small" />}
-            label="Sure!"
-          />
-          <FormControlLabel
-            value="No thanks"
-            control={<Radio size="small" />}
-            label="No thanks"
-          />
-        </RadioGroup>
+        <GetStartedForm />
         <Typography variant="body2" className={classes.formTsAndCs}>
           By continuing, you’re agreeing to our{" "}
           <Link>Customer Terms of Service</Link>, <Link>Privacy Policy</Link>,
