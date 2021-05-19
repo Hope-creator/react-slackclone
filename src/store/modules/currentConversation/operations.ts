@@ -14,7 +14,7 @@ import { conversationsApi } from "../../../services/api/converastionsApi";
 function* fetchCurrentConversationSaga(action: PayloadAction<string>) {
   try {
     const conversation: IConversation = yield call(
-      conversationsApi.fetchCurrentConversation,
+      conversationsApi.fetchConversationWithPopulate,
       action.payload
     );
     const messages: IMessage[] | [] = yield call(
