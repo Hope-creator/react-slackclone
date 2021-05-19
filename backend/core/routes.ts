@@ -40,7 +40,11 @@ const createRoutes = (app: express.Express, io: socket.Server) => {
   //# Conversation
   app.get("/api/conversations", authencticateToken, ConversationCtrl.index);
   app.get("/api/conversations/:id", authencticateToken, ConversationCtrl.show);
+  app.get("/api/conversations/populated/:id", authencticateToken, ConversationCtrl.showPopulate);
+
   app.post("/api/conversations", authencticateToken, ConversationCtrl.create);
+  app.patch("/api/conversations/joinall", authencticateToken, ConversationCtrl.joinAll);
+
 
   //# Messages 
   app.get("/api/messages/:id", authencticateToken, MessagesCtrl.index);
