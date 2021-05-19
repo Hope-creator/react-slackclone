@@ -1,5 +1,7 @@
 import { Box } from "@material-ui/core";
 import React from "react";
+import { IConversation } from "../../store/modules/conversations/types";
+import { InfoItemTypeState } from "../../store/modules/currentInfo/types";
 import { IUser } from "../../store/modules/user/types";
 import { Accordeons } from "./Accordions/Accordions";
 import { Files } from "./Accordions/Files";
@@ -10,31 +12,30 @@ import ProfileInfo from "./ProfileInfo";
 interface RightSideBlockProps {
   headerSubText?: string;
   type: string;
-  content: IUser;
+  item: IUser | IConversation;
 }
 
 export const RightSideBlock: React.FC<RightSideBlockProps> = ({
   type,
-  headerSubText,
-  content,
+  item
 }) => {
-  if (type === "channel") {
+  React.useEffect(() => console.log("EFFECT"), []);
+
+  if (type === InfoItemTypeState.CHANNEL) {
     return (
       <Box>
-        <Header headerTitle="Details" />
-        <ContentButtons />
-        <Accordeons />
+        <Header headerSubText={item.name} headerTitle="Details" />
+        <ContentButtons name={item.name} />
+        <Accordeons channel={item as IConversation} />
         <Files />
       </Box>
     );
   }
-  if (type === "profile") {
+  if (type === InfoItemTypeState.PROFILE) {
     return (
       <Box>
         <Header headerTitle="Profile" />
-        <ProfileInfo
-          user={content}
-        />
+        <ProfileInfo user={item as IUser} />
       </Box>
     );
   }
