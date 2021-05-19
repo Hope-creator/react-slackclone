@@ -1,6 +1,7 @@
 import { IUser, IUserState, LoadingUserState } from "./types";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { ILoginForm } from "./../../../components/SignInForm";
+import { IGetStartedForm } from "../../../components/GetStartedForm";
 
 const initialState = { user: null, loadingState: "NEVER" } as IUserState;
 
@@ -12,7 +13,9 @@ const userSlice = createSlice({
       state.loadingState = LoadingUserState.LOADING;
     },
     fetchUser(state, action: PayloadAction<ILoginForm>) {
-      console.log(action)
+      state.loadingState = LoadingUserState.LOADING;
+    },
+    createUser(state, action: PayloadAction<IGetStartedForm>) {
       state.loadingState = LoadingUserState.LOADING;
     },
     setUser(state, action: PayloadAction<IUser>) {
@@ -25,5 +28,6 @@ const userSlice = createSlice({
   },
 });
 
-export const { fetchUser, setUser, setUserLoadingState, fetchMe } = userSlice.actions;
+export const { fetchUser, setUser, setUserLoadingState, fetchMe, createUser } =
+  userSlice.actions;
 export default userSlice.reducer;
