@@ -24,13 +24,15 @@ export const DirectMessageListItem: React.FC<DirectMessageListItemProps> = ({
 
   React.useEffect(() => {
     if (me) {
-      const notMe = conversation.members.filter((id) => id !== me._id)[0];
+      const notMe = (conversation.members as string[]).filter(
+        (id) => id !== me._id
+      )[0];
       userApi
         .getUser(notMe)
         .then((user) => setUser(user))
         .catch((err) => <div>Error</div>);
     }
-  }, [me]);
+  }, [me, conversation.members]);
 
   if (!user) return <CircularProgress />;
 
