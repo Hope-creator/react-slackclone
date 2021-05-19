@@ -1,12 +1,9 @@
-import {
-  Grid,
-  IconButton,
-  Tooltip,
-  Typography,
-} from "@material-ui/core";
+import { Grid, IconButton, Tooltip, Typography } from "@material-ui/core";
 import React from "react";
 import CloseIcon from "@material-ui/icons/Close";
 import { createStyles, makeStyles } from "@material-ui/core/styles";
+import { useDispatch } from "react-redux";
+import { clearCurrentInfo } from "../../store/modules/currentInfo/currentInfo";
 
 interface HeaderProps {
   headerTitle: string;
@@ -25,15 +22,25 @@ const useStyles = makeStyles(() =>
     headerTitle: {
       fontWeight: 700,
     },
+    headerSubText: {
+      display: "block",
+      width: "200px",
+      whiteSpace: "nowrap",
+      overflow: "hidden",
+      textOverflow: "ellipsis",
+    },
   })
 );
 
 export const Header: React.FC<HeaderProps> = ({
   headerTitle,
   headerSubText,
-  handleClick,
 }) => {
   const classes = useStyles();
+  const dispatch = useDispatch();
+  const closeButtonHandleClick = () => {
+    dispatch(clearCurrentInfo());
+  };
 
   return (
     <Grid
@@ -46,10 +53,12 @@ export const Header: React.FC<HeaderProps> = ({
         <Typography variant="subtitle2" className={classes.headerTitle}>
           {headerTitle}
         </Typography>
-        <Typography>{headerSubText}</Typography>
+        <Typography variant="caption" className={classes.headerSubText}>
+          {headerSubText && `#${headerSubText}`}
+        </Typography>
       </Grid>
       <Tooltip title="Close">
-        <IconButton onClick={handleClick}>
+        <IconButton onClick={closeButtonHandleClick}>
           <CloseIcon />
         </IconButton>
       </Tooltip>
