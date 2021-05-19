@@ -1,7 +1,6 @@
 import React from "react";
 
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
-import { useDispatch } from "react-redux";
 
 import Snackbar from "@material-ui/core/Snackbar/Snackbar";
 import IconButton from "@material-ui/core/IconButton/IconButton";
@@ -10,7 +9,7 @@ import TextField from "@material-ui/core/TextField";
 import { makeStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 import { conversationsApi } from "../services/api/converastionsApi";
-import { setConversations } from "../store/modules/conversations/conversations";
+import { useHistory } from "react-router";
 
 export interface ICreateConversationForm {
   name: string;
@@ -34,10 +33,9 @@ const useStyles = makeStyles((theme) => ({
 export const CreateConversationForm = () => {
   const classes = useStyles();
 
-  const dispatch = useDispatch();
+  const history = useHistory();
 
   const [open, setOpen] = React.useState<boolean>(false);
-
 
   const {
     handleSubmit,
@@ -47,10 +45,9 @@ export const CreateConversationForm = () => {
   const onSubmit: SubmitHandler<ICreateConversationForm> = (data) => {
     conversationsApi
       .createChannel(data.name)
-      .then(conversation => dispatch(setConversations([conversation]))) //dispatch(setConversations([conversation])))
-      .catch(err=> setOpen(true))
+      .then((conversation) => history.push(`/${conversation._id}`))
+      .catch((err) => setOpen(true));
   };
-
 
   const handleClose = (
     event: React.SyntheticEvent | React.MouseEvent,
@@ -61,7 +58,6 @@ export const CreateConversationForm = () => {
     }
     setOpen(false);
   };
-
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
