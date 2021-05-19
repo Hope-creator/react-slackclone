@@ -6,23 +6,13 @@ import AccordionSummary from "@material-ui/core/AccordionSummary";
 import AccordionDetails from "@material-ui/core/AccordionDetails";
 import Typography from "@material-ui/core/Typography";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-import { SimplePopover } from "../../SimplePopover";
 import Grid from "@material-ui/core/Grid/Grid";
-import { Avatar } from "@material-ui/core";
-import MenuItem from "@material-ui/core/MenuItem";
+import { IUser } from "../../../store/modules/user/types";
+import { MembersItem } from "./MembersItem";
 
 
-interface User {
-  name: string;
-  displayName?: string;
-  localTime?: Date;
-  phoneNumber?: number;
-  email?: string;
-  avatar?: string;
-}
-
-interface MembersProps {
-  users?: User[];
+interface IMembersProps {
+  users: IUser[];
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -38,26 +28,11 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-export const Members: React.FC<MembersProps> = ({ users = [] }) => {
+export const Members: React.FC<IMembersProps> = ({ users = [] }) => {
   const classes = useStyles();
 
   const members = users.map((user) => (
-    <>
-      <SimplePopover
-        opener={
-          <MenuItem aria-describedby="Administation">
-            <Avatar className={classes.smallAvatar} src={user.avatar} />
-            {user.displayName ? user.displayName : user.name}
-          </MenuItem>
-        }
-        anchorOriginBlockVertical="center"
-        anchorOriginBlockHorizontal="left"
-        anchorPopupBlockVertical="center"
-        anchorPopupBlockHorizontal="center"
-      >
-        123
-      </SimplePopover>
-    </>
+    <MembersItem user={user} />
   ));
 
   return (
