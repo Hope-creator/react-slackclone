@@ -1,24 +1,18 @@
 import { IMessage } from "../currentConversation/types";
 import { IUser } from "../user/types";
 
-export interface IPurpose {
-  value: string;
-  creator: string;
-}
-
-export interface ITopic extends IPurpose {}
 
 export interface IConversation {
   _id: string;
   name: string;
   is_channel?: boolean;
-  created: Date;
-  creator?: string;
-  purpose?: IPurpose;
-  topic?: ITopic;
+  createdAt: Date;
+  creator?: string | IUser;
+  purpose?: string;
+  topic?: string;
   messages: IMessage[];
   is_private: boolean;
-  members: string[];
+  members: string[] | IUser[];
   num_members: number;
   unread_count: number;
 }
