@@ -24,8 +24,7 @@ export interface IConversation {
   unread_count: number;
 }
 
-export interface IConversationDocument extends IConversation, Document {
-}
+export interface IConversationDocument extends IConversation, Document {}
 
 const ConversationSchema = new Schema(
   {
@@ -40,7 +39,10 @@ const ConversationSchema = new Schema(
       value: String,
       creator: Schema.Types.ObjectId,
     },
-    is_private: Boolean,
+    is_private: {
+      type: Boolean,
+      default: false,
+    },
     members: [{ type: Schema.Types.ObjectId, ref: "User" }],
     num_members: Number,
     unread_count: Number,
