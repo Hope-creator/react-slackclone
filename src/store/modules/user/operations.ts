@@ -1,9 +1,10 @@
 import { ILoginForm } from "./../../../components/SignInForm";
 import { takeEvery, call, put } from "redux-saga/effects";
 import { IUser, LoadingUserState } from "./types";
-import { fetchMe, fetchUser, setUser, setUserLoadingState } from "./user";
+import { fetchMe, fetchUser, setUser, setUserLoadingState, createUser } from "./user";
 import { PayloadAction } from "@reduxjs/toolkit";
 import { authApi } from "../../../services/api/authApi";
+import { IGetStartedForm } from "../../../components/GetStartedForm";
 
 function* fetchMeSaga() {
   try {
@@ -27,7 +28,17 @@ function* fetchUserSaga(action: PayloadAction<ILoginForm>) {
   }
 }
 
+function* createUserSaga(action: PayloadAction<IGetStartedForm>) {
+  try {
+    const user: IUser = yield call(authApi.signUp, action.payload);
+    yield put(setUser(user));
+  } catch (e) {
+      yield put(setUserLoadingState(LoadingUserState.ERROR));
+  }
+}
+
 export function* userSaga() {
   yield takeEvery(fetchUser.type, fetchUserSaga);
   yield takeEvery(fetchMe.type, fetchMeSaga);
+  yield takeEvery(createUser.type, createUserSaga);
 }
