@@ -33,7 +33,9 @@ class ConversationController {
     try {
       const conversations = await ConversationModel.find({
         members: userId,
-      }).exec();
+      })
+        .sort({ name: 1 })
+        .exec();
       res.json({ status: "success", data: conversations });
     } catch (error) {
       res.status(500).json({
@@ -58,7 +60,31 @@ class ConversationController {
         status: "error",
         errors: JSON.stringify(error),
       });
-      console.log("Error on ConversationController / index:", error);
+      console.log("Error on ConversationController / show:", error);
+    }
+  };
+
+  showPopulate = async (
+    req: express.Request,
+    res: express.Response
+  ): Promise<void> => {
+    const userId = req.userId;
+    const conversationId = req.params.id;
+    try {
+      const conversation = await ConversationModel.findOne({
+        _id: conversationId,
+        members: userId,
+      })
+        .populate("members")
+        .populate("creator")
+        .exec();
+      res.json({ status: "success", data: conversation });
+    } catch (error) {
+      res.status(500).json({
+        status: "error",
+        errors: JSON.stringify(error),
+      });
+      console.log("Error on ConversationController / showPopulate:", error);
     }
   };
 
@@ -70,9 +96,8 @@ class ConversationController {
       const userId = req.userId;
       const isConversationExist = await ConversationModel.exists({
         name: req.body.name,
-        is_channel: req.body.isChannel
+        is_channel: req.body.isChannel,
       });
-      console.log(isConversationExist)
       const destId = req.body.id;
       if (!isValidObjectId(destId)) {
         res.status(403).json({
@@ -94,15 +119,14 @@ class ConversationController {
           topic: req.body.topic,
           is_private: req.body.isPrivate,
           members: [userId],
-          num_members: req.body.isChannel? 1 : 2,
+          num_members: req.body.isChannel ? 1 : 2,
           unread_count: 0,
         };
-        if(destId) postData.members.push(destId);
+        if (destId) postData.members.push(destId);
         const conversationRaw = new ConversationModel(postData);
         const conversation = await conversationRaw.save();
-        this.io.emit("SERVER:CONVERSATION_CREATED", {
-          conversation,
-        });
+        this.io.emit("SERVER:CONVERSATION_CREATED");
+
         res.json({ status: "success", data: conversation });
       }
     } catch (error) {
@@ -147,7 +171,34 @@ class ConversationController {
         status: "error",
         errors: JSON.stringify(error),
       });
-      console.log("Error on ConversationController / create:", error);
+      console.log("Error on ConversationController / update:", error);
+    }
+  };
+
+  joinAll = async (
+    req: express.Request,
+    res: express.Response
+  ): Promise<void> => {
+    try {
+      const userId = req.userId;
+      await ConversationModel.updateMany(
+        { is_private: false },
+        {
+          $addToSet: {
+            members: userId,
+          },
+        }
+      );
+      const conversations = await ConversationModel.find({
+        members: userId,
+      }).exec();
+      res.json({ status: "success", data: conversations });
+    } catch (error) {
+      res.status(500).json({
+        status: "error",
+        errors: JSON.stringify(error),
+      });
+      console.log("Error on ConversationController / joinAll:", error);
     }
   };
 }
