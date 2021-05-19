@@ -5,12 +5,9 @@ import { Grid } from "@material-ui/core";
 import { ICompany } from "../../store/modules/user/types";
 import MenuItem from "@material-ui/core/MenuItem/MenuItem";
 import Typography from "@material-ui/core/Typography/Typography";
-import { SimplePopover } from "../SimplePopover";
 import Divider from "@material-ui/core/Divider/Divider";
-import Paper from "@material-ui/core/Paper/Paper";
 
 import DeveloperBoardIcon from "@material-ui/icons/DeveloperBoard";
-import ArrowForwardIosIcon from "@material-ui/icons/ArrowForwardIos";
 
 interface ICompanyMenuItemProps {
   company: ICompany;
