@@ -2,7 +2,7 @@ import { takeEvery, call, put } from "redux-saga/effects";
 import { IConversation, LoadingConversationsState } from "./types";
 import { conversationsApi } from "../../../services/api/converastionsApi";
 import {
-  fetchConverastions,
+  fetchConversations,
   setConversations,
   setConversationsLoadingState,
 } from "./conversations";
@@ -19,5 +19,5 @@ function* fetchConversationsSaga() {
 }
 
 export function* conversationsSaga() {
-  yield takeEvery(fetchConverastions.type, fetchConversationsSaga);
+  yield takeEvery(fetchConversations.type, fetchConversationsSaga);
 }
