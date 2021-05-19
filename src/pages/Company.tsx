@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router";
 import { selectUser } from "../store/modules/user/selectors";
-import { fetchConverastions } from "../store/modules/conversations/conversations";
+import { fetchConversations } from "../store/modules/conversations/conversations";
 import { selectConversations } from "../store/modules/conversations/selectors";
 
 // # Components
@@ -13,9 +13,15 @@ import { Navbar } from "../components/LeftSideBlock/Navbar";
 import { CompanyMenuButton } from "../components/LeftSideBlock/CompanyMenuButton";
 
 // #Mui
-import  Grid from "@material-ui/core/Grid";
+import Grid from "@material-ui/core/Grid";
 import { createStyles, Theme, makeStyles } from "@material-ui/core/styles";
 import { Workspace } from "../components/Workspace/Workspace";
+import {
+  selectCurrentInfoItem,
+  selectCurrentInfoItemType,
+} from "../store/modules/currentInfo/selectors";
+import { InfoItemTypeState } from "../store/modules/currentInfo/types";
+import socket from "../services/socket/socket";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -72,9 +78,25 @@ export const Company = () => {
   const history = useHistory();
   const dispatch = useDispatch();
   const conversations = useSelector(selectConversations);
+  const itemType = useSelector(selectCurrentInfoItemType);
+  const itemInfo = useSelector(selectCurrentInfoItem);
+
   useEffect(() => {
-    if (user) dispatch(fetchConverastions());
+    if (user) {
+      dispatch(fetchConversations());
+      socket.on("SERVER:CONVERSATION_CREATED", () => dispatch(fetchConversations()));
+      socket.on("SERVER:NEW_MESSAGE", () => dispatch(fetchConversations()));
+    }
+    return () => {
+      socket.removeListener("SERVER:DIALOG_CREATED", () =>
+        dispatch(fetchConversations())
+      );
+      socket.removeListener("SERVER:NEW_MESSAGE", () =>
+        dispatch(fetchConversations())
+      );
+    };
   }, [user, dispatch]);
+
   if (!user) {
     history.push("/get-started");
     return null;
@@ -97,9 +119,11 @@ export const Company = () => {
           <Grid item xs className={classes.workspace}>
             <Workspace />
           </Grid>
-          <Grid className={classes.rightSideInfoWrapper} item xs={3}>
-            <RightSideBlock content={user} type="profile" />
-          </Grid>
+          {itemType !== InfoItemTypeState.NONE && itemInfo !== undefined ? (
+            <Grid className={classes.rightSideInfoWrapper} item xs={3}>
+              <RightSideBlock item={itemInfo} type={itemType} />
+            </Grid>
+          ) : null}
         </Grid>
       </div>
     );
