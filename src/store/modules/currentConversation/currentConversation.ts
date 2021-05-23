@@ -13,12 +13,11 @@ const initialState = {
 } as ICurrentConversationState;
 
 const currentConversationSlicer = createSlice({
-  name: "Messages",
+  name: "currentConversation",
   initialState,
   reducers: {
     fetchCurrentConversation(state, payload: PayloadAction<string>) {
-      state.loadingState =
-        LoadingCurrentConversationState.LOADING;
+      state.loadingState = LoadingCurrentConversationState.LOADING;
     },
     setCurrentConversation(state, action: PayloadAction<IConversation>) {
       state.currentConversation = action.payload;
@@ -32,6 +31,9 @@ const currentConversationSlicer = createSlice({
     setMessages(state, action: PayloadAction<IMessage[] | []>) {
       state.messages = [...action.payload];
     },
+    clearCurrentConversation() {
+      return initialState;
+    },
   },
 });
 
@@ -40,5 +42,6 @@ export const {
   setCurrentConversation,
   setCurrentConversationLoadingState,
   setMessages,
+  clearCurrentConversation,
 } = currentConversationSlicer.actions;
 export default currentConversationSlicer.reducer;
