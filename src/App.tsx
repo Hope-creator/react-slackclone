@@ -21,7 +21,7 @@ function App() {
     dispatch(fetchMe());
   }, [dispatch]);
 
-  if (userLoadingState !== LoadingUserState.LOADED)
+  if (userLoadingState === LoadingUserState.LOADING)
     return <CentralCircularProgress size={80} />;
   return (
     <div>
@@ -33,7 +33,7 @@ function App() {
           {user && <Redirect to="/" />}
         </Route>
         <Route path={["/", "/:teamId"]} component={Company}>
-          {!user && <Redirect to="signin" />}
+          {!user && <Redirect to="/signin" />}
         </Route>
       </Switch>
     </div>
