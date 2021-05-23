@@ -67,6 +67,9 @@ export const GetStartedForm = () => {
     if (userLoadingState === LoadingUserState.ERROR) {
       setOpen(true);
     }
+    if (userLoadingState === LoadingUserState.ERROREMAIL) {
+      setOpen(true);
+    }
   }, [userLoadingState]);
 
   return (
@@ -207,7 +210,11 @@ export const GetStartedForm = () => {
         open={open}
         autoHideDuration={6000}
         onClose={handleClose}
-        message="Something got wrong"
+        message={
+          userLoadingState === LoadingUserState.ERROREMAIL
+            ? "Email is already taken"
+            : "Something got wrong"
+        }
         action={
           <IconButton
             size="small"
