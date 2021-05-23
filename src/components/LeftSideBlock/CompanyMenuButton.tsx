@@ -1,10 +1,9 @@
 import React from "react";
-import { withStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
-import Menu, { MenuProps } from "@material-ui/core/Menu";
 import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown";
 import CreateIcon from "@material-ui/icons/Create";
 import { Grid, IconButton } from "@material-ui/core";
+import { StyledMenu } from "../StyledMenu";
 
 interface CompanyMenuButtonProps {
   children: React.ReactNode;
@@ -12,14 +11,6 @@ interface CompanyMenuButtonProps {
   className?: string;
   buttonClassName?: string;
 }
-
-const StyledMenu = withStyles({
-  paper: {
-    border: "1px solid #d3d4d5",
-    backgroundColor: "rgba(248,248,248,1)",
-    width: 300,
-  },
-})((props: MenuProps) => <Menu {...props} />);
 
 export const CompanyMenuButton: React.FC<CompanyMenuButtonProps> = ({
   companyName,
@@ -64,7 +55,12 @@ export const CompanyMenuButton: React.FC<CompanyMenuButtonProps> = ({
             <ArrowDropDownIcon />
           </Grid>
           <Grid item>
-            <IconButton component="div" id="iconbtn" onClick={handleIconClick} color="primary">
+            <IconButton
+              component="div"
+              id="iconbtn"
+              onClick={handleIconClick}
+              color="primary"
+            >
               <CreateIcon />
             </IconButton>
           </Grid>
@@ -77,7 +73,7 @@ export const CompanyMenuButton: React.FC<CompanyMenuButtonProps> = ({
         open={Boolean(anchorEl)}
         onClose={handleClose}
       >
-        {children}
+        <div>{children}</div>
       </StyledMenu>
     </div>
   );
