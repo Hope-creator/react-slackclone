@@ -8,6 +8,8 @@ import Typography from "@material-ui/core/Typography/Typography";
 import Divider from "@material-ui/core/Divider/Divider";
 
 import DeveloperBoardIcon from "@material-ui/icons/DeveloperBoard";
+import { CreateConversationModal } from "../CreateConversationlModal";
+import { useHistory } from "react-router-dom";
 
 interface ICompanyMenuItemProps {
   company: ICompany;
@@ -37,6 +39,12 @@ export const CompanyMenuContent: React.FC<ICompanyMenuItemProps> = ({
 }): React.ReactElement => {
   const classes = useStyles();
 
+  const history = useHistory();
+
+  const membersHandleClick = () => {
+    history.push("members")
+  }
+
   return (
     <>
       <Grid
@@ -57,11 +65,15 @@ export const CompanyMenuContent: React.FC<ICompanyMenuItemProps> = ({
       <MenuItem>
         <Typography variant="body1">Invite people to {company.name}</Typography>
       </MenuItem>
-      <MenuItem>
-        <Typography variant="body1">Create a channel</Typography>
-      </MenuItem>
+      <CreateConversationModal
+        opener={
+          <MenuItem>
+            <Typography variant="body1">Create a channel</Typography>
+          </MenuItem>
+        }
+      />
       <Divider />
-      <MenuItem>
+      <MenuItem button onClick={membersHandleClick}>
         <Typography variant="body1">Members</Typography>
       </MenuItem>
       <MenuItem>
