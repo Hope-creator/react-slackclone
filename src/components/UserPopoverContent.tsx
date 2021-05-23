@@ -6,7 +6,7 @@ import Button from "@material-ui/core/Button";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 import { useDispatch } from "react-redux";
-import { fetchCurrentInfoProfile } from "../store/modules/currentInfo/currentInfo";
+import { fetchCurrentInfoProfile } from "../store/modules/currentInfo_side/currentInfo";
 import { conversationsApi } from "../services/api/converastionsApi";
 
 interface IUserPopoverContentProps {
