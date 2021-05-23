@@ -16,7 +16,7 @@ const userSlice = createSlice({
       state.loadingState = LoadingUserState.LOADING;
     },
     createUser(state, action: PayloadAction<IGetStartedForm>) {
-      state.loadingState = LoadingUserState.LOADING;
+      state.loadingState = LoadingUserState.LOADINGCREATE;
     },
     setUser(state, action: PayloadAction<IUser>) {
       state.user = action.payload;
