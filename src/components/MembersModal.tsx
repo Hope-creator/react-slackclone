@@ -34,20 +34,22 @@ const useStyles = makeStyles((theme: Theme) =>
       whiteSpace: "nowrap",
       overflow: "hidden",
       textOverflow: "ellipsis",
-    }
+    },
   })
 );
 
 export const MembersModal: React.FC<IMembersModalProps> = ({
   users,
   opener,
-  name
+  name,
 }) => {
   const classes = useStyles();
 
   const me = useSelector(selectUser);
 
   const [open, setOpen] = React.useState(false);
+
+  const [filterName, setFilterName] = React.useState<string>("");
 
   const handleOpen = () => {
     setOpen(true);
@@ -57,24 +59,27 @@ export const MembersModal: React.FC<IMembersModalProps> = ({
     setOpen(false);
   };
 
-  const usersItems = React.useCallback(
-    () =>
-      users.map((user) => (
-        <UserListItem user={user} isMe={(me as IUser)._id === user._id} />
-      )),
-    [users]
-  );
+  const changeFilterName = (name: string) => {
+    setFilterName(name);
+  };
 
   const children = () => (
     <Paper className={classes.paper}>
       <Grid alignItems="center" container justify="space-between" wrap="nowrap">
-        <Typography className={classes.headerText} variant="h6">{users.length} members in #{name}</Typography>
+        <Typography className={classes.headerText} variant="h6">
+          {users.length} members in #{name}
+        </Typography>
         <IconButton onClick={handleClose}>
           <CloseIcon />
         </IconButton>
       </Grid>
-      <MembersSearchForm />
-      {usersItems()}
+      <MembersSearchForm formSubmit={changeFilterName} />
+      {(
+        (filterName && users.filter((user) => user.name === filterName)) ||
+        users
+      ).map((user) => (
+        <UserListItem user={user} isMe={(me as IUser)._id === user._id} />
+      ))}
     </Paper>
   );
 
