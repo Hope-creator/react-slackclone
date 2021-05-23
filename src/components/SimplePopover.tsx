@@ -8,6 +8,7 @@ interface SimplePopOverProps {
   anchorPopupBlockVertical: "top" | "center" | "bottom";
   anchorPopupBlockHorizontal: "left" | "center" | "right";
   opener: React.ReactNode;
+  isOpen?: boolean;
 }
 
 export const SimplePopover: React.FC<SimplePopOverProps> = ({
@@ -16,7 +17,8 @@ export const SimplePopover: React.FC<SimplePopOverProps> = ({
   anchorOriginBlockHorizontal,
   anchorPopupBlockVertical,
   anchorPopupBlockHorizontal,
-  opener
+  opener,
+  isOpen
 }: SimplePopOverProps): React.ReactElement => {
   const [anchorEl, setAnchorEl] = React.useState<HTMLDivElement | null>(null);
 
@@ -28,7 +30,7 @@ export const SimplePopover: React.FC<SimplePopOverProps> = ({
     setAnchorEl(null);
   };
 
-  const open = Boolean(anchorEl);
+  const open = isOpen || Boolean(anchorEl);
   const id = open ? "simple-popover" : undefined;
 
   return (
