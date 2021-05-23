@@ -19,8 +19,8 @@ import { Workspace } from "../components/Workspace/Workspace";
 import {
   selectCurrentInfoItem,
   selectCurrentInfoItemType,
-} from "../store/modules/currentInfo/selectors";
-import { InfoItemTypeState } from "../store/modules/currentInfo/types";
+} from "../store/modules/currentInfo_side/selectors";
+import { InfoItemTypeState } from "../store/modules/currentInfo_side/types";
 import socket from "../services/socket/socket";
 
 const useStyles = makeStyles((theme: Theme) =>
