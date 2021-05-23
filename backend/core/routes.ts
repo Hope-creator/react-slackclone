@@ -23,6 +23,8 @@ const createRoutes = (app: express.Express, io: socket.Server) => {
   // # Users
   app.get("/api/users", UserCtrl.index);
   app.get("/api/users/:id", authencticateToken, UserCtrl.show);
+  app.get("/api/users/name/:query", authencticateToken, UserCtrl.showByNameOrEmail);
+
 
   //# Auth
   app.get("/api/auth/me", authencticateToken, AuthCtrl.getMe);
@@ -44,6 +46,7 @@ const createRoutes = (app: express.Express, io: socket.Server) => {
 
   app.post("/api/conversations", authencticateToken, ConversationCtrl.create);
   app.patch("/api/conversations/joinall", authencticateToken, ConversationCtrl.joinAll);
+  app.patch("/api/conversations/addusers", authencticateToken, ConversationCtrl.addUsers);
 
 
   //# Messages 
