@@ -17,10 +17,11 @@ const conversationsSlice = createSlice({
   initialState,
   reducers: {
     fetchConversations(state) {
-      state.loadingState = LoadingConversationsState.LOADED;
+      state.loadingState = LoadingConversationsState.LOADING;
     },
     setConversations(state, action: PayloadAction<IConversation[] | []>) {
       state.conversations = action.payload;
+      state.loadingState = LoadingConversationsState.LOADED;
     },
     setConversationsLoadingState(
       state,
@@ -28,6 +29,9 @@ const conversationsSlice = createSlice({
     ) {
       state.loadingState = action.payload;
     },
+    joinAllConversations(state) {
+      state.loadingState = LoadingConversationsState.LOADING;
+    }
   },
 });
 
@@ -35,5 +39,6 @@ export const {
   fetchConversations,
   setConversations,
   setConversationsLoadingState,
+  joinAllConversations
 } = conversationsSlice.actions;
 export default conversationsSlice.reducer;
