@@ -22,9 +22,11 @@ export interface IUser {
 }
 
 export enum LoadingUserState {
+  ERROREMAIL = "ERROREMAIL",
   LOADED = "LOADED",
   ERROR = "ERROR",
   LOADING = "LOADING",
+  LOADINGCREATE = "LOADINGCREATE",
   NEVER = "NEVER",
 }
 
