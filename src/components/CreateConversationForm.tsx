@@ -10,9 +10,17 @@ import { makeStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 import { conversationsApi } from "../services/api/converastionsApi";
 import { useHistory } from "react-router";
+import Switch from "@material-ui/core/Switch";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import { Typography } from "@material-ui/core";
+
+export interface ICreateConversationFormProps {
+  closeModalFunction: () => void;
+}
 
 export interface ICreateConversationForm {
   name: string;
+  isPrivate: boolean;
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -27,10 +35,13 @@ const useStyles = makeStyles((theme) => ({
   },
   button: {
     fontWeight: 700,
+    marginTop: theme.spacing(3),
   },
 }));
 
-export const CreateConversationForm = () => {
+export const CreateConversationForm: React.FC<ICreateConversationFormProps> = ({
+  closeModalFunction,
+}: ICreateConversationFormProps) => {
   const classes = useStyles();
 
   const history = useHistory();
@@ -41,12 +52,24 @@ export const CreateConversationForm = () => {
     handleSubmit,
     control,
     formState: { errors },
+    watch,
+    setValue,
   } = useForm();
   const onSubmit: SubmitHandler<ICreateConversationForm> = (data) => {
     conversationsApi
-      .createChannel(data.name)
-      .then((conversation) => history.push(`/${conversation._id}`))
+      .createChannel(data.name, data.isPrivate)
+      .then((conversation) => {
+        history.push(`/${conversation._id}`);
+        closeModalFunction();
+      })
       .catch((err) => setOpen(true));
+  };
+
+  const name = watch("name");
+  const isPrivate = watch("isPrivate");
+
+  const togglePrivate = () => {
+    setValue("isPrivate", !isPrivate);
   };
 
   const handleClose = (
@@ -79,15 +102,36 @@ export const CreateConversationForm = () => {
             color="secondary"
             size="small"
             variant="outlined"
-            error={errors.email && errors.email.type === "required"}
+            error={errors.name && errors.name.type === "required"}
             helperText={
-              errors.email && errors.email.type === "required" && "Required"
+              errors.name && errors.name.type === "required" && "Required"
+            }
+          />
+        )}
+      />
+      <Controller
+        name="isPrivate"
+        control={control}
+        defaultValue={false}
+        render={({ field }) => (
+          <FormControlLabel
+            onChange={togglePrivate}
+            control={<Switch size="small" color="primary" />}
+            label={
+              <>
+                <Typography variant="subtitle2">Make private</Typography>
+                <Typography variant="caption">
+                  When a channel is set to private, it can only joined by
+                  invitation.
+                </Typography>
+              </>
             }
           />
         )}
       />
       <Button
         type="submit"
+        disabled={!name}
         className={classes.button}
         variant="contained"
         color="primary"
