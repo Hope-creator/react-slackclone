@@ -1,10 +1,13 @@
 import React from "react";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
-import { LoadingUserState } from "../store/modules/user/types";
 import TextField from "@material-ui/core/TextField";
 import { makeStyles } from "@material-ui/core/styles";
 
-export interface IGetStartedForm {
+export interface IMembersSearchFormProps {
+  formSubmit: (name: string) => void;
+}
+
+export interface IMembersSearchForm {
   name: string;
 }
 
@@ -23,15 +26,14 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export const MembersSearchForm = () => {
+export const MembersSearchForm: React.FC<IMembersSearchFormProps> = ({
+  formSubmit,
+}: IMembersSearchFormProps) => {
   const classes = useStyles();
 
-  const {
-    handleSubmit,
-    control,
-    formState: { errors },
-  } = useForm();
-  const onSubmit: SubmitHandler<IGetStartedForm> = (data) => console.log(data);
+  const { handleSubmit, control } = useForm();
+  const onSubmit: SubmitHandler<IMembersSearchForm> = (data) =>
+    formSubmit(data.name);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
