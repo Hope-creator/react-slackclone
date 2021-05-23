@@ -1,6 +1,8 @@
 import express from "express";
 import { isValidObjectId } from "mongoose";
+import { constants } from "node:crypto";
 import socket from "socket.io";
+import { CompanyModel } from "../models/CompanyModel";
 import { ConversationModel } from "../models/ConversationModel";
 import { UserModel } from "../models/UserModel";
 
@@ -191,7 +193,9 @@ class ConversationController {
       );
       const conversations = await ConversationModel.find({
         members: userId,
-      }).exec();
+      })
+        .sort({ name: 1 })
+        .exec();
       res.json({ status: "success", data: conversations });
     } catch (error) {
       res.status(500).json({
@@ -199,6 +203,58 @@ class ConversationController {
         errors: JSON.stringify(error),
       });
       console.log("Error on ConversationController / joinAll:", error);
+    }
+  };
+
+  addUsers = async (
+    req: express.Request,
+    res: express.Response
+  ): Promise<void> => {
+    try {
+      const { conversationId, userId } = req.body;
+
+      let company;
+      if (!userId) {
+        company = await CompanyModel.findOne({}).exec();
+        console.log("not have user")
+      }
+
+      if (company) {
+        await ConversationModel.findByIdAndUpdate(
+          conversationId,
+          {
+            $addToSet: {
+              members: { $each: company.members },
+            },
+          },
+          { new: true }
+        ).exec();
+        res.json({ status: "success", data: true });
+      } else {
+        if (!isValidObjectId(userId)) {
+          res.status(403).json({
+            status: "error",
+            data: false,
+          });
+        } else {
+          await ConversationModel.findByIdAndUpdate(
+            conversationId,
+            {
+              $addToSet: {
+                members: userId,
+              },
+            },
+            { new: true }
+          ).exec();
+          res.json({ status: "success", data: true });
+        }
+      }
+    } catch (error) {
+      res.status(500).json({
+        status: "error",
+        errors: JSON.stringify(error),
+      });
+      console.log("Error on ConversationController / update:", error);
     }
   };
 }
