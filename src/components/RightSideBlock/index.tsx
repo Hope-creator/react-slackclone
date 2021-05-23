@@ -1,7 +1,7 @@
 import { Box } from "@material-ui/core";
 import React from "react";
 import { IConversation } from "../../store/modules/conversations/types";
-import { InfoItemTypeState } from "../../store/modules/currentInfo/types";
+import { InfoItemTypeState } from "../../store/modules/currentInfo_side/types";
 import { IUser } from "../../store/modules/user/types";
 import { Accordeons } from "./Accordions/Accordions";
 import { Files } from "./Accordions/Files";
