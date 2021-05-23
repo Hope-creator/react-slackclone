@@ -10,6 +10,7 @@ import PageviewOutlinedIcon from "@material-ui/icons/PageviewOutlined";
 import PermContactCalendarOutlinedIcon from "@material-ui/icons/PermContactCalendarOutlined";
 import SubjectOutlinedIcon from "@material-ui/icons/SubjectOutlined";
 import { ListItemIcon } from "@material-ui/core";
+import { useHistory } from "react-router";
 
 interface SidebarListCreatorProps {
   componentName: string;
@@ -18,6 +19,12 @@ interface SidebarListCreatorProps {
 export const SidebarListCreator: React.FC<SidebarListCreatorProps> = ({
   componentName,
 }: SidebarListCreatorProps): React.ReactElement | null => {
+  const history = useHistory();
+
+  const handleClick = (path: string) => {
+    history.push(path);
+  };
+
   switch (componentName) {
     case "Mentions & reactions":
       return (
@@ -80,7 +87,7 @@ export const SidebarListCreator: React.FC<SidebarListCreatorProps> = ({
       );
     case "People & user groups":
       return (
-        <ListItem dense button onClick={() => console.log("cluck")}>
+        <ListItem dense button onClick={() => handleClick("members")}>
           <ListItemIcon>
             <PermContactCalendarOutlinedIcon color="primary" />
           </ListItemIcon>
