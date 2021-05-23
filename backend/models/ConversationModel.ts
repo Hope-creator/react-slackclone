@@ -19,7 +19,7 @@ export interface IConversation {
   topic?: ITopic;
   messages: IMessage[];
   is_private: boolean;
-  members: IUser[] | string[];
+  members: Schema.Types.ObjectId[];
   num_members: number;
   unread_count: number;
 }
