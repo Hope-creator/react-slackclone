@@ -1,7 +1,13 @@
 import { ILoginForm } from "./../../../components/SignInForm";
 import { takeEvery, call, put } from "redux-saga/effects";
 import { IUser, LoadingUserState } from "./types";
-import { fetchMe, fetchUser, setUser, setUserLoadingState, createUser } from "./user";
+import {
+  fetchMe,
+  fetchUser,
+  setUser,
+  setUserLoadingState,
+  createUser,
+} from "./user";
 import { PayloadAction } from "@reduxjs/toolkit";
 import { authApi } from "../../../services/api/authApi";
 import { IGetStartedForm } from "../../../components/GetStartedForm";
@@ -33,7 +39,11 @@ function* createUserSaga(action: PayloadAction<IGetStartedForm>) {
     const user: IUser = yield call(authApi.signUp, action.payload);
     yield put(setUser(user));
   } catch (e) {
+    if (e.message.match("409"))
+      yield put(setUserLoadingState(LoadingUserState.ERROREMAIL));
+    else {
       yield put(setUserLoadingState(LoadingUserState.ERROR));
+    }
   }
 }
 
