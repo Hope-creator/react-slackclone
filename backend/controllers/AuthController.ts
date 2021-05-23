@@ -6,6 +6,7 @@ import { UserModel } from "../models/UserModel";
 import { hashText, promisifyCompare } from "../utils/bcrypt";
 import cryptoRandomString from "crypto-random-string";
 import { tokenCreate } from "../utils/tokenCreate";
+import { CompanyModel } from "../models/CompanyModel";
 
 class AuthController {
   async create(req: express.Request, res: express.Response): Promise<void> {
@@ -37,6 +38,12 @@ class AuthController {
         code: secretCode,
       });
       await newCode.save();
+
+      // Adding user to company members
+      await CompanyModel.updateOne(
+        { _id: "T01TE7T5WEV" },
+        { $addToSet: { members: user._id } }
+      );
       const savedUser = await UserModel.findById(user._id).populate("company");
       await sendEmail({
         email: email,
@@ -56,11 +63,18 @@ class AuthController {
         },
       });
     } catch (error) {
-      res.status(500).json({
-        status: "error",
-        errors: JSON.stringify(error),
-      });
-      console.log("Error on UserController / create:", error);
+      if (error.message === "Email must be unique") {
+        res.status(409).json({
+          status: "error",
+          errors: error.message,
+        });
+      } else {
+        res.status(500).json({
+          status: "error",
+          errors: JSON.stringify(error),
+        });
+        console.log("Error on UserController / create:", error);
+      }
     }
   }
 
@@ -108,9 +122,9 @@ class AuthController {
         password: string;
       };
 
-      const user = await UserModel.findOne({ email: email }).select(
-        "+password"
-      ).populate("company");
+      const user = await UserModel.findOne({ email: email })
+        .select("+password")
+        .populate("company");
       if (!user) {
         res.status(404).json({
           status: "error",
