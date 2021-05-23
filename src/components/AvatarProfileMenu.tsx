@@ -34,6 +34,10 @@ export const AvatarProfileMenu: React.FC<IAvatarProfileMenuProps> = ({
 }) => {
   const classes = useStyles();
 
+  /*const handleViewProfileClick = () => {
+
+  };*/
+
   return (
     <Paper className={classes.submenuContainer}>
       <Box className={classes.avatarMenuHeader}>
@@ -45,8 +49,7 @@ export const AvatarProfileMenu: React.FC<IAvatarProfileMenuProps> = ({
           }}
           variant="dot"
         >
-          <Avatar
-          src={user.avatar } />
+          <Avatar src={user.avatar} />
         </StyledBadge>
         <Typography variant="subtitle2">{user.name}</Typography>
         <Typography variant="caption">Active</Typography>
@@ -65,7 +68,7 @@ export const AvatarProfileMenu: React.FC<IAvatarProfileMenuProps> = ({
           </MenuItem>
         }
       />
-      <MenuItem>
+      <MenuItem button >
         <Typography variant="body1">View profile</Typography>
       </MenuItem>
       <Divider />
