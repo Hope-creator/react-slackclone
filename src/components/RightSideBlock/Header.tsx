@@ -3,7 +3,7 @@ import React from "react";
 import CloseIcon from "@material-ui/icons/Close";
 import { createStyles, makeStyles } from "@material-ui/core/styles";
 import { useDispatch } from "react-redux";
-import { clearCurrentInfo } from "../../store/modules/currentInfo/currentInfo";
+import { clearCurrentInfo } from "../../store/modules/currentInfo_side/currentInfo";
 
 interface HeaderProps {
   headerTitle: string;
