@@ -15,12 +15,12 @@ export const conversationsApi = {
         const response = await axios.get<IResponse<IConversation>>(`/api/conversations/populated/${id}`);
         return response.data.data
     },
-    async createChannel (name: string): Promise<IConversation> {
+    async createChannel (name: string, isPrivate: boolean): Promise<IConversation> {
         const response = await axios.post<IResponse<IConversation>>(`/api/conversations/`, {
             name: name,
-            isChannel: true
+            isChannel: true,
+            isPrivate: isPrivate
         });
-        console.log(response)
         return response.data.data
     },
     async createDirectMessage (name: string, id: string): Promise<IConversation> {
@@ -29,7 +29,18 @@ export const conversationsApi = {
             isChannel: false,
             id: id
         });
-        console.log(response)
+        return response.data.data
+    },
+    async joinAllConversations (): Promise<IConversation[] | []> {
+        const response = await axios.patch<IResponse<IConversation[] | []>>(`/api/conversations/joinall`);
+        return response.data.data
+    },
+    async addUsers (conversationId: string, userId?: string): Promise<boolean> {
+        console.log(conversationId, userId)
+        const response = await axios.patch<IResponse<boolean>>(`/api/conversations/addusers`, {
+            conversationId,
+            userId
+        });
         return response.data.data
     },
 }
