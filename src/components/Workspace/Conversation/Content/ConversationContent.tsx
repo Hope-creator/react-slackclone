@@ -37,6 +37,17 @@ export const ConversationContent: React.FC<IConversationContentProps> = ({
 }: IConversationContentProps) => {
   const classes = useStyles();
 
+  const ref = React.useRef<HTMLDivElement>(null);
+
+  React.useEffect(() => {
+    if (ref.current) {
+      ref.current.scrollIntoView({
+        behavior: "auto",
+        block: "start",
+      });
+    }
+  }, []);
+
   return (
     <>
       <Grid
@@ -47,8 +58,9 @@ export const ConversationContent: React.FC<IConversationContentProps> = ({
         wrap="nowrap"
       >
         {messages.map((message) => (
-          <Message message={message} />
+          <Message key={message._id} message={message} />
         ))}
+        <div ref={ref}></div>
       </Grid>
       <Grid className={classes.textareaBlock} item>
         <TextareaAutosize
