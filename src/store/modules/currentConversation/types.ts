@@ -2,6 +2,7 @@ import { IConversation } from "../conversations/types";
 import { IUser } from "../user/types";
 
 export interface IMessage {
+  _id: string;
   creator: IUser;
   dest: IConversation | string;
   text: string;
@@ -19,6 +20,6 @@ export enum LoadingCurrentConversationState {
 
 export interface ICurrentConversationState {
   currentConversation: IConversation | undefined;
-  messages: IMessage[] | [];
+  messages: IMessage[];
   loadingState: LoadingCurrentConversationState;
 }
