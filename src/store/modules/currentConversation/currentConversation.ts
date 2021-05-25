@@ -31,6 +31,9 @@ const currentConversationSlicer = createSlice({
     setMessages(state, action: PayloadAction<IMessage[] | []>) {
       state.messages = [...action.payload];
     },
+    addNewMessage(state, action: PayloadAction<IMessage>) {
+      state.messages.push(action.payload);
+    },
     clearCurrentConversation() {
       return initialState;
     },
@@ -43,5 +46,6 @@ export const {
   setCurrentConversationLoadingState,
   setMessages,
   clearCurrentConversation,
+  addNewMessage,
 } = currentConversationSlicer.actions;
 export default currentConversationSlicer.reducer;
