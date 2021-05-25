@@ -2,7 +2,9 @@ import { Button, Typography } from "@material-ui/core";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router";
+import socket from "../../services/socket/socket";
 import {
+  addNewMessage,
   clearCurrentConversation,
   fetchCurrentConversation,
 } from "../../store/modules/currentConversation/currentConversation";
@@ -11,7 +13,7 @@ import {
   selectCurrentConversationLoadingState,
   selectMessages,
 } from "../../store/modules/currentConversation/selectors";
-import { LoadingCurrentConversationState } from "../../store/modules/currentConversation/types";
+import { IMessage, LoadingCurrentConversationState } from "../../store/modules/currentConversation/types";
 import {
   clearCurrentMembers,
   fetchCurrentMembers,
@@ -41,6 +43,21 @@ export const Workspace = () => {
   const currentConversationLoadingState = useSelector(
     selectCurrentConversationLoadingState
   );
+
+  React.useEffect(() => {
+    if (currentConversation) {
+      socket.emit("CONVERSATION:JOIN", currentConversation._id);
+      socket.on("SERVER:NEW_MESSAGE", (message: IMessage) => {
+        console.log(message)
+        dispatch(addNewMessage(message))
+      });
+    }
+    return function clearConnect() {
+      socket.emit("CONVERSATION:LEAVE");
+      socket.removeListener("SERVER:NEW_MESSAGE");
+      
+    };
+  }, [currentConversation, dispatch]);
 
   React.useEffect(() => {
     if (path.length === 25) {
