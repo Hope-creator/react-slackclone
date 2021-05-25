@@ -97,6 +97,9 @@ class MessagesController {
           const message = await (await new MessageModel(postData).save())
             .populate("creator")
             .execPopulate();
+          this.io
+            .to(message.dest.toString())
+            .emit("SERVER:NEW_MESSAGE", message);
           res.json({ status: "success", data: message });
         }
       } catch (error) {
