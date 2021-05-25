@@ -9,9 +9,12 @@ export default (http: http.Server) => {
   });
 
   io.on('connection', function(socket: any) {
-    socket.on('DIALOGS:JOIN', (dialogId: string) => {
-      socket.dialogId = dialogId;
-      socket.join(dialogId);
+    socket.on('CONVERSATION:JOIN', (conversationId: string) => {
+      socket.conversationId = conversationId;
+      socket.join(conversationId);
+    });
+    socket.on('CONVERSATION:LEAVE', () => {
+      socket.leave(socket.conversationId);
     });
     socket.on('DIALOGS:TYPING', (obj: any) => {
       socket.broadcast.emit('DIALOGS:TYPING', obj);
