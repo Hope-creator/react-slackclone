@@ -8,8 +8,9 @@ export interface IMessageProps {
 }
 
 export const Message: React.FC<IMessageProps> = ({
-  message,
+  message
 }: IMessageProps) => {
+
   return (
     <MessagePane
       header={message.creator.name}
@@ -19,4 +20,4 @@ export const Message: React.FC<IMessageProps> = ({
       {message.text}
     </MessagePane>
   );
-};
+}
