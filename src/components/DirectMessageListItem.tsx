@@ -9,6 +9,7 @@ import { selectUser } from "../store/modules/user/selectors";
 import { useHistory } from "react-router-dom";
 import { userApi } from "../services/api/userApi";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import { useUnreadCount } from "../hooks/useUnreadCount";
 
 interface DirectMessageListItemProps {
   conversation: IConversation;
@@ -19,6 +20,7 @@ export const DirectMessageListItem: React.FC<DirectMessageListItemProps> = ({
 }: DirectMessageListItemProps): React.ReactElement => {
   const [user, setUser] = React.useState<IUser | null>(null);
   const me = useSelector(selectUser);
+  const unread = useUnreadCount(conversation._id);
 
   const history = useHistory();
 
@@ -45,7 +47,7 @@ export const DirectMessageListItem: React.FC<DirectMessageListItemProps> = ({
         />
       </ListItemAvatar>
       <ListItemText primaryTypographyProps={{ color: "primary" }}>
-        {conversation.name}
+        {user.name}{unread > 0 && unread}
       </ListItemText>
     </ListItem>
   );
