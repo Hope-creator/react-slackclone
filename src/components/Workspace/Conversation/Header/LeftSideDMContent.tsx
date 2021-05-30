@@ -4,10 +4,11 @@ import { IConversation } from "../../../../store/modules/conversations/types";
 import { makeStyles, createStyles, Theme } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
-import LockIcon from "@material-ui/icons/Lock";
+import { IUser } from "../../../../store/modules/user/types";
 
-interface ILeftSideConversationContentProps {
+interface ILeftSideDMContentProps {
   conversation: IConversation;
+  partner: IUser;
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -30,9 +31,10 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-export const LeftSideConversationContent: React.FC<ILeftSideConversationContentProps> =
-  ({ conversation }) => {
+export const LeftSideDMContent: React.FC<ILeftSideDMContentProps> =
+  ({ partner }) => {
     const classes = useStyles();
+
     return (
       <Grid container direction="column">
         <Grid item container wrap="nowrap">
@@ -41,26 +43,8 @@ export const LeftSideConversationContent: React.FC<ILeftSideConversationContentP
             color="initial"
             className={classes.name}
           >
-            {conversation.is_private ? (
-              <>
-                <LockIcon fontSize="small" />
-                {conversation.name}
-              </>
-            ) : (
-              "#" + conversation.name
-            )}
+            {partner.name}
           </Typography>
-        </Grid>
-        <Grid item>
-          {conversation.topic || (
-            <Typography
-              variant="body2"
-              className={classes.addTopicText}
-              onClick={() => console.log("type")}
-            >
-              Add a topic
-            </Typography>
-          )}
         </Grid>
       </Grid>
     );

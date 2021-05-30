@@ -53,7 +53,7 @@ export const WorkspaceHeader: React.FC<IWorkspaceHeaderProps> = ({
       <Grid item xs={10}>
         {leftSideContent}
       </Grid>
-      <Grid item alignItems="center" container xs={2} wrap="nowrap">
+      <Grid item alignItems="center" container xs={2} wrap="nowrap" justify="center">
         {rightSideContent}
       </Grid>
     </Grid>

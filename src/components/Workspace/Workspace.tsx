@@ -1,4 +1,3 @@
-import { Button, Typography } from "@material-ui/core";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router";
@@ -13,7 +12,10 @@ import {
   selectCurrentConversationLoadingState,
   selectMessages,
 } from "../../store/modules/currentConversation/selectors";
-import { IMessage, LoadingCurrentConversationState } from "../../store/modules/currentConversation/types";
+import {
+  IMessage,
+  LoadingCurrentConversationState,
+} from "../../store/modules/currentConversation/types";
 import {
   clearCurrentMembers,
   fetchCurrentMembers,
@@ -23,10 +25,9 @@ import {
   selectCurrentMembersLoadingState,
 } from "../../store/modules/currentMembers/selectors";
 import { LoadingCurrentMembersState } from "../../store/modules/currentMembers/types";
-import { ConversationContent } from "./Conversation/Content/ConversationContent";
-import { LeftSideConversationContent } from "./Conversation/Header/LeftSideConversationContent";
-import { RightSideConversationContent } from "./Conversation/Header/RightSideConversationContent";
-import { MembersContent } from "./Members/Content/MembersContent";
+import { ConversationWorkspace } from "./Conversation/ConversationWorkspace";
+import { DirectMessageWorkspace } from "./Conversation/DirectMessageWorkspace";
+import { MembersWorkspace } from "./Members/MembersWorkspace";
 import { WorkspaceContent } from "./WorkspaceContent";
 import { WorkspaceHeader } from "./WorkspaceHeader";
 
@@ -48,14 +49,13 @@ export const Workspace = () => {
     if (currentConversation) {
       socket.emit("CONVERSATION:JOIN", currentConversation._id);
       socket.on("SERVER:NEW_MESSAGE", (message: IMessage) => {
-        console.log(message)
-        dispatch(addNewMessage(message))
+        console.log(message);
+        dispatch(addNewMessage(message));
       });
     }
     return function clearConnect() {
       socket.emit("CONVERSATION:LEAVE");
       socket.removeListener("SERVER:NEW_MESSAGE");
-      
     };
   }, [currentConversation, dispatch]);
 
@@ -83,20 +83,16 @@ export const Workspace = () => {
     messages &&
     currentConversationLoadingState === LoadingCurrentConversationState.LOADED
   ) {
-    return (
-      <>
-        <WorkspaceHeader
-          leftSideContent={
-            <LeftSideConversationContent conversation={currentConversation} />
-          }
-          rightSideContent={
-            <RightSideConversationContent conversation={currentConversation} />
-          }
-        />
-        <WorkspaceContent
-          children={<ConversationContent messages={messages} />}
-        />
-      </>
+    return currentConversation.is_channel ? (
+      <ConversationWorkspace
+        conversation={currentConversation}
+        messages={messages}
+      />
+    ) : (
+      <DirectMessageWorkspace
+        conversation={currentConversation}
+        messages={messages}
+      />
     );
   }
 
@@ -104,28 +100,7 @@ export const Workspace = () => {
     currentMembers &&
     currentMembersLoadingState === LoadingCurrentMembersState.LOADED
   ) {
-    return (
-      <>
-        <WorkspaceHeader
-          leftSideContent={
-            <>
-              <Typography variant="h6">People</Typography>
-              <Typography variant="caption">
-                {currentMembers.length} members
-              </Typography>
-            </>
-          }
-          rightSideContent={
-            <>
-              <Button>Invite people</Button>
-            </>
-          }
-        />
-        <WorkspaceContent
-          children={<MembersContent members={currentMembers} />}
-        />
-      </>
-    );
+    return <MembersWorkspace currentMembers={currentMembers} />;
   }
 
   return (

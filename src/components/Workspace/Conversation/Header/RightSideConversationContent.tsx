@@ -25,16 +25,18 @@ export const RightSideConversationContent: React.FC<IRightSideConversationConten
 
     return (
       <>
-        <Tooltip
-          title={`View all ${conversation.num_members} members`}
-          aria-label={`View all ${conversation.num_members} members`}
-        >
-          <MembersModal
-            name={conversation.name}
-            users={conversation.members as IUser[]}
-            opener={<IconButton>{conversation.members.length}</IconButton>}
-          />
-        </Tooltip>
+        <MembersModal
+          name={conversation.name}
+          users={conversation.members as IUser[]}
+          opener={
+            <Tooltip
+              title={`View all ${conversation.num_members} members`}
+              aria-label={`View all ${conversation.num_members} members`}
+            >
+              <IconButton>{conversation.members.length}</IconButton>
+            </Tooltip>
+          }
+        />
         <AddPeopleModal
           opener={
             <Tooltip title={`Add people`} aria-label={`Add people`}>
