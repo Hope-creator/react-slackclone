@@ -11,3 +11,6 @@ export const selectMessages = (state: IRootState) =>
 
 export const selectCurrentConversationLoadingState = (state: IRootState) =>
   selectCurrentConversationState(state).loadingState;
+
+export const selectSendNewMessageLoadingState = (state: IRootState) =>
+  selectCurrentConversationState(state).loadingSendMessageState;
