@@ -8,6 +8,6 @@ export enum LoadingCurrentMembersState {
 }
 
 export interface ICurrentMembersState {
-  members: IUser[] | [];
+  members: IUser[];
   loadingState: LoadingCurrentMembersState;
 }
