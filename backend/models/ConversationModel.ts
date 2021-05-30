@@ -11,9 +11,8 @@ export interface IPurpose {
 export interface ITopic extends IPurpose {}
 
 export interface IConversation {
-  name: string;
+  name?: string;
   is_channel?: boolean;
-  created: Date;
   creator?: Schema.Types.ObjectId;
   purpose?: IPurpose;
   topic?: ITopic;
