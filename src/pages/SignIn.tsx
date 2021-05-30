@@ -1,12 +1,9 @@
 import React from "react";
 import {
-  Button,
-  Divider,
   Link,
   makeStyles,
   Typography,
 } from "@material-ui/core";
-import GTranslateIcon from "@material-ui/icons/GTranslate";
 import FlareIcon from "@material-ui/icons/Flare";
 import { LoginFooter } from "../components/LoginFooter";
 import { LoginHeader } from "../components/LoginHeader";
@@ -89,20 +86,6 @@ export const SignIn = () => {
     <div className={classes.wrapper}>
       <LoginHeader newToSlackShow={true} title={"Sign in to Slack"} />
       <div className={classes.signInForm}>
-        <Button
-          className={classes.button}
-          variant="outlined"
-          color="secondary"
-          startIcon={<GTranslateIcon />}
-          fullWidth
-        >
-          Sign in with Google
-        </Button>
-        <div className={classes.dividerContainer}>
-          <Divider className={classes.divider} />
-          OR
-          <Divider className={classes.divider} />
-        </div>
         <SignInForm />
         <div className={classes.emailPrompt}>
           <FlareIcon className={classes.emailPromptIcon} />
