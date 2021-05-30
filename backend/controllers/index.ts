@@ -3,3 +3,4 @@ export { default as AuthController} from './AuthController';
 export { default as CompanyController} from './CompanyController';
 export { default as ConversationController} from './ConversationController';
 export { default as MarkedMessageController} from './MarkedMessageController';
+export { default as FileController} from './FileController';
