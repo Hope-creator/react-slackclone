@@ -9,6 +9,8 @@ import CreateIcon from "@material-ui/icons/Create";
 import IconButton from "@material-ui/core/IconButton";
 import CommentOutlinedIcon from "@material-ui/icons/CommentOutlined";
 import { IUser } from "../../store/modules/user/types";
+import { useSelector } from "react-redux";
+import { selectUser } from "../../store/modules/user/selectors";
 
 interface IProfileInfoProps {
   user: IUser;
@@ -32,6 +34,10 @@ export const ProfileInfo: React.FC<IProfileInfoProps> = ({
 }) => {
   const classes = useStyles();
 
+  const me = useSelector(selectUser);
+
+  const isMe = me && me._id === user._id;
+
   return (
     <Box>
       <Avatar
@@ -54,7 +60,7 @@ export const ProfileInfo: React.FC<IProfileInfoProps> = ({
           ) : user.work ? (
             <Link>Add a title</Link>
           ) : null}
-          {user.is_admin ? (
+          {isMe? (
             <IconButton>
               <CreateIcon />
               Edit profile
@@ -62,7 +68,7 @@ export const ProfileInfo: React.FC<IProfileInfoProps> = ({
           ) : (
             <IconButton>
               <CommentOutlinedIcon />
-              Message
+              Start dialog
             </IconButton>
           )}
         </Box>
