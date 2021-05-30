@@ -1,13 +1,14 @@
 import React from "react";
 
-import TextareaAutosize from "@material-ui/core/TextareaAutosize";
 import Grid from "@material-ui/core/Grid";
 import { makeStyles, createStyles, Theme } from "@material-ui/core/styles";
 import { IMessage } from "../../../../store/modules/currentConversation/types";
-import { Message } from "./Message";
+import { Message } from "../../../Message/Message";
+import { SendMessageForm } from "../../../SendMessageForm";
 
 export interface IConversationContentProps {
   messages: IMessage[];
+  conversationId: string;
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -28,12 +29,14 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     textareaBlock: {
       marginTop: "auto",
+      padding: "0 20px 20px 20px"
     },
   })
 );
 
 export const ConversationContent: React.FC<IConversationContentProps> = ({
   messages,
+  conversationId
 }: IConversationContentProps) => {
   const classes = useStyles();
 
@@ -63,11 +66,7 @@ export const ConversationContent: React.FC<IConversationContentProps> = ({
         <div ref={ref}></div>
       </Grid>
       <Grid className={classes.textareaBlock} item>
-        <TextareaAutosize
-          aria-label="Send message"
-          placeholder="Send message to Me"
-          className={classes.textareaSize}
-        />
+        <SendMessageForm conversationId={conversationId} />
       </Grid>
     </>
   );
