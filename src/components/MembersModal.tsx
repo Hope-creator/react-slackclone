@@ -78,7 +78,7 @@ export const MembersModal: React.FC<IMembersModalProps> = ({
         (filterName && users.filter((user) => user.name === filterName)) ||
         users
       ).map((user) => (
-        <UserListItem user={user} isMe={(me as IUser)._id === user._id} />
+        <UserListItem key={user._id} user={user} isMe={(me as IUser)._id === user._id} />
       ))}
     </Paper>
   );
