@@ -6,13 +6,13 @@ import { IConversation } from "../store/modules/conversations/types";
 import { useHistory } from "react-router-dom";
 import Typography from "@material-ui/core/Typography";
 
-interface ChanneProps {
+interface ChannelProps {
   channel: IConversation;
 }
 
-export const Channel: React.FC<ChanneProps> = ({
+export const Channel: React.FC<ChannelProps> = ({
   channel,
-}: ChanneProps): React.ReactElement => {
+}) => {
   const history = useHistory();
   const pushChannel = useCallback(
     (id) => {
