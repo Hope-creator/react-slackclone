@@ -19,7 +19,6 @@ export const RightSideBlock: React.FC<RightSideBlockProps> = ({
   type,
   item
 }) => {
-  React.useEffect(() => console.log("EFFECT"), []);
 
   if (type === InfoItemTypeState.CHANNEL) {
     return (
