@@ -16,9 +16,9 @@ const io = createSocket(http);
 app.use(express.json());
 
 // #Cookie session
-import coockieSession from "cookie-session";
+import cookieSession from "cookie-session";
 app.use(
-  coockieSession({
+  cookieSession({
     secret: process.env.COOKIE_SESSION_SECRET,
     maxAge: 1000 * 60 * 60 * 24 * 14,
     httpOnly: true,
