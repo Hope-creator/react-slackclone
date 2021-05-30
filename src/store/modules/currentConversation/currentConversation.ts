@@ -1,15 +1,18 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { ISendMessageForm } from "../../../components/SendMessageForm";
 import { IConversation } from "../conversations/types";
 import {
   ICurrentConversationState,
   IMessage,
   LoadingCurrentConversationState,
+  LoadingSendMessageState,
 } from "./types";
 
 const initialState = {
   currentConversation: undefined,
   messages: [],
-  loadingState: "NEVER",
+  loadingState: LoadingCurrentConversationState.NEVER,
+  loadingSendMessageState: LoadingSendMessageState.NEVER,
 } as ICurrentConversationState;
 
 const currentConversationSlicer = createSlice({
@@ -31,6 +34,29 @@ const currentConversationSlicer = createSlice({
     setMessages(state, action: PayloadAction<IMessage[] | []>) {
       state.messages = [...action.payload];
     },
+    sendNewMessage(state, action: PayloadAction<ISendMessageForm>) {
+      state.loadingSendMessageState = LoadingSendMessageState.LOADING;
+    },
+    setSendNewMessageState(
+      state,
+      action: PayloadAction<LoadingSendMessageState>
+    ) {
+      state.loadingSendMessageState = action.payload;
+    },
+    markMessage(state, action: PayloadAction<string>) {}, // Action for saga
+    markMessageInState(state, action: PayloadAction<string>) {
+      const index = state.messages.findIndex(
+        (message) => message._id === action.payload
+      );
+      state.messages[index].marked = true;
+    },
+    unmarkMessage(state, action: PayloadAction<string>) {}, // Action for saga
+    unmarkMessageInState(state, action: PayloadAction<string>) {
+      const index = state.messages.findIndex(
+        (message) => message._id === action.payload
+      );
+      state.messages[index].marked = false;
+    },
     addNewMessage(state, action: PayloadAction<IMessage>) {
       state.messages.push(action.payload);
     },
@@ -47,5 +73,11 @@ export const {
   setMessages,
   clearCurrentConversation,
   addNewMessage,
+  sendNewMessage,
+  setSendNewMessageState,
+  markMessage,
+  markMessageInState,
+  unmarkMessage,
+  unmarkMessageInState
 } = currentConversationSlicer.actions;
 export default currentConversationSlicer.reducer;
