@@ -2,13 +2,15 @@ import { IConversation } from "./ConversationModel";
 import { Schema, Document } from "mongoose";
 import { mongoose } from "../core/db";
 import { IUser } from "./UserModel";
+import { IFile } from "./FileModel";
 
 export interface IMessage {
   creator: IUser | string;
   dest: IConversation | string;
   text: string;
-  read: boolean;
+  unreadBy: Schema.Types.ObjectId[];
   marked: boolean;
+  attachments: Schema.Types.ObjectId[] | IFile[];
 }
 
 export interface IMessageDocument extends Document, IMessage {}
@@ -23,15 +25,10 @@ const MessageSchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: "Conversation",
     },
-    text: {
-      type: String,
-      required: true,
-    },
-    read: {
-      type: Boolean,
-      default: false,
-    },
+    text: String,
+    unreadBy: [Schema.Types.ObjectId],
     marked: { type: Boolean, default: false },
+    attachments: [{ type: Schema.Types.ObjectId, ref: "File" }],
   },
   { versionKey: false, timestamps: true }
 );
