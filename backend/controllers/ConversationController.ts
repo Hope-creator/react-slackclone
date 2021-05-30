@@ -34,7 +34,7 @@ class ConversationController {
     const userId = req.userId;
     try {
       const conversations = await ConversationModel.find({
-        members: userId,
+        $or: [{ members: userId }, { is_private: false }],
       })
         .sort({ name: 1 })
         .exec();
@@ -54,7 +54,7 @@ class ConversationController {
     try {
       const conversation = await ConversationModel.findOne({
         _id: conversationId,
-        members: userId,
+        $or: [{ members: userId }, { is_private: false }],
       }).exec();
       res.json({ status: "success", data: conversation });
     } catch (error) {
@@ -75,7 +75,7 @@ class ConversationController {
     try {
       const conversation = await ConversationModel.findOne({
         _id: conversationId,
-        members: userId,
+        $or: [{ members: userId }, { is_private: false }],
       })
         .populate("members")
         .populate("creator")
@@ -96,40 +96,53 @@ class ConversationController {
   ): Promise<void> => {
     try {
       const userId = req.userId;
-      const isConversationExist = await ConversationModel.exists({
+      const isChannelExist = await ConversationModel.exists({
         name: req.body.name,
-        is_channel: req.body.isChannel,
+        is_channel: true,
       });
       const destId = req.body.id;
+      // If body have id the it will be NOT channel and have only 2 members
       if (!isValidObjectId(destId)) {
         res.status(403).json({
           status: "error",
           data: "That ID is not correct.",
         });
       }
-      if (isConversationExist) {
+      // Check if channel name already taken
+      if (isChannelExist) {
         res.status(403).json({
           status: "error",
           data: "That name is already taken by a channel.",
         });
       } else {
-        const postData = {
-          name: req.body.name,
-          is_channel: req.body.isChannel,
-          creator: req.userId,
-          purpose: req.body.purpose,
-          topic: req.body.topic,
-          is_private: req.body.isPrivate,
-          members: [userId],
-          num_members: req.body.isChannel ? 1 : 2,
-          unread_count: 0,
-        };
-        if (destId) postData.members.push(destId);
-        const conversationRaw = new ConversationModel(postData);
-        const conversation = await conversationRaw.save();
-        this.io.emit("SERVER:CONVERSATION_CREATED");
+        // Check if Direct message already exist
+        const isDMExist = await ConversationModel.findOne({
+          is_channel: false,
+          members: { $all: [destId, userId] },
+        });
+        // If Direct message exist redirect to that DM ID
+        if (isDMExist) {
+          res.status(409);
+        } else {
+          // If no channel and no dm create it
+          const postData = {
+            name: req.body.name,
+            is_channel: req.body.isChannel,
+            creator: req.userId,
+            purpose: req.body.purpose,
+            topic: req.body.topic,
+            is_private: (destId && true) || req.body.isPrivate,
+            members: [userId],
+            num_members: req.body.isChannel ? 1 : 2,
+            unread_count: 0,
+          };
+          if (destId) postData.members.push(destId);
+          const conversationRaw = new ConversationModel(postData);
+          const conversation = await conversationRaw.save();
+          this.io.emit("SERVER:CONVERSATION_CREATED");
 
-        res.json({ status: "success", data: conversation });
+          res.json({ status: "success", data: conversation });
+        }
       }
     } catch (error) {
       res.status(500).json({
@@ -216,12 +229,13 @@ class ConversationController {
       let company;
       if (!userId) {
         company = await CompanyModel.findOne({}).exec();
-        console.log("not have user")
       }
-
       if (company) {
-        await ConversationModel.findByIdAndUpdate(
-          conversationId,
+        await ConversationModel.findOneAndUpdate(
+          {
+            _id: conversationId,
+            is_channel: true,
+          },
           {
             $addToSet: {
               members: { $each: company.members },
@@ -237,8 +251,11 @@ class ConversationController {
             data: false,
           });
         } else {
-          await ConversationModel.findByIdAndUpdate(
-            conversationId,
+          await ConversationModel.findOneAndUpdate(
+            {
+              _id: conversationId,
+              is_channel: true,
+            },
             {
               $addToSet: {
                 members: userId,
