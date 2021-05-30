@@ -5,12 +5,7 @@ import { createMuiTheme } from "@material-ui/core/styles";
 export const theme = createMuiTheme({
   typography: {
     fontFamily: [
-      "Helvetica Neue",
-      "Helvetica",
-      "Segoe UI",
-      "Tahoma",
-      "Arial",
-      "sans-serif",
+      'Lato'
     ].join(","),
     h3: {
       fontWeight: 700
@@ -27,7 +22,7 @@ export const theme = createMuiTheme({
   palette: {
     primary: {
       light: "#A493A7",
-      main: "#611f69",
+      main: /*"#611f69"*/ "rgb(136,101,135)",
       dark: "#4A154B"
     },
     secondary: {
