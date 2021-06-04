@@ -11,6 +11,7 @@ import {
 } from "./store/modules/user/selectors";
 import { LoadingUserState } from "./store/modules/user/types";
 import { CentralCircularProgress } from "./components/CentralCircularProgress";
+import socket from "./services/socket/socket";
 
 function App() {
   const dispatch = useDispatch();
@@ -20,6 +21,12 @@ function App() {
   React.useEffect(() => {
     dispatch(fetchMe());
   }, [dispatch]);
+
+  React.useEffect(() => {
+    if (user) {
+      socket.connect();
+    }
+  }, [user]);
 
   if (userLoadingState === LoadingUserState.LOADING)
     return <CentralCircularProgress size={80} />;
