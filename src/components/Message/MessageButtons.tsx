@@ -5,32 +5,38 @@ import BookmarkBorderIcon from "@material-ui/icons/BookmarkBorder";
 import BookmarkIcon from "@material-ui/icons/Bookmark";
 import ClearIcon from "@material-ui/icons/Clear";
 import { useDispatch } from "react-redux";
-import { markMessage, unmarkMessage } from "../../store/modules/currentConversation/currentConversation";
+import {
+  markMessage,
+  unmarkMessage,
+} from "../../store/modules/messages/messages";
+import { IUser } from "../../store/modules/user/types";
+import { MarkAsReadButton } from "../MarkAsReadButton";
+import { IMessage } from "../../store/modules/messages/types";
 
 export interface IMessageButtonsProps {
-  marked: boolean;
-  isMessageOwner: boolean;
-  messageId: string;
+  message: IMessage;
+  user: IUser;
 }
 
 export const MessageButtons: React.FC<IMessageButtonsProps> = ({
-  marked,
-  isMessageOwner,
-  messageId,
+  message,
+  user,
 }) => {
   const dispatch = useDispatch();
 
   const mark = () => {
-    dispatch(markMessage(messageId));
+    dispatch(markMessage(message._id));
   };
 
   const unmark = () => {
-    dispatch(unmarkMessage(messageId));
+    dispatch(unmarkMessage(message._id));
   };
+
+  const isUnread = message.unreadBy.includes(user._id);
 
   return (
     <>
-      {marked ? (
+      {message.marked ? (
         <IconButton size="small" onClick={unmark}>
           <BookmarkIcon color="primary" />
         </IconButton>
@@ -39,10 +45,13 @@ export const MessageButtons: React.FC<IMessageButtonsProps> = ({
           <BookmarkBorderIcon color="primary" />
         </IconButton>
       )}
-      {isMessageOwner && (
+      {message.creator._id === user._id && (
         <IconButton size="small" onClick={() => console.log("Clear")}>
           <ClearIcon color="primary" />
         </IconButton>
+      )}
+      {isUnread && (
+        <MarkAsReadButton message={message}>Mark as read</MarkAsReadButton>
       )}
     </>
   );
