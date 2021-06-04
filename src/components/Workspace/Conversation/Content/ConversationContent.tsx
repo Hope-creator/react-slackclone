@@ -2,13 +2,15 @@ import React from "react";
 
 import Grid from "@material-ui/core/Grid";
 import { makeStyles, createStyles, Theme } from "@material-ui/core/styles";
-import { IMessage } from "../../../../store/modules/currentConversation/types";
+import { IMessage } from "../../../../store/modules/messages/types";
 import { Message } from "../../../Message/Message";
 import { SendMessageForm } from "../../../SendMessageForm";
+import { IUser } from "../../../../store/modules/user/types";
 
 export interface IConversationContentProps {
   messages: IMessage[];
   conversationId: string;
+  user: IUser;
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -36,7 +38,8 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export const ConversationContent: React.FC<IConversationContentProps> = ({
   messages,
-  conversationId
+  conversationId,
+  user
 }: IConversationContentProps) => {
   const classes = useStyles();
 
@@ -61,7 +64,7 @@ export const ConversationContent: React.FC<IConversationContentProps> = ({
         wrap="nowrap"
       >
         {messages.map((message) => (
-          <Message key={message._id} message={message} />
+          <Message user={user} key={message._id} message={message} />
         ))}
         <div ref={ref}></div>
       </Grid>
