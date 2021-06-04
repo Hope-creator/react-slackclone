@@ -1,9 +1,7 @@
 import { Server, Socket } from "socket.io";
 import http from "http";
 import cookie from "cookie";
-import cookieParser from "cookie-parser";
-import express from "express";
-import { checkAuthByToken } from "../utils/middleware/checkAuthByToken";
+import { checkAuthByToken } from "../utils/function/checkAuthByToken";
 
 interface ISocket extends Socket {
   user?: string;
@@ -40,6 +38,7 @@ export default (http: http.Server) => {
   });
 
   io.on("connection", function (socket: ISocket) {
+    if(socket.user) socket.join(socket.user);
     socket.on("CONVERSATION:JOIN", (conversationId: string) => {
       socket.conversationId = conversationId;
       socket.join(conversationId);
