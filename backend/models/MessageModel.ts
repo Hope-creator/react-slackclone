@@ -1,3 +1,4 @@
+import { MarkedMessageModel } from "./MarkedMessageModel";
 import { IConversation } from "./ConversationModel";
 import { Schema, Document } from "mongoose";
 import { mongoose } from "../core/db";
@@ -9,7 +10,7 @@ export interface IMessage {
   dest: IConversation | string;
   text: string;
   unreadBy: Schema.Types.ObjectId[];
-  marked: boolean;
+  markedBy: Schema.Types.ObjectId[];
   attachments: Schema.Types.ObjectId[] | IFile[];
 }
 
@@ -27,7 +28,7 @@ const MessageSchema = new Schema(
     },
     text: String,
     unreadBy: [Schema.Types.ObjectId],
-    marked: { type: Boolean, default: false },
+    markedBy: [Schema.Types.ObjectId],
     attachments: [{ type: Schema.Types.ObjectId, ref: "File" }],
   },
   { versionKey: false, timestamps: true }
