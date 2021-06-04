@@ -14,12 +14,12 @@ import SendIcon from "@material-ui/icons/Send";
 import {
   sendNewMessage,
   setSendNewMessageState,
-} from "../store/modules/currentConversation/currentConversation";
+} from "../store/modules/messages/messages";
 import { UploadImages } from "./UploadImages";
 import { ImagesBox } from "./ImagesBox";
 import { uploadApi } from "../services/api/uploadApi";
-import { selectSendNewMessageLoadingState } from "../store/modules/currentConversation/selectors";
-import { LoadingSendMessageState } from "../store/modules/currentConversation/types";
+import { selectSendNewMessageLoadingState } from "../store/modules/messages/selectors";
+import { LoadingSendMessageState } from "../store/modules/messages/types";
 import { CircularProgress } from "@material-ui/core";
 
 export interface ISendMessageProps {
