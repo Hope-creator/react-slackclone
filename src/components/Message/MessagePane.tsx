@@ -7,15 +7,14 @@ import { MessageButtons } from "./MessageButtons";
 import { MessageHeader } from "./MessageHeader";
 import Typography from "@material-ui/core/Typography";
 import BookmarkIcon from "@material-ui/icons/Bookmark";
+import { IMessage } from "../../store/modules/messages/types";
+import { IUser } from "../../store/modules/user/types";
+import defaultAvatar from "../../images/defaultAvatar.png";
 
 interface MessagePaneProps {
-  avatarSrc: string;
-  header: string;
-  time: string;
-  marked: boolean;
+  message: IMessage;
+  user: IUser;
   children: React.ReactNode;
-  isMessageOwner: boolean;
-  messageId: string;
 }
 
 const useStyles = makeStyles(() =>
@@ -59,17 +58,16 @@ const useStyles = makeStyles(() =>
       fontSize: 12,
       color: "rgba(28,28,28,.7)",
     },
+    unread: {
+      backgroundColor: "#e0e0ff75",
+    },
   })
 );
 
 export const MessagePane: React.FC<MessagePaneProps> = ({
-  avatarSrc,
-  header,
+  message,
   children,
-  marked,
-  time,
-  isMessageOwner,
-  messageId,
+  user,
 }: MessagePaneProps): React.ReactElement => {
   const classes = useStyles();
 
@@ -83,6 +81,8 @@ export const MessagePane: React.FC<MessagePaneProps> = ({
     setIsHovered(false);
   };
 
+  const isUnread = message.unreadBy.includes(user._id);
+
   return (
     <Grid
       onMouseEnter={setIsHoveredTrue}
@@ -90,12 +90,19 @@ export const MessagePane: React.FC<MessagePaneProps> = ({
       container
       wrap="nowrap"
       className={
-        marked ? classes.markedMessageContainer : classes.messageContainer
+        (message.marked
+          ? classes.markedMessageContainer
+          : classes.messageContainer) +
+        " " +
+        (isUnread && classes.unread)
       }
     >
       <Grid item xs={1} sm={2} lg={1} className={classes.avatar}>
-        {marked && <BookmarkIcon className={classes.bookmarkIcon} />}
-        <Avatar alt={`profile__picture__${avatarSrc}`} src={avatarSrc} />
+        {message.marked && <BookmarkIcon className={classes.bookmarkIcon} />}
+        <Avatar
+          alt={`profile__picture__${message.creator.avatar}`}
+          src={message.creator.avatar || defaultAvatar}
+        />
       </Grid>
       <Grid
         item
@@ -107,25 +114,22 @@ export const MessagePane: React.FC<MessagePaneProps> = ({
       >
         <Grid item lg={10}>
           <Grid container direction="column">
-            {marked && (
+            {message.marked && (
               <Typography className={classes.markedText}>
                 Added to your saved items
               </Typography>
             )}
-            <MessageHeader text={header} time={time} />
+            <MessageHeader
+              text={message.creator.name}
+              time={message.createdAt}
+            />
             <Grid item className={classes.maxWidthText}>
               {children}
             </Grid>
           </Grid>
         </Grid>
         <Grid item container wrap="nowrap" justify="center" lg={2}>
-          {isHovered && (
-            <MessageButtons
-              messageId={messageId}
-              marked={marked}
-              isMessageOwner={isMessageOwner}
-            />
-          )}
+          {isHovered && <MessageButtons message={message} user={user} />}
         </Grid>
       </Grid>
     </Grid>
