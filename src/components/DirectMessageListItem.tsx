@@ -10,14 +10,28 @@ import { useHistory } from "react-router-dom";
 import { userApi } from "../services/api/userApi";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { useUnreadCount } from "../hooks/useUnreadCount";
+import { makeStyles } from "@material-ui/core/styles";
 
 interface DirectMessageListItemProps {
   conversation: IConversation;
 }
 
+const useStyles = makeStyles({
+  count: {
+    display: "block",
+    width: 20,
+    borderRadius: 10,
+    marginLeft: "auto",
+    textAlign: "center",
+    backgroundColor: "pink"
+  },
+});
+
 export const DirectMessageListItem: React.FC<DirectMessageListItemProps> = ({
   conversation,
 }: DirectMessageListItemProps): React.ReactElement => {
+
+  const classes = useStyles();
   const [user, setUser] = React.useState<IUser | null>(null);
   const me = useSelector(selectUser);
   const unread = useUnreadCount(conversation._id);
@@ -25,6 +39,7 @@ export const DirectMessageListItem: React.FC<DirectMessageListItemProps> = ({
   const history = useHistory();
 
   React.useEffect(() => {
+
     if (me) {
       const notMe = (conversation.members as string[]).filter(
         (id) => id !== me._id
@@ -47,7 +62,10 @@ export const DirectMessageListItem: React.FC<DirectMessageListItemProps> = ({
         />
       </ListItemAvatar>
       <ListItemText primaryTypographyProps={{ color: "primary" }}>
-        {user.name}{unread > 0 && unread}
+        {user.name}
+      </ListItemText>
+      <ListItemText primaryTypographyProps={{ color: "primary", className: classes.count }}>
+        {unread > 0 && unread}
       </ListItemText>
     </ListItem>
   );
