@@ -15,6 +15,7 @@ const io = createSocket(http);
 
 app.use(express.json());
 
+
 // #Cookie session
 import cookieSession from "cookie-session";
 app.use(
@@ -25,8 +26,6 @@ app.use(
     secure: false,
   })
 );
-
-
 
 createRoutes(app, io);
 
