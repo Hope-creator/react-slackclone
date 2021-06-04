@@ -1,4 +1,4 @@
-import { IMessage } from "../currentConversation/types";
+import { IMessage } from "../messages/types";
 import { IUser } from "../user/types";
 
 
