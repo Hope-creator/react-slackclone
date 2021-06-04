@@ -9,7 +9,7 @@ import {
   UserController,
 } from "../controllers";
 import MessagesController from "../controllers/MessagesController";
-import { authencticateToken } from "../utils/middleware/checkAuth";
+import { authencticateToken } from "../utils/middleware/checkAuthWithUpdate";
 import { loginValidators } from "../validations/login";
 import { registerValidators } from "../validations/register";
 import upload from "./multer";
@@ -66,8 +66,29 @@ const createRoutes = (app: express.Express, io: socket.Server) => {
   );
 
   //# Messages
+  app.patch("/api/messages/readall", authencticateToken, MessagesCtrl.readAll);
+  app.patch(
+    "/api/messages/readone/message",
+    authencticateToken,
+    MessagesCtrl.readOneByMessageId
+  );
+  app.patch(
+    "/api/messages/readone/conversation",
+    authencticateToken,
+    MessagesCtrl.readAllByConversationId
+  );
+
+  app.get(
+    "/api/messages/unread/:id",
+    authencticateToken,
+    MessagesCtrl.getUnreadCountById
+  );
+  app.get(
+    "/api/messages/allunread",
+    authencticateToken,
+    MessagesCtrl.getUnread
+  );
   app.get("/api/messages/:id", authencticateToken, MessagesCtrl.index);
-  app.get("/api/messages/unread/:id", authencticateToken, MessagesCtrl.getUnreadCountById);
   app.post("/api/messages/:id", authencticateToken, MessagesCtrl.create);
 
   //# Mark Messages
