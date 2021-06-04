@@ -63,7 +63,7 @@ export const SidebarListCreator: React.FC<SidebarListCreatorProps> = ({
       );
     case "All unreads":
       return (
-        <ListItem dense button onClick={() => console.log("cluck")}>
+        <ListItem dense button onClick={() => handleClick("unreads")}>
           <ListItemIcon>
             <SubjectOutlinedIcon color="primary" />
           </ListItemIcon>
