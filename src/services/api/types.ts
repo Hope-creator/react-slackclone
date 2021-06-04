@@ -1,4 +1,9 @@
+export enum ResponseStatus {
+    SUCCESS = "success",
+    ERROR = "error"
+}
+
 export interface IResponse<T> {
-    status: string,
+    status: ResponseStatus,
     data: T,
 }
