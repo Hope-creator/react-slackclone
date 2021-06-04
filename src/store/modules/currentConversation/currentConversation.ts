@@ -1,18 +1,15 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { ISendMessageForm } from "../../../components/SendMessageForm";
 import { IConversation } from "../conversations/types";
 import {
   ICurrentConversationState,
-  IMessage,
   LoadingCurrentConversationState,
-  LoadingSendMessageState,
 } from "./types";
 
 const initialState = {
   currentConversation: undefined,
-  messages: [],
+  //messages: [],
   loadingState: LoadingCurrentConversationState.NEVER,
-  loadingSendMessageState: LoadingSendMessageState.NEVER,
+ // loadingSendMessageState: LoadingSendMessageState.NEVER,
 } as ICurrentConversationState;
 
 const currentConversationSlicer = createSlice({
@@ -31,7 +28,7 @@ const currentConversationSlicer = createSlice({
     ) {
       state.loadingState = action.payload;
     },
-    setMessages(state, action: PayloadAction<IMessage[] | []>) {
+   /* setMessages(state, action: PayloadAction<IMessage[] | []>) {
       state.messages = [...action.payload];
     },
     sendNewMessage(state, action: PayloadAction<ISendMessageForm>) {
@@ -42,24 +39,30 @@ const currentConversationSlicer = createSlice({
       action: PayloadAction<LoadingSendMessageState>
     ) {
       state.loadingSendMessageState = action.payload;
-    },
-    markMessage(state, action: PayloadAction<string>) {}, // Action for saga
-    markMessageInState(state, action: PayloadAction<string>) {
+    },*/
+    //markMessage(state, action: PayloadAction<string>) {}, // Action for saga
+    /*markMessageInState(state, action: PayloadAction<string>) {
       const index = state.messages.findIndex(
         (message) => message._id === action.payload
       );
       state.messages[index].marked = true;
-    },
-    unmarkMessage(state, action: PayloadAction<string>) {}, // Action for saga
+    },*/
+   /* unmarkMessage(state, action: PayloadAction<string>) {}, // Action for saga
     unmarkMessageInState(state, action: PayloadAction<string>) {
       const index = state.messages.findIndex(
         (message) => message._id === action.payload
       );
       state.messages[index].marked = false;
+    },*/
+  /*changeMessage(state, action: PayloadAction<IMessage>) {
+      const index = state.messages.findIndex(
+        (message) => message._id === action.payload._id
+      );
+      state.messages[index] = action.payload;
     },
     addNewMessage(state, action: PayloadAction<IMessage>) {
       state.messages.push(action.payload);
-    },
+    },*/
     clearCurrentConversation() {
       return initialState;
     },
@@ -70,14 +73,15 @@ export const {
   fetchCurrentConversation,
   setCurrentConversation,
   setCurrentConversationLoadingState,
-  setMessages,
+  //setMessages,
   clearCurrentConversation,
-  addNewMessage,
+  /*addNewMessage,
   sendNewMessage,
   setSendNewMessageState,
   markMessage,
   markMessageInState,
   unmarkMessage,
-  unmarkMessageInState
+  unmarkMessageInState,
+  changeMessage*/
 } = currentConversationSlicer.actions;
 export default currentConversationSlicer.reducer;
