@@ -7,6 +7,8 @@ import { IConversationsState } from "./modules/conversations/types";
 import { ICurrentConversationState } from "./modules/currentConversation/types";
 import { ICurrentInfoState } from "./modules/currentInfo_side/types";
 import { ICurrentMembersState } from "./modules/currentMembers/types";
+import { IReadMessageState } from "./modules/readMessage/types";
+import { IMessagesState } from "./modules/messages/types";
 
 const composeEnhancers =
   (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
@@ -19,6 +21,8 @@ export interface IRootState {
   currentConversation: ICurrentConversationState;
   currentInfo: ICurrentInfoState;
   currentMembers: ICurrentMembersState;
+  readMessage: IReadMessageState;
+  messages: IMessagesState;
 }
 
 export const store = createStore(
