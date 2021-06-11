@@ -2,6 +2,8 @@ import { NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import { Response, Request } from "express";
 import { UserModel } from "../../models/UserModel";
+import dotenv from "dotenv";
+dotenv.config();
 
 export interface IToken {
   userId: string;
@@ -31,11 +33,23 @@ export const authencticateToken = (
             },
             { new: true }
           )
-            .then()
-            .catch((err) =>
-              console.log("checkAuthWithUpdate / Cannot update last seen:", err)
-            );
-          next();
+            .then((user) => {
+              user
+                ? (req.user = user)
+                : res
+                    .status(404)
+                    .json({ status: "error", data: "User is not find" });
+              next();
+            })
+            .catch((err) => {
+              res
+                .status(500)
+                .json({ status: "error", data: "Something went wrong" });
+              console.log(
+                "checkAuthWithUpdate / Cannot update last seen:",
+                err
+              );
+            });
         }
       }
     );
