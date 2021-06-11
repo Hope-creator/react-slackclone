@@ -7,6 +7,10 @@ import {
   FileController,
   MarkedMessageController,
   UserController,
+  UnreadMessagesController,
+  ConversationMembersController,
+  DialogController,
+  DirectMessagesController,
 } from "../controllers";
 import MessagesController from "../controllers/MessagesController";
 import { authencticateToken } from "../utils/middleware/checkAuthWithUpdate";
@@ -18,9 +22,13 @@ const createRoutes = (app: express.Express, io: socket.Server) => {
   const AuthCtrl = new AuthController();
   const CompanyCtrl = new CompanyController();
   const ConversationCtrl = new ConversationController(io);
+  const DialogCtrl = new DialogController(io);
+  const ConversationMembersCtrl = new ConversationMembersController(io);
   const UserCtrl = new UserController();
   const MessagesCtrl = new MessagesController(io);
-  const MarkedMessageCtrl = new MarkedMessageController(io);
+  const DirectMessageCtrl = new DirectMessagesController(io);
+  const MarkedMessageCtrl = new MarkedMessageController();
+  const UnreadMessagesCtrl = new UnreadMessagesController(io);
   const FileCtrl = new FileController();
 
   // # Users
@@ -45,56 +53,72 @@ const createRoutes = (app: express.Express, io: socket.Server) => {
   //# Company
   app.get("/api/company/:id", authencticateToken, CompanyCtrl.show);
 
+  //# Conversation Members
+  app.get(
+    "/api/conversations/members/:id",
+    authencticateToken,
+    ConversationMembersCtrl.index
+  );
+  app.post(
+    "/api/conversations/members/add",
+    authencticateToken,
+    ConversationMembersCtrl.create
+  );
+  app.post(
+    "/api/conversations/members/join",
+    authencticateToken,
+    ConversationMembersCtrl.join
+  );
+  app.post(
+    "/api/conversations/members/kick",
+    authencticateToken,
+    ConversationMembersCtrl.delete
+  );
+
   //# Conversation
   app.get("/api/conversations", authencticateToken, ConversationCtrl.index);
   app.get("/api/conversations/:id", authencticateToken, ConversationCtrl.show);
-  app.get(
-    "/api/conversations/populated/:id",
-    authencticateToken,
-    ConversationCtrl.showPopulate
-  );
   app.post("/api/conversations", authencticateToken, ConversationCtrl.create);
-  app.patch(
-    "/api/conversations/joinall",
+
+  //# Dialog
+  app.get("/api/dialogs", authencticateToken, DialogCtrl.index);
+  app.get("/api/dialogs/:id", authencticateToken, DialogCtrl.show);
+  app.post("/api/dialogs", authencticateToken, DialogCtrl.create);
+
+  //# Direct Messages
+  app.get("/api/messages/dm/:id", authencticateToken, DirectMessageCtrl.index);
+  app.post(
+    "/api/messages/dm",
     authencticateToken,
-    ConversationCtrl.joinAll
+    DirectMessageCtrl.create
+  );
+
+  //# Mark Messages
+  app.get("/api/messages/mark", authencticateToken, MarkedMessageCtrl.index);
+  app.post("/api/messages/mark", authencticateToken, MarkedMessageCtrl.create);
+  app.patch("/api/messages/mark", authencticateToken, MarkedMessageCtrl.delete);
+
+  //# Unread Messages
+  app.get("/api/messages/unread", authencticateToken, UnreadMessagesCtrl.index);
+  app.get(
+    "/api/messages/unread/count/:id",
+    authencticateToken,
+    UnreadMessagesCtrl.count
   );
   app.patch(
-    "/api/conversations/addusers",
+    "/api/messages/unread",
     authencticateToken,
-    ConversationCtrl.addUsers
+    UnreadMessagesCtrl.delete
+  );
+  app.patch(
+    "/api/messages/unread/one",
+    authencticateToken,
+    UnreadMessagesCtrl.deleteOne
   );
 
   //# Messages
-  app.patch("/api/messages/readall", authencticateToken, MessagesCtrl.readAll);
-  app.patch(
-    "/api/messages/readone/message",
-    authencticateToken,
-    MessagesCtrl.readOneByMessageId
-  );
-  app.patch(
-    "/api/messages/readone/conversation",
-    authencticateToken,
-    MessagesCtrl.readAllByConversationId
-  );
-
-  app.get(
-    "/api/messages/unread/:id",
-    authencticateToken,
-    MessagesCtrl.getUnreadCountById
-  );
-  app.get(
-    "/api/messages/allunread",
-    authencticateToken,
-    MessagesCtrl.getUnread
-  );
   app.get("/api/messages/:id", authencticateToken, MessagesCtrl.index);
   app.post("/api/messages/:id", authencticateToken, MessagesCtrl.create);
-
-  //# Mark Messages
-  app.get("/api/mark", authencticateToken, MarkedMessageCtrl.index);
-  app.post("/api/mark", authencticateToken, MarkedMessageCtrl.create);
-  app.delete("/api/mark/:id", authencticateToken, MarkedMessageCtrl.delete);
 
   //# Files
   app.post(
