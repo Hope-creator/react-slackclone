@@ -7,7 +7,6 @@ import { Channel } from "../Channel";
 import { DirectMessageListItem } from "../DirectMessageListItem";
 import { IConversation } from "../../store/modules/conversations/types";
 
-
 import Box from "@material-ui/core/Box";
 import AddBoxOutlinedIcon from "@material-ui/icons/AddBoxOutlined";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
@@ -15,11 +14,15 @@ import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import { JoinAllModal } from "../JoinAllModal";
-import PlaylistAddIcon from '@material-ui/icons/PlaylistAdd';
+import PlaylistAddIcon from "@material-ui/icons/PlaylistAdd";
 import { CreateConversationModal } from "../CreateConversationlModal";
+import { IUser } from "../../store/modules/user/types";
+import { IDialog } from "../../store/modules/dialogs/types";
 
 interface INavbarProps {
-  conversations: IConversation[] | [];
+  conversations: IConversation[];
+  dialogs: IDialog[];
+  user: IUser;
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -41,6 +44,8 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export const Navbar: React.FC<INavbarProps> = ({
   conversations,
+  dialogs,
+  user,
 }: INavbarProps) => {
   const classes = useStyles();
   const standartList = useCallback(
@@ -50,14 +55,6 @@ export const Navbar: React.FC<INavbarProps> = ({
       )),
     []
   );
-  const channels = useCallback(
-    () => conversations.filter((conv) => conv.is_channel),
-    [conversations]
-  );
-  const directMessages = useCallback(
-    () => conversations.filter((conv) => !conv.is_channel),
-    [conversations]
-  );
 
   return (
     <Box className={classes.channelSideBarItemsWrapper}>
@@ -66,35 +63,37 @@ export const Navbar: React.FC<INavbarProps> = ({
         <MoreMenu />
       </List>
       <NestedList listTitle="Channels">
-        {channels().map((channel) => (
+        {conversations.map(channel => (
           <Channel key={channel._id} channel={channel} />
         ))}
         <CreateConversationModal
-            opener={
-              <ListItem dense button>
-                <ListItemIcon>
-                  <AddBoxOutlinedIcon color="primary" />
-                </ListItemIcon>
-                <ListItemText primaryTypographyProps={{ color: "primary" }}>
-                  Add channel
-                </ListItemText>
-              </ListItem>
-            }/>
-          <JoinAllModal opener={
+          opener={
             <ListItem dense button>
-            <ListItemIcon>
-              <PlaylistAddIcon color="primary" />
-            </ListItemIcon>
-            <ListItemText primaryTypographyProps={{ color: "primary" }}>
-              Join all channels
-            </ListItemText>
-          </ListItem>
-          } />
-
+              <ListItemIcon>
+                <AddBoxOutlinedIcon color="primary" />
+              </ListItemIcon>
+              <ListItemText primaryTypographyProps={{ color: "primary" }}>
+                Add channel
+              </ListItemText>
+            </ListItem>
+          }
+        />
+        <JoinAllModal
+          opener={
+            <ListItem dense button>
+              <ListItemIcon>
+                <PlaylistAddIcon color="primary" />
+              </ListItemIcon>
+              <ListItemText primaryTypographyProps={{ color: "primary" }}>
+                Join all channels
+              </ListItemText>
+            </ListItem>
+          }
+        />
       </NestedList>
       <NestedList listTitle="Direct messages">
-        {directMessages().map((dm) => (
-          <DirectMessageListItem key={dm._id} conversation={dm} />
+        {dialogs.map((dialog) => (
+          <DirectMessageListItem key={dialog._id} user={user} dialog={dialog} />
         ))}
       </NestedList>
     </Box>
