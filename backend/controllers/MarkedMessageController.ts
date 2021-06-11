@@ -1,24 +1,19 @@
 import express from "express";
 import { isValidObjectId } from "mongoose";
-import socket from "socket.io";
-import { MarkedMessageModel } from "../models/MarkedMessageModel";
+import { MessageModel } from "../models/MessageModel";
+import { getAggregateMessage } from "../utils/function/getAggregateMessage";
 
 class MarkedMessageController {
-  io: socket.Server;
-
-  constructor(io: socket.Server) {
-    this.io = io;
-  }
-
   index = async (
     req: express.Request,
     res: express.Response
   ): Promise<void> => {
-    const userId = req.userId;
+    const user = req.user;
     try {
-      const markedMessages = await MarkedMessageModel.find({
-        user: userId,
-      }).exec();
+      const markedMessages = await getAggregateMessage(
+        { markedBy: user._id },
+        user._id
+      );
       res.json({ status: "success", data: markedMessages });
     } catch (error) {
       res.status(500).json({
@@ -33,20 +28,20 @@ class MarkedMessageController {
     req: express.Request,
     res: express.Response
   ): Promise<void> => {
-    const userId = req.userId;
-    const messageId = req.body.id;
+    const user = req.user;
+    const messageId = req.body.messageId;
     if (!isValidObjectId(messageId)) {
       res.status(400).json({ status: "error", data: "Wrong type of ID" });
     } else {
       try {
-        await MarkedMessageModel.findOneAndUpdate(
+        await MessageModel.findOneAndUpdate(
           {
-            user: userId,
-            markedMessage: messageId,
+            _id: messageId,
           },
-          {},
           {
-            upsert: true,
+            $addToSet: {
+              markedBy: user._id,
+            },
           }
         );
         res.json({ status: "success", data: true });
@@ -64,16 +59,22 @@ class MarkedMessageController {
     req: express.Request,
     res: express.Response
   ): Promise<void> => {
-    const userId = req.userId;
-    const messageId = req.params.id;
+    const user = req.user;
+    const messageId = req.body.messageId;
     if (!isValidObjectId(messageId)) {
       res.status(400).json({ status: "error", data: "Wrong type of ID" });
     } else {
       try {
-        await MarkedMessageModel.findOneAndRemove({
-          user: userId,
-          markedMessage: messageId,
-        });
+        await MessageModel.findOneAndUpdate(
+          {
+            _id: messageId,
+          },
+          {
+            $pull: {
+              markedBy: user._id,
+            },
+          }
+        );
         res.json({ status: "success", data: true });
       } catch (error) {
         res.status(500).json({
