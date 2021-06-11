@@ -20,7 +20,13 @@ const messagesSlicer = createSlice({
     fetchMessagesConversation(state, action: PayloadAction<string>) {
       state.loadingState = LoadingMessagesState.LOADING;
     },
+    fetchMessagesDialog(state, action: PayloadAction<string>) {
+      state.loadingState = LoadingMessagesState.LOADING;
+    },
     fetchMessagesUnread(state) {
+      state.loadingState = LoadingMessagesState.LOADING;
+    },
+    fetchMessagesMarked(state) {
       state.loadingState = LoadingMessagesState.LOADING;
     },
     setMessagesLoadingState(
@@ -33,6 +39,9 @@ const messagesSlicer = createSlice({
       state.messages = [...action.payload];
     },
     sendNewMessage(state, action: PayloadAction<ISendMessageForm>) {
+      state.loadingSendMessageState = LoadingSendMessageState.LOADING;
+    },
+    sendNewDirectMessage(state, action: PayloadAction<ISendMessageForm>) {
       state.loadingSendMessageState = LoadingSendMessageState.LOADING;
     },
     setSendNewMessageState(
@@ -80,10 +89,12 @@ const messagesSlicer = createSlice({
 export const {
   fetchMessagesConversation,
   fetchMessagesUnread,
+  fetchMessagesMarked,
   setMessages,
   clearMessagesState,
   addNewMessage,
   sendNewMessage,
+  sendNewDirectMessage,
   setSendNewMessageState,
   markMessage,
   markMessageInState,
@@ -92,5 +103,6 @@ export const {
   readMessageInState,
   setMessagesLoadingState,
   readedAllInStateUnread,
+  fetchMessagesDialog
 } = messagesSlicer.actions;
 export default messagesSlicer.reducer;
