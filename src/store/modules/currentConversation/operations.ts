@@ -12,7 +12,7 @@ import { conversationsApi } from "../../../services/api/converastionsApi";
 function* fetchCurrentConversationSaga(action: PayloadAction<string>) {
   try {
     const conversation: IConversation = yield call(
-      conversationsApi.fetchConversationWithPopulate,
+      conversationsApi.fetchConversation,
       action.payload
     );
     yield put(setCurrentConversation(conversation));
