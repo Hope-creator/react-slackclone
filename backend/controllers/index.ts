@@ -1,6 +1,10 @@
-export { default as UserController} from './UserController';
-export { default as AuthController} from './AuthController';
-export { default as CompanyController} from './CompanyController';
-export { default as ConversationController} from './ConversationController';
-export { default as MarkedMessageController} from './MarkedMessageController';
-export { default as FileController} from './FileController';
+export { default as UserController } from "./UserController";
+export { default as AuthController } from "./AuthController";
+export { default as CompanyController } from "./CompanyController";
+export { default as DialogController } from "./DialogController";
+export { default as DirectMessagesController } from "./DirectMessagesController";
+export { default as ConversationController } from "./ConversationController";
+export { default as ConversationMembersController } from "./ConversationMembersController";
+export { default as MarkedMessageController } from "./MarkedMessageController";
+export { default as FileController } from "./FileController";
+export { default as UnreadMessagesController } from "./UnreadMessagesController";
