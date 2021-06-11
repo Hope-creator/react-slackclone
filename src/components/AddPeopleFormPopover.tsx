@@ -46,7 +46,6 @@ export const AddPeopleFormPopover: React.FC<IAddPeopleFormPopoverProps> = ({
   const handleKeyPress = (event: React.KeyboardEvent): any => {
     if (!isUserSelected) {
       if (event.code === "Enter" || event.code === "NumpadEnter") {
-        console.log(username);
         event.preventDefault();
         setSearchUserLoading(true);
         setIsOpen(true);
