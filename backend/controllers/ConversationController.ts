@@ -1,8 +1,6 @@
 import express from "express";
 import { isValidObjectId } from "mongoose";
-import { constants } from "node:crypto";
 import socket from "socket.io";
-import { CompanyModel } from "../models/CompanyModel";
 import { ConversationModel } from "../models/ConversationModel";
 import { UserModel } from "../models/UserModel";
 
@@ -32,10 +30,45 @@ class ConversationController {
     res: express.Response
   ): Promise<void> => {
     const userId = req.userId;
+    const _user = req.user;
     try {
-      const conversations = await ConversationModel.find({
-        $or: [{ members: userId }, { is_private: false }],
-      })
+      const user = await UserModel.findById(userId);
+      if (!user) {
+        res
+          .status(404)
+          .json({ status: "error", data: "User doest not exists" });
+        return;
+      }
+      const conversations = await ConversationModel.aggregate([
+        {
+          $match: {
+            $or: [{ _id: { $in: user.conversations } }, { is_private: false }],
+          },
+        },
+        {
+          $lookup: {
+            from: "users",
+            let: { conv_id: "$_id", isChannel: "$is_channel" },
+            pipeline: [
+              {
+                $match: {
+                  $and: [
+                    { $expr: { $eq: ["$$isChannel", false] } },
+                    { $expr: { $in: ["$$conv_id", "$conversations"] } },
+                    { $expr: { $ne: ["$_id", _user._id] } },
+                  ],
+                },
+              },
+              {
+                $group: {
+                  _id: "$_id",
+                },
+              },
+            ],
+            as: "user",
+          },
+        },
+      ])
         .sort({ name: 1 })
         .exec();
       res.json({ status: "success", data: conversations });
@@ -51,10 +84,24 @@ class ConversationController {
   show = async (req: express.Request, res: express.Response): Promise<void> => {
     const userId = req.userId;
     const conversationId = req.params.id;
+    if (!isValidObjectId(conversationId)) {
+      res.status(403).json({
+        status: "error",
+        data: "Wrong type of conversation ID",
+      });
+      return;
+    }
     try {
+      const user = await UserModel.findById(userId);
+      if (!user) {
+        res
+          .status(404)
+          .json({ status: "error", data: "User doest not exists" });
+        return;
+      }
       const conversation = await ConversationModel.findOne({
         _id: conversationId,
-        $or: [{ members: userId }, { is_private: false }],
+        $or: [{ _id: { $in: user.conversations } }, { is_private: false }],
       }).exec();
       res.json({ status: "success", data: conversation });
     } catch (error) {
@@ -66,39 +113,14 @@ class ConversationController {
     }
   };
 
-  showPopulate = async (
-    req: express.Request,
-    res: express.Response
-  ): Promise<void> => {
-    const userId = req.userId;
-    const conversationId = req.params.id;
-    try {
-      const conversation = await ConversationModel.findOne({
-        _id: conversationId,
-        $or: [{ members: userId }, { is_private: false }],
-      })
-        .populate("members")
-        .populate("creator")
-        .exec();
-      res.json({ status: "success", data: conversation });
-    } catch (error) {
-      res.status(500).json({
-        status: "error",
-        errors: JSON.stringify(error),
-      });
-      console.log("Error on ConversationController / showPopulate:", error);
-    }
-  };
-
   create = async (
     req: express.Request,
     res: express.Response
   ): Promise<void> => {
     try {
-      const userId = req.userId;
+      const user = req.user;
       const isChannelExist = await ConversationModel.exists({
         name: req.body.name,
-        is_channel: true,
       });
       const destId = req.body.id;
       // If body have id the it will be NOT channel and have only 2 members
@@ -107,6 +129,7 @@ class ConversationController {
           status: "error",
           data: "That ID is not correct.",
         });
+        return;
       }
       // Check if channel name already taken
       if (isChannelExist) {
@@ -114,15 +137,16 @@ class ConversationController {
           status: "error",
           data: "That name is already taken by a channel.",
         });
+        return;
       } else {
         // Check if Direct message already exist
         const isDMExist = await ConversationModel.findOne({
+          _id: { $in: user.conversations },
           is_channel: false,
-          members: { $all: [destId, userId] },
         });
         // If Direct message exist redirect to that DM ID
         if (isDMExist) {
-          res.status(409);
+          res.status(409).redirect(isDMExist._id.toString());
         } else {
           // If no channel and no dm create it
           const postData = {
@@ -132,15 +156,15 @@ class ConversationController {
             purpose: req.body.purpose,
             topic: req.body.topic,
             is_private: (destId && true) || req.body.isPrivate,
-            members: [userId],
             num_members: req.body.isChannel ? 1 : 2,
             unread_count: 0,
           };
-          if (destId) postData.members.push(destId);
-          const conversationRaw = new ConversationModel(postData);
-          const conversation = await conversationRaw.save();
+          const conversation = await new ConversationModel(postData).save();
+          await UserModel.updateOne(
+            { _id: user._id },
+            { $addToSet: { conversations: conversation._id } }
+          );
           this.io.emit("SERVER:CONVERSATION_CREATED");
-
           res.json({ status: "success", data: conversation });
         }
       }
@@ -180,91 +204,6 @@ class ConversationController {
           { new: true }
         ).exec();
         res.json({ status: "success", conversation });
-      }
-    } catch (error) {
-      res.status(500).json({
-        status: "error",
-        errors: JSON.stringify(error),
-      });
-      console.log("Error on ConversationController / update:", error);
-    }
-  };
-
-  joinAll = async (
-    req: express.Request,
-    res: express.Response
-  ): Promise<void> => {
-    try {
-      const userId = req.userId;
-      await ConversationModel.updateMany(
-        { is_private: false },
-        {
-          $addToSet: {
-            members: userId,
-          },
-        }
-      );
-      const conversations = await ConversationModel.find({
-        members: userId,
-      })
-        .sort({ name: 1 })
-        .exec();
-      res.json({ status: "success", data: conversations });
-    } catch (error) {
-      res.status(500).json({
-        status: "error",
-        errors: JSON.stringify(error),
-      });
-      console.log("Error on ConversationController / joinAll:", error);
-    }
-  };
-
-  addUsers = async (
-    req: express.Request,
-    res: express.Response
-  ): Promise<void> => {
-    try {
-      const { conversationId, userId } = req.body;
-
-      let company;
-      if (!userId) {
-        company = await CompanyModel.findOne({}).exec();
-      }
-      if (company) {
-        await ConversationModel.findOneAndUpdate(
-          {
-            _id: conversationId,
-            is_channel: true,
-          },
-          {
-            $addToSet: {
-              members: { $each: company.members },
-            },
-          },
-          { new: true }
-        ).exec();
-        res.json({ status: "success", data: true });
-      } else {
-        if (!isValidObjectId(userId)) {
-          res.status(403).json({
-            status: "error",
-            data: false,
-          });
-        } else {
-          await ConversationModel.findOneAndUpdate(
-            {
-              _id: conversationId,
-              is_channel: true,
-            },
-            {
-              $addToSet: {
-                members: userId,
-              },
-            },
-            { new: true }
-          ).exec();
-          res.json({ status: "success", data: true });
-        }
       }
     } catch (error) {
       res.status(500).json({
