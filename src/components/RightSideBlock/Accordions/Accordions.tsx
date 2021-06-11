@@ -1,6 +1,5 @@
 import React from "react";
 import { IConversation } from "../../../store/modules/conversations/types";
-import { IUser } from "../../../store/modules/user/types";
 
 import { About } from "./About";
 import { Members } from "./Members";
@@ -16,7 +15,7 @@ export const Accordeons: React.FC<IAccordionsProps> = ({
   return (
     <>
       <About channel={channel} />
-      <Members users={channel.members as IUser[]} />
+      <Members channel={channel} />
       <Pinned />
     </>
   );

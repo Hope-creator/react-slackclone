@@ -7,12 +7,19 @@ import AccordionDetails from "@material-ui/core/AccordionDetails";
 import Typography from "@material-ui/core/Typography";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import Grid from "@material-ui/core/Grid/Grid";
-import { IUser } from "../../../store/modules/user/types";
 import { MembersItem } from "./MembersItem";
-
+import { IConversation } from "../../../store/modules/conversations/types";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  selectSideInfoMembers,
+  selectSideInfoMembersLoadingState,
+} from "../../../store/modules/SideInfoMembers/selectors";
+import { LoadingSideInfoMembersState } from "../../../store/modules/SideInfoMembers/types";
+import { CircularProgress } from "@material-ui/core";
+import { fetchSideInfoMembers } from "../../../store/modules/SideInfoMembers/SideInfoMembers";
 
 interface IMembersProps {
-  users: IUser[];
+  channel: IConversation;
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -28,12 +35,16 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-export const Members: React.FC<IMembersProps> = ({ users = [] }) => {
+export const Members: React.FC<IMembersProps> = ({ channel }) => {
   const classes = useStyles();
 
-  const members = users.map((user) => (
-    <MembersItem user={user} />
-  ));
+  const dispatch = useDispatch();
+  const members = useSelector(selectSideInfoMembers);
+  const membersLoadingState = useSelector(selectSideInfoMembersLoadingState);
+
+  React.useEffect(() => {
+    dispatch(fetchSideInfoMembers(channel._id));
+  }, [channel, dispatch]);
 
   return (
     <Accordion square>
@@ -49,7 +60,11 @@ export const Members: React.FC<IMembersProps> = ({ users = [] }) => {
       </AccordionSummary>
       <AccordionDetails>
         <Grid className={classes.fullWidht} direction="column">
-          {members}
+          {membersLoadingState === LoadingSideInfoMembersState.LOADING ? (
+            <CircularProgress />
+          ) : (
+            members.map((user) => <MembersItem user={user} />)
+          )}
         </Grid>
       </AccordionDetails>
     </Accordion>
