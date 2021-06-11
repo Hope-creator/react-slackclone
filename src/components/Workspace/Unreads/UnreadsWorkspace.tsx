@@ -18,7 +18,7 @@ import {
   selectMessagesLoadingState,
 } from "../../../store/modules/messages/selectors";
 import { LoadingMessagesState } from "../../../store/modules/messages/types";
-import { CircularProgress } from "@material-ui/core";
+import { CentralCircularProgress } from "../../CentralCircularProgress";
 
 interface IUnreadsWorkspaceProps {
   user: IUser;
@@ -64,7 +64,7 @@ export const UnreadsWorkspace: React.FC<IUnreadsWorkspaceProps> = ({
       <WorkspaceContent
         children={
           messagesLoadingState === LoadingMessagesState.LOADING ? (
-            <CircularProgress />
+            <CentralCircularProgress />
           ) : (
             <UnreadsContent user={user} messages={messages} />
           )
