@@ -11,32 +11,39 @@ import CommentOutlinedIcon from "@material-ui/icons/CommentOutlined";
 import { IUser } from "../../store/modules/user/types";
 import { useSelector } from "react-redux";
 import { selectUser } from "../../store/modules/user/selectors";
+import { dialogsApi } from "../../services/api/dialogsApi";
+import { useHistory } from "react-router-dom";
 
 interface IProfileInfoProps {
   user: IUser;
-  handleClick?: () => void;
 }
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     profileName: {
-      textAlign: "center"
+      textAlign: "center",
     },
     profileField: {
-      padding: "8px 16px"
-    }
+      padding: "8px 16px",
+    },
   })
 );
 
-export const ProfileInfo: React.FC<IProfileInfoProps> = ({
-  user,
-  handleClick,
-}) => {
+export const ProfileInfo: React.FC<IProfileInfoProps> = ({ user }) => {
   const classes = useStyles();
 
   const me = useSelector(selectUser);
 
+  const history = useHistory();
+
   const isMe = me && me._id === user._id;
+
+  const handleStartDialogButtonClick = () => {
+    dialogsApi
+      .createDialog(user._id)
+      .then((res) => history.push(`d/${res._id}`))
+      .catch((err) => console.log(err));
+  };
 
   return (
     <Box>
@@ -60,13 +67,13 @@ export const ProfileInfo: React.FC<IProfileInfoProps> = ({
           ) : user.work ? (
             <Link>Add a title</Link>
           ) : null}
-          {isMe? (
+          {isMe ? (
             <IconButton>
               <CreateIcon />
               Edit profile
             </IconButton>
           ) : (
-            <IconButton>
+            <IconButton onClick={handleStartDialogButtonClick}>
               <CommentOutlinedIcon />
               Start dialog
             </IconButton>
