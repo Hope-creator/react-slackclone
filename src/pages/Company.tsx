@@ -22,6 +22,8 @@ import {
 } from "../store/modules/currentInfo_side/selectors";
 import { InfoItemTypeState } from "../store/modules/currentInfo_side/types";
 import socket from "../services/socket/socket";
+import { fetchDialogs } from "../store/modules/dialogs/dialogs";
+import { selectDialogs } from "../store/modules/dialogs/selectors";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -78,12 +80,14 @@ export const Company = () => {
   const history = useHistory();
   const dispatch = useDispatch();
   const conversations = useSelector(selectConversations);
+  const dialogs = useSelector(selectDialogs);
   const itemType = useSelector(selectCurrentInfoItemType);
   const itemInfo = useSelector(selectCurrentInfoItem);
 
   useEffect(() => {
     if (user) {
       dispatch(fetchConversations());
+      dispatch(fetchDialogs());
       socket.on("SERVER:CONVERSATION_CREATED", () => dispatch(fetchConversations()));
       socket.on("SERVER:NEW_MESSAGE", () => dispatch(fetchConversations()));
     }
@@ -114,7 +118,7 @@ export const Company = () => {
             >
               <CompanyMenuContent company={company} />
             </CompanyMenuButton>
-            <Navbar conversations={conversations} />
+            <Navbar user={user} dialogs={dialogs} conversations={conversations} />
           </Grid>
           <Grid item xs className={classes.workspace}>
             <Workspace />
