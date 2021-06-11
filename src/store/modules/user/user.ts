@@ -25,9 +25,12 @@ const userSlice = createSlice({
     setUserLoadingState(state, action: PayloadAction<LoadingUserState>) {
       state.loadingState = action.payload;
     },
+    addUserConversations(state,action: PayloadAction<string[]>) {
+      if(state.user) state.user.conversations = [...state.user.conversations, ...action.payload]
+    }
   },
 });
 
-export const { fetchUser, setUser, setUserLoadingState, fetchMe, createUser } =
+export const { fetchUser, setUser, setUserLoadingState, fetchMe, createUser, addUserConversations } =
   userSlice.actions;
 export default userSlice.reducer;
