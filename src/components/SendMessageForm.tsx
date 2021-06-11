@@ -12,6 +12,7 @@ import Grid from "@material-ui/core/Grid";
 import Box from "@material-ui/core/Box";
 import SendIcon from "@material-ui/icons/Send";
 import {
+  sendNewDirectMessage,
   sendNewMessage,
   setSendNewMessageState,
 } from "../store/modules/messages/messages";
@@ -23,12 +24,13 @@ import { LoadingSendMessageState } from "../store/modules/messages/types";
 import { CircularProgress } from "@material-ui/core";
 
 export interface ISendMessageProps {
-  conversationId: string;
+  dest: string;
+  dm?: boolean;
 }
 
 export interface ISendMessageForm {
   text: string;
-  conversationId: string;
+  dest: string;
   attachments?: string[];
 }
 
@@ -74,11 +76,13 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export const SendMessageForm: React.FC<ISendMessageProps> = ({
-  conversationId,
+  dest,
+  dm,
 }: ISendMessageProps) => {
   const classes = useStyles();
 
   const dispatch = useDispatch();
+  console.log(dest)
 
   const sendMessageLoadingState = useSelector(selectSendNewMessageLoadingState);
 
@@ -101,7 +105,7 @@ export const SendMessageForm: React.FC<ISendMessageProps> = ({
       images.forEach((image) => {
         formData.append("images", image.image);
       });
-      formData.append("conversationId", conversationId);
+      formData.append("dest", dest);
       // First in call api to upload on Cloudinary
       uploadApi
         .uploadFile(formData)
@@ -109,16 +113,22 @@ export const SendMessageForm: React.FC<ISendMessageProps> = ({
           // After cloudinary upload file and server save it to DB
           // it will return correct form files
           const messageData = {
-            conversationId: conversationId,
+            dest: dest,
             text: data.text,
             attachments: files,
           };
-          dispatch(sendNewMessage(messageData));
+          dm
+          ? dispatch(sendNewDirectMessage(messageData))
+          : dispatch(sendNewMessage(messageData));
         })
-        .catch((err) => dispatch(setSendNewMessageState(LoadingSendMessageState.ERROR)));
+        .catch((err) =>
+          dispatch(setSendNewMessageState(LoadingSendMessageState.ERROR))
+        );
     } else {
-      const messageData = { conversationId: conversationId, text: data.text };
-      dispatch(sendNewMessage(messageData));
+      const messageData = { dest: dest, text: data.text };
+      dm
+        ? dispatch(sendNewDirectMessage(messageData))
+        : dispatch(sendNewMessage(messageData));
     }
     reset({ text: "" });
     setImages([]);
