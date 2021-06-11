@@ -2,14 +2,22 @@ import React from "react";
 
 import Grid from "@material-ui/core/Grid";
 import { makeStyles, createStyles, Theme } from "@material-ui/core/styles";
-import { IMessage } from "../../../../store/modules/messages/types";
+import { LoadingMessagesState } from "../../../../store/modules/messages/types";
 import { Message } from "../../../Message/Message";
 import { SendMessageForm } from "../../../SendMessageForm";
 import { IUser } from "../../../../store/modules/user/types";
+import { IConversation } from "../../../../store/modules/conversations/types";
+import { ViewConversationBlock } from "../../../ViewConversationBlock";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  selectMessages,
+  selectMessagesLoadingState,
+} from "../../../../store/modules/messages/selectors";
+import { fetchMessagesConversation } from "../../../../store/modules/messages/messages";
+import { CircularProgress } from "@material-ui/core";
 
 export interface IConversationContentProps {
-  messages: IMessage[];
-  conversationId: string;
+  conversation: IConversation;
   user: IUser;
 }
 
@@ -31,17 +39,27 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     textareaBlock: {
       marginTop: "auto",
-      padding: "0 20px 20px 20px"
+      padding: "0 20px 20px 20px",
+    },
+    viewChannelBlock: {
+      marginTop: "auto",
     },
   })
 );
 
 export const ConversationContent: React.FC<IConversationContentProps> = ({
-  messages,
-  conversationId,
-  user
+  conversation,
+  user,
 }: IConversationContentProps) => {
   const classes = useStyles();
+
+  const messages = useSelector(selectMessages);
+  const messagesLoadingState = useSelector(selectMessagesLoadingState);
+  const dispatch = useDispatch();
+
+  React.useEffect(() => {
+    dispatch(fetchMessagesConversation(conversation._id));
+  }, [conversation._id, dispatch]);
 
   const ref = React.useRef<HTMLDivElement>(null);
 
@@ -52,25 +70,41 @@ export const ConversationContent: React.FC<IConversationContentProps> = ({
         block: "start",
       });
     }
-  }, []);
+  }, [ref]);
 
-  return (
-    <>
-      <Grid
-        container
-        item
-        className={classes.workspaceContentMessages}
-        direction="column"
-        wrap="nowrap"
-      >
-        {messages.map((message) => (
-          <Message user={user} key={message._id} message={message} />
-        ))}
-        <div ref={ref}></div>
-      </Grid>
-      <Grid className={classes.textareaBlock} item>
-        <SendMessageForm conversationId={conversationId} />
-      </Grid>
-    </>
-  );
+  const isMember = user.conversations.includes(conversation._id);
+
+  if (messagesLoadingState === LoadingMessagesState.LOADING)
+    return <CircularProgress />;
+  if (messagesLoadingState === LoadingMessagesState.LOADED) {
+    return (
+      <>
+        <Grid
+          container
+          item
+          className={classes.workspaceContentMessages}
+          direction="column"
+          wrap="nowrap"
+        >
+          {messages.map((message) => (
+            <Message user={user} key={message._id} message={message} />
+          ))}
+          <div ref={ref}></div>
+        </Grid>
+        <Grid
+          className={
+            isMember ? classes.textareaBlock : classes.viewChannelBlock
+          }
+          item
+        >
+          {isMember ? (
+            <SendMessageForm dest={conversation._id} />
+          ) : (
+            <ViewConversationBlock conversation={conversation} />
+          )}
+        </Grid>
+      </>
+    );
+  }
+  return null;
 };

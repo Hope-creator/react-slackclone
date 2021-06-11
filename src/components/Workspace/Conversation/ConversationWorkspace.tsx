@@ -1,11 +1,7 @@
 import React from "react";
 
-import {
-  LoadingCurrentConversationState,
-} from "../../../store/modules/currentConversation/types";
-import {
-  IMessage,
-} from "../../../store/modules/messages/types";
+import { LoadingCurrentConversationState } from "../../../store/modules/currentConversation/types";
+import { IMessage } from "../../../store/modules/messages/types";
 import { IUser } from "../../../store/modules/user/types";
 import { useDispatch, useSelector } from "react-redux";
 import { selectMessagesLoadingState } from "../../../store/modules/messages/selectors";
@@ -14,6 +10,7 @@ import socket from "../../../services/socket/socket";
 import { addNewMessage } from "../../../store/modules/messages/messages";
 import { useHistory } from "react-router";
 import {
+  addMemberCurrentConversation,
   clearCurrentConversation,
   fetchCurrentConversation,
 } from "../../../store/modules/currentConversation/currentConversation";
@@ -21,9 +18,12 @@ import {
   selectCurrentConversation,
   selectCurrentConversationLoadingState,
 } from "../../../store/modules/currentConversation/selectors";
-import { DirectMessageWorkspace } from "./DirectMessageWorkspace";
-import { ChannelWorkspace } from "./ChannelWorkspace";
 import { DefaultWorkspace } from "../DefaultWorkspace";
+import { WorkspaceHeader } from "../WorkspaceHeader";
+import { LeftSideConversationContent } from "./Header/LeftSideConversationContent";
+import { RightSideConversationContent } from "./Header/RightSideConversationContent";
+import { WorkspaceContent } from "../WorkspaceContent";
+import { ConversationContent } from "./Content/ConversationContent";
 
 interface IConversationWorkspaceProps {
   user: IUser;
@@ -42,7 +42,7 @@ export const ConversationWorkspace: React.FC<IConversationWorkspaceProps> = ({
   );
 
   React.useEffect(() => {
-    if (path.length === 25) {
+    if (path.match(/^\/\w{24}$/)) {
       const fetchPath = path.split("").slice(1).join("");
       dispatch(fetchCurrentConversation(fetchPath));
     }
@@ -51,29 +51,70 @@ export const ConversationWorkspace: React.FC<IConversationWorkspaceProps> = ({
     };
   }, [path, dispatch]);
 
+  const newMessageHandleListener = React.useCallback(
+    (message: IMessage) => {
+      dispatch(addNewMessage(message));
+    },
+    [dispatch]
+  );
+
+  const newMemberHandleListener = React.useCallback(
+    (member: string) => {
+      dispatch(addMemberCurrentConversation());
+    },
+    [dispatch]
+  );
+
+  React.useEffect(() => {
+    if (
+      conversation &&
+      conversationLoadingState === LoadingCurrentConversationState.LOADED
+    ) {
+      socket.on("SERVER:NEW_MEMBER", newMemberHandleListener);
+    }
+    return function clearConnect() {
+      socket.removeListener("SERVER:NEW_MEMBER", newMemberHandleListener);
+    };
+  }, [
+    conversation,
+    dispatch,
+    messagesLoadingState,
+    newMemberHandleListener,
+    conversationLoadingState,
+  ]);
+
   React.useEffect(() => {
     if (conversation && messagesLoadingState === LoadingMessagesState.LOADED) {
       socket.emit("CONVERSATION:JOIN", conversation._id);
-      socket.on("SERVER:NEW_MESSAGE", (message: IMessage) => {
-        dispatch(addNewMessage(message));
-      });
+      socket.on("SERVER:NEW_MESSAGE", newMessageHandleListener);
     }
     return function clearConnect() {
       socket.emit("CONVERSATION:LEAVE");
-      socket.removeListener("SERVER:NEW_MESSAGE");
+      socket.removeListener("SERVER:NEW_MESSAGE", newMessageHandleListener);
     };
-  }, [conversation, dispatch, messagesLoadingState]);
+  }, [conversation, dispatch, messagesLoadingState, newMessageHandleListener]);
 
   if (
     conversationLoadingState === LoadingCurrentConversationState.LOADED &&
     conversation
   ) {
-    return conversation.is_channel ? (
-      <ChannelWorkspace user={user} conversation={conversation} />
-    ) : (
-      <DirectMessageWorkspace user={user} conversation={conversation} />
-    );
+    return  (<>
+    <WorkspaceHeader
+      leftSideContent={
+        <LeftSideConversationContent conversation={conversation} />
+      }
+      rightSideContent={
+        <RightSideConversationContent conversation={conversation} />
+      }
+    />
+    <WorkspaceContent
+      children={
+          <ConversationContent
+            user={user}
+            conversation={conversation}
+          />}
+    />
+  </>)
   }
-
   return <DefaultWorkspace />;
 };

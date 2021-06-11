@@ -9,7 +9,6 @@ import ErrorOutlineIcon from "@material-ui/icons/ErrorOutline";
 import PersonAddIcon from "@material-ui/icons/PersonAdd";
 import Tooltip from "@material-ui/core/Tooltip";
 import IconButton from "@material-ui/core/IconButton";
-import { IUser } from "../../../../store/modules/user/types";
 
 interface IRightSideConversationContentProps {
   conversation: IConversation;
@@ -20,20 +19,19 @@ export const RightSideConversationContent: React.FC<IRightSideConversationConten
     const dispatch = useDispatch();
 
     const infoButtonHandleClick = () => {
-      if (conversation) dispatch(fetchCurrentInfoChannel(conversation._id));
+      dispatch(fetchCurrentInfoChannel(conversation._id));
     };
 
     return (
       <>
         <MembersModal
-          name={conversation.name}
-          users={conversation.members as IUser[]}
+          conversation={conversation}
           opener={
             <Tooltip
               title={`View all ${conversation.num_members} members`}
               aria-label={`View all ${conversation.num_members} members`}
             >
-              <IconButton>{conversation.members.length}</IconButton>
+              <IconButton>{conversation.num_members}</IconButton>
             </Tooltip>
           }
         />
