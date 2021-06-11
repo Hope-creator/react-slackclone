@@ -7,7 +7,9 @@ import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 import { useDispatch } from "react-redux";
 import { fetchCurrentInfoProfile } from "../store/modules/currentInfo_side/currentInfo";
-import { conversationsApi } from "../services/api/converastionsApi";
+import { dialogsApi } from "../services/api/dialogsApi";
+import { useHistory } from "react-router-dom";
+import { addOneDialog } from "../store/modules/dialogs/dialogs";
 
 interface IUserPopoverContentProps {
   user: IUser;
@@ -33,14 +35,19 @@ export const UserPopoverContent: React.FC<IUserPopoverContentProps> = ({
 
   const dispatch = useDispatch();
 
+  const history = useHistory();
+
   const userInfoHandleClick = () => {
     dispatch(fetchCurrentInfoProfile(user._id));
   };
 
   const dialogHandleClick = () => {
-    conversationsApi
-      .createDirectMessage(user.name, user._id)
-      .then()
+    dialogsApi
+      .createDialog(user._id)
+      .then((res) => {
+        history.push(`d/${res._id}`);
+        dispatch(addOneDialog(res));
+      })
       .catch((err) => console.log(err));
   };
 
