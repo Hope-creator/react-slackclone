@@ -7,7 +7,7 @@ import { IConversation } from "./ConversationModel";
 export interface IFile {
   filename: string;
   url: string;
-  conversation: IConversation | Schema.Types.ObjectId;
+  dest: Schema.Types.ObjectId;
   user: IUser | Schema.Types.ObjectId;
 }
 
@@ -23,7 +23,7 @@ const FileSchema = new Schema(
       required: true,
       type: String,
     },
-    conversation: { type: Schema.Types.ObjectId, ref: "Conversation" },
+    dest: Schema.Types.ObjectId,
     user: { type: Schema.Types.ObjectId, ref: "User" },
   },
   { versionKey: false }
