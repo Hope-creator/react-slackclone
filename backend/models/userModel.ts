@@ -9,6 +9,7 @@ export interface IUser {
   email: string;
   status: string;
   is_admin: boolean;
+  conversations: Schema.Types.ObjectId[];
   display_name?: string;
   avatar?: string;
   work?: string;
@@ -55,6 +56,7 @@ const UserSchema = new Schema(
     avatar: String,
     work: String,
     phone: Number,
+    conversations: [{type: Schema.Types.ObjectId, ref: "Conversations"}],
     last_seen: {
       type: Date,
       default: new Date(),
