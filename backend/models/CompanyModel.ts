@@ -1,4 +1,3 @@
-import { IUser } from "./../../src/store/modules/user/types";
 import { Schema, Document } from "mongoose";
 import { mongoose } from "../core/db";
 
