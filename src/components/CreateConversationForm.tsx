@@ -13,6 +13,8 @@ import { useHistory } from "react-router";
 import Switch from "@material-ui/core/Switch";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import { Typography } from "@material-ui/core";
+import { addUserConversations } from "../store/modules/user/user";
+import { useDispatch } from "react-redux";
 
 export interface ICreateConversationFormProps {
   closeModalFunction: () => void;
@@ -46,6 +48,8 @@ export const CreateConversationForm: React.FC<ICreateConversationFormProps> = ({
 
   const history = useHistory();
 
+  const dispatch = useDispatch();
+
   const [open, setOpen] = React.useState<boolean>(false);
 
   const {
@@ -59,6 +63,7 @@ export const CreateConversationForm: React.FC<ICreateConversationFormProps> = ({
     conversationsApi
       .createChannel(data.name, data.isPrivate)
       .then((conversation) => {
+        dispatch(addUserConversations([conversation._id]));
         history.push(`/${conversation._id}`);
         closeModalFunction();
       })
