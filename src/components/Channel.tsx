@@ -5,15 +5,30 @@ import ListItemText from "@material-ui/core/ListItemText";
 import { IConversation } from "../store/modules/conversations/types";
 import { useHistory } from "react-router-dom";
 import Typography from "@material-ui/core/Typography";
+import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 
 interface ChannelProps {
   channel: IConversation;
 }
 
-export const Channel: React.FC<ChannelProps> = ({
-  channel,
-}) => {
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    active: {
+      backgroundColor: theme.palette.primary.dark,
+      "&:hover": {
+        backgroundColor: theme.palette.primary.dark
+      }
+    },
+    activeIcon: {
+      color: "#fff",
+    }
+  })
+);
+
+export const Channel: React.FC<ChannelProps> = ({ channel }) => {
+  const classes = useStyles();
   const history = useHistory();
+  const isActive = history.location.pathname.match(channel._id);
   const pushChannel = useCallback(
     (id) => {
       history.push(`/${id}`);
@@ -21,14 +36,19 @@ export const Channel: React.FC<ChannelProps> = ({
     [history]
   );
   return (
-    <ListItem dense button onClick={() => pushChannel(channel._id)}>
+    <ListItem
+      className={isActive ? classes.active : undefined}
+      dense
+      button
+      onClick={() => pushChannel(channel._id)}
+    >
       {channel.is_private ? (
         <ListItemIcon>
-          <LockIcon color="primary" />
+          <LockIcon className={isActive ? classes.activeIcon : undefined} color="primary" />
         </ListItemIcon>
       ) : (
         <ListItemIcon>
-          <Typography color="primary" variant="h6">
+          <Typography className={isActive ? classes.activeIcon : undefined} color="primary" variant="h6">
             &nbsp;&nbsp;#
           </Typography>
         </ListItemIcon>
@@ -41,6 +61,7 @@ export const Channel: React.FC<ChannelProps> = ({
             whiteSpace: "nowrap",
             overflow: "hidden",
             textOverflow: "ellipsis",
+            color: isActive ? "#fff" : undefined,
           },
         }}
       >
