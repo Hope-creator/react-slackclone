@@ -10,6 +10,7 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     workspaceContentGrid: {
       height: "calc(100% - 64px)",
+      position: "relative",
     },
   })
 );
