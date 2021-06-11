@@ -1,5 +1,4 @@
 import { IMessage } from "./MessageModel";
-import { IUser } from "./UserModel";
 import { Schema, Document } from "mongoose";
 import { mongoose } from "../core/db";
 
@@ -12,13 +11,11 @@ export interface ITopic extends IPurpose {}
 
 export interface IConversation {
   name?: string;
-  is_channel?: boolean;
   creator?: Schema.Types.ObjectId;
   purpose?: IPurpose;
   topic?: ITopic;
   messages: IMessage[];
   is_private: boolean;
-  members: Schema.Types.ObjectId[];
   num_members: number;
   unread_count: number;
 }
@@ -28,7 +25,6 @@ export interface IConversationDocument extends IConversation, Document {}
 const ConversationSchema = new Schema(
   {
     name: String,
-    is_channel: Boolean,
     creator: { type: Schema.Types.ObjectId, ref: "User" },
     purpose: {
       value: String,
@@ -42,7 +38,6 @@ const ConversationSchema = new Schema(
       type: Boolean,
       default: false,
     },
-    members: [{ type: Schema.Types.ObjectId, ref: "User" }],
     num_members: Number,
     unread_count: Number,
   },
