@@ -1,17 +1,31 @@
 import React from "react";
 import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
 import Modal from "@material-ui/core/Modal";
-import { Grid, IconButton, Paper, Typography } from "@material-ui/core";
+import {
+  CircularProgress,
+  Grid,
+  IconButton,
+  Paper,
+  Typography,
+} from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
 import { MembersSearchForm } from "./MembersSearchForm";
-import { IUser } from "../store/modules/user/types";
 import { UserListItem } from "./UserListItem";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { selectUser } from "../store/modules/user/selectors";
+import {
+  selectConversationMembers,
+  selectConversationsMembersLoadingState,
+} from "../store/modules/conversationMembers/selectors";
+import { LoadingConversationsMembersState } from "../store/modules/conversationMembers/types";
+import { IConversation } from "../store/modules/conversations/types";
+import {
+  clearConversationMembers,
+  fetchConverastionMembers,
+} from "../store/modules/conversationMembers/conversationMembers";
 
 interface IMembersModalProps {
-  name: string;
-  users: IUser[];
+  conversation: IConversation;
   opener: React.ReactNode;
 }
 
@@ -39,17 +53,31 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 export const MembersModal: React.FC<IMembersModalProps> = ({
-  users,
   opener,
-  name,
+  conversation,
 }) => {
   const classes = useStyles();
 
   const me = useSelector(selectUser);
 
+  const dispatch = useDispatch();
+
   const [open, setOpen] = React.useState(false);
 
   const [filterName, setFilterName] = React.useState<string>("");
+
+  const members = useSelector(selectConversationMembers);
+
+  const membersLoadingState = useSelector(
+    selectConversationsMembersLoadingState
+  );
+
+  React.useEffect(() => {
+    dispatch(fetchConverastionMembers(conversation._id));
+    return function cleanup() {
+      dispatch(clearConversationMembers());
+    };
+  }, [conversation._id, dispatch]);
 
   const handleOpen = () => {
     setOpen(true);
@@ -65,21 +93,38 @@ export const MembersModal: React.FC<IMembersModalProps> = ({
 
   const children = () => (
     <Paper className={classes.paper}>
-      <Grid alignItems="center" container justify="space-between" wrap="nowrap">
-        <Typography className={classes.headerText} variant="h6">
-          {users.length} members in #{name}
-        </Typography>
-        <IconButton onClick={handleClose}>
-          <CloseIcon />
-        </IconButton>
-      </Grid>
-      <MembersSearchForm formSubmit={changeFilterName} />
-      {(
-        (filterName && users.filter((user) => user.name === filterName)) ||
-        users
-      ).map((user) => (
-        <UserListItem key={user._id} user={user} isMe={(me as IUser)._id === user._id} />
-      ))}
+      {membersLoadingState === LoadingConversationsMembersState.LOADING ? (
+        <CircularProgress />
+      ) : (
+        <>
+          <Grid
+            alignItems="center"
+            container
+            justify="space-between"
+            wrap="nowrap"
+          >
+            <Typography className={classes.headerText} variant="h6">
+              {members.length} members in #{conversation.name}
+            </Typography>
+            <IconButton onClick={handleClose}>
+              <CloseIcon />
+            </IconButton>
+          </Grid>
+          <MembersSearchForm formSubmit={changeFilterName} />
+          {me &&
+            (
+              (filterName &&
+                members.filter((user) => user.name === filterName)) ||
+              members
+            ).map((user) => (
+              <UserListItem
+                key={user._id}
+                user={user}
+                isMe={me._id === user._id}
+              />
+            ))}
+        </>
+      )}
     </Paper>
   );
 
