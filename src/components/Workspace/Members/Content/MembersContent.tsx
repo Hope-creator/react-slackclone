@@ -41,8 +41,6 @@ export const MembersContent: React.FC<IMembersContentProps> = ({
     setSearchName(name);
   };
 
-  console.log(searchName);
-
   return (
     <>
       <Box className={classes.formContainer}>
