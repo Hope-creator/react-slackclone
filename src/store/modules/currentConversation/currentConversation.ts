@@ -7,9 +7,7 @@ import {
 
 const initialState = {
   currentConversation: undefined,
-  //messages: [],
   loadingState: LoadingCurrentConversationState.NEVER,
- // loadingSendMessageState: LoadingSendMessageState.NEVER,
 } as ICurrentConversationState;
 
 const currentConversationSlicer = createSlice({
@@ -28,41 +26,9 @@ const currentConversationSlicer = createSlice({
     ) {
       state.loadingState = action.payload;
     },
-   /* setMessages(state, action: PayloadAction<IMessage[] | []>) {
-      state.messages = [...action.payload];
+    addMemberCurrentConversation(state) {
+      if (state.currentConversation) state.currentConversation.num_members++;
     },
-    sendNewMessage(state, action: PayloadAction<ISendMessageForm>) {
-      state.loadingSendMessageState = LoadingSendMessageState.LOADING;
-    },
-    setSendNewMessageState(
-      state,
-      action: PayloadAction<LoadingSendMessageState>
-    ) {
-      state.loadingSendMessageState = action.payload;
-    },*/
-    //markMessage(state, action: PayloadAction<string>) {}, // Action for saga
-    /*markMessageInState(state, action: PayloadAction<string>) {
-      const index = state.messages.findIndex(
-        (message) => message._id === action.payload
-      );
-      state.messages[index].marked = true;
-    },*/
-   /* unmarkMessage(state, action: PayloadAction<string>) {}, // Action for saga
-    unmarkMessageInState(state, action: PayloadAction<string>) {
-      const index = state.messages.findIndex(
-        (message) => message._id === action.payload
-      );
-      state.messages[index].marked = false;
-    },*/
-  /*changeMessage(state, action: PayloadAction<IMessage>) {
-      const index = state.messages.findIndex(
-        (message) => message._id === action.payload._id
-      );
-      state.messages[index] = action.payload;
-    },
-    addNewMessage(state, action: PayloadAction<IMessage>) {
-      state.messages.push(action.payload);
-    },*/
     clearCurrentConversation() {
       return initialState;
     },
@@ -73,15 +39,7 @@ export const {
   fetchCurrentConversation,
   setCurrentConversation,
   setCurrentConversationLoadingState,
-  //setMessages,
+  addMemberCurrentConversation,
   clearCurrentConversation,
-  /*addNewMessage,
-  sendNewMessage,
-  setSendNewMessageState,
-  markMessage,
-  markMessageInState,
-  unmarkMessage,
-  unmarkMessageInState,
-  changeMessage*/
 } = currentConversationSlicer.actions;
 export default currentConversationSlicer.reducer;
