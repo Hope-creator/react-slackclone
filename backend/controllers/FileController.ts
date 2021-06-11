@@ -1,31 +1,30 @@
 import express from "express";
 import { isValidObjectId } from "mongoose";
-import socket from "socket.io";
 import cloudinary from "../core/cloudinary";
 import { ConversationModel } from "../models/ConversationModel";
+import { DialogModel } from "../models/DialogModel";
 import { FileModel } from "../models/FileModel";
-import { MarkedMessageModel } from "../models/MarkedMessageModel";
-import { MessageModel } from "../models/MessageModel";
 
 class FileController {
   upload = async (
     req: express.Request,
     res: express.Response
   ): Promise<void> => {
-    const userId = req.userId;
+    const user = req.user;
     const files = req.files;
     if (!files) {
       res.status(400).json({ status: "error", message: "No files attached" });
     } else {
-      const conversationId = req.body.conversationId;
-      if (!isValidObjectId(conversationId) || !conversationId) {
+      const dest = req.body.dest;
+      if (!isValidObjectId(dest)) {
         res
           .status(400)
           .json({ status: "error", data: "Wrong conversation id type" });
       } else {
         try {
-          const isExist = ConversationModel.exists({ _id: conversationId });
-          if (!isExist) {
+          const isExist = ConversationModel.exists({ _id: dest });
+          const isDmExist = DialogModel.exists({ _id: dest });
+          if (!isExist || !isDmExist) {
             res
               .status(404)
               .json({ status: "error", data: "Converastion does not exist" });
@@ -53,8 +52,8 @@ class FileController {
                   const data = {
                     filename: file.original_filename,
                     url: file.url,
-                    conversation: conversationId,
-                    user: userId,
+                    dest: dest,
+                    user: user._id,
                   };
                   return await new FileModel(data).save();
                 })
