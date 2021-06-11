@@ -1,13 +1,12 @@
 export interface ICompany {
-  _id: string,
-  name: string,
+  _id: string;
+  name: string;
   primary_owner: {
-    user_id: string,
-    email: string,
-  },
-  members: IUser[] | never[]
+    user_id: string;
+    email: string;
+  };
+  members: IUser[] | never[];
 }
-
 
 export interface IUser {
   _id: string;
@@ -16,6 +15,7 @@ export interface IUser {
   avatar: string;
   email: string;
   is_admin: boolean;
+  conversations: string[];
   display_name?: string;
   work?: string;
   phone?: number;
