@@ -113,7 +113,7 @@ class AuthController {
     try {
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
-        res.status(400).json({ status: "error", errors: errors.array() });
+        res.status(400).json({ status: "error", data: errors.array() });
         return;
       }
 
@@ -157,8 +157,8 @@ class AuthController {
 
   async getMe(req: express.Request, res: express.Response): Promise<void> {
     try {
-      const id = req.userId;
-      const user = await UserModel.findById(id).populate("company");
+      const userId = req.user._id
+      const user = await UserModel.findById(userId).populate("company");
       res.json({
         status: "success",
         data: user,
