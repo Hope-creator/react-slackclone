@@ -1,10 +1,13 @@
 import express from "express";
-import dotenv from "dotenv";
-dotenv.config();
-
+import "./core/db";
 import { createServer } from "http";
 import createSocket from "./core/socket";
 import createRoutes from "./core/routes";
+import cookieSession from "cookie-session";
+import dotenv from 'dotenv';
+dotenv.config()
+
+
 
 
 const app = express();
@@ -15,9 +18,9 @@ const io = createSocket(http);
 
 app.use(express.json());
 
+//CompanyModel.create({})
 
 // #Cookie session
-import cookieSession from "cookie-session";
 app.use(
   cookieSession({
     secret: process.env.COOKIE_SESSION_SECRET,
@@ -30,7 +33,6 @@ app.use(
 createRoutes(app, io);
 
 //# mongoDB
-import "./core/db";
 
 http.listen(port, () => {
   console.log(`Server is up on ${port}`);
