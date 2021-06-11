@@ -1,4 +1,3 @@
-import { MarkedMessageModel } from "./MarkedMessageModel";
 import { IConversation } from "./ConversationModel";
 import { Schema, Document } from "mongoose";
 import { mongoose } from "../core/db";
@@ -24,7 +23,6 @@ const MessageSchema = new Schema(
     },
     dest: {
       type: Schema.Types.ObjectId,
-      ref: "Conversation",
     },
     text: String,
     unreadBy: [Schema.Types.ObjectId],
