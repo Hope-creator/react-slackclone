@@ -7,64 +7,92 @@ import { IConversation } from "../store/modules/conversations/types";
 import { useSelector } from "react-redux";
 import { selectUser } from "../store/modules/user/selectors";
 import { useHistory } from "react-router-dom";
-import { userApi } from "../services/api/userApi";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { useUnreadCount } from "../hooks/useUnreadCount";
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
+import { useUserProfile } from "../hooks/useUserProfile";
+import conversations from "../store/modules/conversations/conversations";
+import { conversationsApi } from "../services/api/converastionsApi";
+import { IDialog } from "../store/modules/dialogs/types";
 
 interface DirectMessageListItemProps {
-  conversation: IConversation;
+  dialog: IDialog;
+  user: IUser;
 }
 
-const useStyles = makeStyles({
-  count: {
-    display: "block",
-    width: 20,
-    borderRadius: 10,
-    marginLeft: "auto",
-    textAlign: "center",
-    backgroundColor: "pink"
-  },
-});
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    count: {
+      display: "block",
+      width: 20,
+      borderRadius: 10,
+      marginLeft: "auto",
+      textAlign: "center",
+      backgroundColor: "pink",
+    },
+    avatar: {
+      width: 20,
+      height: 20,
+    },
+    activeBg: {
+      backgroundColor: theme.palette.primary.dark,
+      "&:hover": {
+        backgroundColor: theme.palette.primary.dark,
+      },
+    },
+    activeText: {
+      color: "#fff",
+    },
+    defaultText: {
+      color: theme.palette.primary.main,
+    },
+  })
+);
 
 export const DirectMessageListItem: React.FC<DirectMessageListItemProps> = ({
-  conversation,
+  dialog,
+  user
 }: DirectMessageListItemProps): React.ReactElement => {
-
   const classes = useStyles();
-  const [user, setUser] = React.useState<IUser | null>(null);
-  const me = useSelector(selectUser);
-  const unread = useUnreadCount(conversation._id);
+  const unread = useUnreadCount(dialog._id);
+
+  const partner = useUserProfile(
+    dialog.members.filter((id) => id !== user._id)[0]
+  );
+
+  
 
   const history = useHistory();
 
-  React.useEffect(() => {
+  const isActive = history.location.pathname.match(dialog._id)
+    ? true
+    : false;
 
-    if (me) {
-      const notMe = (conversation.members as string[]).filter(
-        (id) => id !== me._id
-      )[0];
-      userApi
-        .getUser(notMe)
-        .then((user) => setUser(user))
-        .catch((err) => <div>Error</div>);
-    }
-  }, [me, conversation.members]);
-
-  if (!user) return <CircularProgress />;
+  if (!partner) return <CircularProgress />;
 
   return (
-    <ListItem dense button onClick={() => history.push(`/${conversation._id}`)}>
+    <ListItem
+      className={isActive ? classes.activeBg : undefined}
+      dense
+      button
+      onClick={() => history.push(`/d/${dialog._id}`)}
+    >
       <ListItemAvatar>
         <Avatar
-          alt={`user_avatar_+${user.name}`}
-          src={user.avatar || defaultAvatar}
+          className={classes.avatar}
+          alt={`user_avatar_+${partner.name}`}
+          src={partner.avatar || defaultAvatar}
+          sizes="width: 10px; height: 10px"
         />
       </ListItemAvatar>
-      <ListItemText primaryTypographyProps={{ color: "primary" }}>
-        {user.name}
+      <ListItemText
+        className={isActive ? classes.activeText : classes.defaultText}
+      >
+        {partner.name}
       </ListItemText>
-      <ListItemText primaryTypographyProps={{ color: "primary", className: classes.count }}>
+      <ListItemText
+        primaryTypographyProps={{ color: "primary", className: classes.count }}
+      >
         {unread > 0 && unread}
       </ListItemText>
     </ListItem>
