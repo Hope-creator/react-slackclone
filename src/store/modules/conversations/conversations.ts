@@ -7,8 +7,6 @@ import {
 
 const initialState = {
   conversations: [],
-  currentConversation: undefined,
-  loadingCurrentConversationState: LoadingConversationsState.NEVER,
   loadingState: LoadingConversationsState.NEVER,
 } as IConversationsState;
 
@@ -31,7 +29,21 @@ const conversationsSlice = createSlice({
     },
     joinAllConversations(state) {
       state.loadingState = LoadingConversationsState.LOADING;
-    }
+    },
+    joinOneConversation(state, action: PayloadAction<string>) {
+      state.loadingState = LoadingConversationsState.LOADING;
+    },
+    addOneConversation(state, action: PayloadAction<IConversation>) {
+      const index = state.conversations.findIndex(
+        (conversation) => conversation._id === action.payload._id
+      );
+      if (index) state.conversations[index] = action.payload;
+      else {
+        state.conversations = [...state.conversations, action.payload].sort(
+          (a, b) => (a.name > b.name ? 1 : -1)
+        );
+      }
+    },
   },
 });
 
@@ -39,6 +51,8 @@ export const {
   fetchConversations,
   setConversations,
   setConversationsLoadingState,
-  joinAllConversations
+  addOneConversation,
+  joinOneConversation,
+  joinAllConversations,
 } = conversationsSlice.actions;
 export default conversationsSlice.reducer;
