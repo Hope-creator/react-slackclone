@@ -3,16 +3,11 @@ import React from "react";
 import ListItemText from "@material-ui/core/ListItemText";
 import defaultAvatar from "../images/defaultAvatar.png";
 import { IUser } from "../store/modules/user/types";
-import { IConversation } from "../store/modules/conversations/types";
-import { useSelector } from "react-redux";
-import { selectUser } from "../store/modules/user/selectors";
 import { useHistory } from "react-router-dom";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { useUnreadCount } from "../hooks/useUnreadCount";
 import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
 import { useUserProfile } from "../hooks/useUserProfile";
-import conversations from "../store/modules/conversations/conversations";
-import { conversationsApi } from "../services/api/converastionsApi";
 import { IDialog } from "../store/modules/dialogs/types";
 
 interface DirectMessageListItemProps {
