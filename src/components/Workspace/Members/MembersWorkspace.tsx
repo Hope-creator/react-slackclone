@@ -15,7 +15,7 @@ import {
   selectCurrentMembersLoadingState,
 } from "../../../store/modules/currentMembers/selectors";
 import { LoadingCurrentMembersState } from "../../../store/modules/currentMembers/types";
-import { CircularProgress } from "@material-ui/core";
+import { CentralCircularProgress } from "../../CentralCircularProgress";
 
 export const MembersWorkspace = () => {
   const dispatch = useDispatch();
@@ -52,7 +52,7 @@ export const MembersWorkspace = () => {
       <WorkspaceContent
         children={
           membersLoadingState === LoadingCurrentMembersState.LOADING ? (
-            <CircularProgress />
+            <CentralCircularProgress />
           ) : (
             <MembersContent members={members} />
           )
