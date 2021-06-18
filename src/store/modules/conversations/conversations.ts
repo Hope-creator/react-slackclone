@@ -27,12 +27,6 @@ const conversationsSlice = createSlice({
     ) {
       state.loadingState = action.payload;
     },
-    joinAllConversations(state) {
-      state.loadingState = LoadingConversationsState.LOADING;
-    },
-    joinOneConversation(state, action: PayloadAction<string>) {
-      state.loadingState = LoadingConversationsState.LOADING;
-    },
     addOneConversation(state, action: PayloadAction<IConversation>) {
       const index = state.conversations.findIndex(
         (conversation) => conversation._id === action.payload._id
@@ -52,7 +46,5 @@ export const {
   setConversations,
   setConversationsLoadingState,
   addOneConversation,
-  joinOneConversation,
-  joinAllConversations,
 } = conversationsSlice.actions;
 export default conversationsSlice.reducer;
