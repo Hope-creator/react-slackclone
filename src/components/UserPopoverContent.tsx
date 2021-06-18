@@ -9,7 +9,6 @@ import { useDispatch } from "react-redux";
 import { fetchCurrentInfoProfile } from "../store/modules/currentInfo_side/currentInfo";
 import { dialogsApi } from "../services/api/dialogsApi";
 import { useHistory } from "react-router-dom";
-import { addOneDialog } from "../store/modules/dialogs/dialogs";
 
 interface IUserPopoverContentProps {
   user: IUser;
@@ -43,10 +42,9 @@ export const UserPopoverContent: React.FC<IUserPopoverContentProps> = ({
 
   const dialogHandleClick = () => {
     dialogsApi
-      .createDialog(user._id)
+      .getDialogId(user._id)
       .then((res) => {
-        history.push(`d/${res._id}`);
-        dispatch(addOneDialog(res));
+        history.push(`/d/${res}`);
       })
       .catch((err) => console.log(err));
   };
@@ -71,7 +69,7 @@ export const UserPopoverContent: React.FC<IUserPopoverContentProps> = ({
           View full profile
         </Link>
         <Button onClick={dialogHandleClick} className={classes.button}>
-          Start dialog
+          Message
         </Button>
       </Grid>
     </Paper>
