@@ -4,13 +4,11 @@ import ListItemText from "@material-ui/core/ListItemText";
 import defaultAvatar from "../images/defaultAvatar.png";
 import { IUser } from "../store/modules/user/types";
 import { useHistory } from "react-router-dom";
-import CircularProgress from "@material-ui/core/CircularProgress";
 import { useUnreadCount } from "../hooks/useUnreadCount";
 import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
-import { useUserProfile } from "../hooks/useUserProfile";
 import { IDialog } from "../store/modules/dialogs/types";
 
-interface DirectMessageListItemProps {
+interface IDirectMessageListItemProps {
   dialog: IDialog;
   user: IUser;
 }
@@ -41,29 +39,29 @@ const useStyles = makeStyles((theme: Theme) =>
     defaultText: {
       color: theme.palette.primary.main,
     },
+    selfText: {
+      display: "block",
+      marginLeft: "auto",
+      textAlign: "center",
+      width: 20,
+      color: theme.palette.secondary.main
+    }
   })
 );
 
-export const DirectMessageListItem: React.FC<DirectMessageListItemProps> = ({
+export const DirectMessageListItem: React.FC<IDirectMessageListItemProps> = ({
   dialog,
-  user
-}: DirectMessageListItemProps): React.ReactElement => {
+  user,
+}) => {
   const classes = useStyles();
   const unread = useUnreadCount(dialog._id);
 
-  const partner = useUserProfile(
-    dialog.members.filter((id) => id !== user._id)[0]
-  );
-
-  
+  const partner =
+    dialog.creator._id !== user._id ? dialog.creator : dialog.partner;
 
   const history = useHistory();
 
-  const isActive = history.location.pathname.match(dialog._id)
-    ? true
-    : false;
-
-  if (!partner) return <CircularProgress />;
+  const isActive = history.location.pathname.match(dialog._id) ? true : false;
 
   return (
     <ListItem
@@ -85,11 +83,13 @@ export const DirectMessageListItem: React.FC<DirectMessageListItemProps> = ({
       >
         {partner.name}
       </ListItemText>
-      <ListItemText
+     {partner._id === user._id ? <ListItemText primaryTypographyProps={{variant: "caption", className: classes.selfText}}>
+        you
+      </ListItemText> :  <ListItemText
         primaryTypographyProps={{ color: "primary", className: classes.count }}
       >
         {unread > 0 && unread}
-      </ListItemText>
+      </ListItemText>}
     </ListItem>
   );
 };

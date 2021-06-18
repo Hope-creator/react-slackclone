@@ -1,11 +1,14 @@
+import { IMessage } from "../messages/types";
 import { IUser } from "../user/types";
 
 export interface IDialog {
   _id: string;
   createdAt: Date;
-  creator: string | IUser;
-  members: string[];
+  creator: IUser;
+  partner: IUser;
+  last_message?: IMessage;
   unread_count: number;
+  updatedAt: Date;
 }
 
 export enum LoadingDialogsState {
