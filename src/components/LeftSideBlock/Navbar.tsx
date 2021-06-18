@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React from "react";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import { SidebarListCreator } from "../../functions/SidebarListCreator";
 import { MoreMenu } from "../MoreMenu";
@@ -18,6 +18,7 @@ import PlaylistAddIcon from "@material-ui/icons/PlaylistAdd";
 import { CreateConversationModal } from "../CreateConversationlModal";
 import { IUser } from "../../store/modules/user/types";
 import { IDialog } from "../../store/modules/dialogs/types";
+import { PathesCustomNames } from "../../constants";
 
 interface INavbarProps {
   conversations: IConversation[];
@@ -48,18 +49,11 @@ export const Navbar: React.FC<INavbarProps> = ({
   user,
 }: INavbarProps) => {
   const classes = useStyles();
-  const standartList = useCallback(
-    () =>
-      ["Saved items", "More"].map((item) => (
-        <SidebarListCreator key={item} componentName={item} />
-      )),
-    []
-  );
 
   return (
     <Box className={classes.channelSideBarItemsWrapper}>
       <List>
-        {standartList()}
+        <SidebarListCreator componentName={PathesCustomNames.SAVED_ITEMS} />
         <MoreMenu />
       </List>
       <NestedList listTitle="Channels">
