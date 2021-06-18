@@ -4,9 +4,7 @@ import {
   fetchDialogs,
   setDialogs,
   setConversationsLoadingState,
-  addOneDialog,
 } from "./dialogs";
-import { PayloadAction } from "@reduxjs/toolkit";
 import { dialogsApi } from "../../../services/api/dialogsApi";
 
 function* fetchDialogsSaga() {
