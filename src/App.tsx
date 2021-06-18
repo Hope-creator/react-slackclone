@@ -24,7 +24,12 @@ function App() {
 
   React.useEffect(() => {
     if (user) {
-      socket.connect();
+      const isConnected = sessionStorage.getItem("connection");
+      console.log(isConnected);
+      if (isConnected === "0") {
+        socket.connect();
+        sessionStorage.setItem("connection", "1");
+      }
     }
   }, [user]);
 
