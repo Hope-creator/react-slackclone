@@ -31,6 +31,7 @@ class ConversationController {
   ): Promise<void> => {
     const userId = req.userId;
     const _user = req.user;
+    const search = req.query.search;
     try {
       const user = await UserModel.findById(userId);
       if (!user) {
@@ -39,12 +40,27 @@ class ConversationController {
           .json({ status: "error", data: "User doest not exists" });
         return;
       }
+      const searchQuery = typeof search === "string" ? search.replace(/[-[\]{}()*+?.,\\/^$|#\s]/g, "\\$&") : undefined;
+      const matchQuery = searchQuery
+        ? {
+            $match: {
+              name: { $regex: searchQuery, $options: "i" },
+              $or: [
+                { _id: { $in: user.conversations } },
+                { is_private: false },
+              ],
+            },
+          }
+        : {
+            $match: {
+              $or: [
+                { _id: { $in: user.conversations } },
+                { is_private: false },
+              ],
+            },
+          };
       const conversations = await ConversationModel.aggregate([
-        {
-          $match: {
-            $or: [{ _id: { $in: user.conversations } }, { is_private: false }],
-          },
-        },
+        matchQuery,
         {
           $lookup: {
             from: "users",
