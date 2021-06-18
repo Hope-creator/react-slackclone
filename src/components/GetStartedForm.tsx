@@ -12,6 +12,7 @@ import { LoadingUserState } from "../store/modules/user/types";
 import TextField from "@material-ui/core/TextField";
 import { makeStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 export interface IGetStartedForm {
   name: string;
@@ -197,15 +198,19 @@ export const GetStartedForm = () => {
           />
         )}
       />
-      <Button
-        type="submit"
-        className={classes.button}
-        variant="contained"
-        color="primary"
-        fullWidth
-      >
-        Sign up
-      </Button>
+      {userLoadingState === LoadingUserState.LOADINGCREATE ? (
+        <CircularProgress size={20} />
+      ) : (
+        <Button
+          type="submit"
+          className={classes.button}
+          variant="contained"
+          color="primary"
+          fullWidth
+        >
+          Sign up
+        </Button>
+      )}
       <Snackbar
         open={open}
         autoHideDuration={6000}
