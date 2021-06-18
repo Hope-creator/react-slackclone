@@ -6,7 +6,11 @@ import Button from "@material-ui/core/Button";
 import { useDispatch, useSelector } from "react-redux";
 import { selectUser } from "../store/modules/user/selectors";
 import { IUser } from "../store/modules/user/types";
-import { joinAllConversations } from "../store/modules/conversations/conversations";
+import { fetchJoinAllConversations } from "../store/modules/joinConversations/joinConversations";
+import { selectConversations } from "../store/modules/conversations/selectors";
+import { selectJoinConversationsLoadingState } from "../store/modules/joinConversations/selectors";
+import { LoadingJoinConversationsState } from "../store/modules/joinConversations/types";
+import { CircularProgress } from "@material-ui/core";
 
 interface IJoinAllModalProps {
   opener: React.ReactNode;
@@ -26,6 +30,9 @@ const useStyles = makeStyles((theme: Theme) =>
       padding: theme.spacing(2, 4, 3),
       transform: `translate(-50%, -50%)`,
     },
+    buttonError: {
+      backgroundColor: "pink",
+    },
   })
 );
 
@@ -35,6 +42,10 @@ export const JoinAllModal: React.FC<IJoinAllModalProps> = ({ opener }) => {
   const [open, setOpen] = React.useState(false);
 
   const me = useSelector(selectUser);
+
+  const conversations = useSelector(selectConversations);
+
+  const joinAllLoadingState = useSelector(selectJoinConversationsLoadingState);
 
   const dispatch = useDispatch();
 
@@ -47,17 +58,30 @@ export const JoinAllModal: React.FC<IJoinAllModalProps> = ({ opener }) => {
   };
 
   const joinHandleClick = () => {
-    dispatch(joinAllConversations());
+    dispatch(fetchJoinAllConversations(conversations.map((conv) => conv._id)));
     setOpen(false);
   };
 
   const children = () => (
     <Paper className={classes.paper}>
-      <Typography variant="h6" gutterBottom>
-        Join to all non private conversations of {(me as IUser).company.name}?
-      </Typography>
+      {joinAllLoadingState === LoadingJoinConversationsState.LOADING ? (
+        <CircularProgress />
+      ) : (
+        <Typography variant="h6" gutterBottom>
+          Join to all non private conversations of {(me as IUser).company.name}?
+        </Typography>
+      )}
       <Grid alignItems="center" container justify="space-between" wrap="nowrap">
-        <Button onClick={joinHandleClick} color="primary" variant="outlined">
+        <Button
+          className={
+            joinAllLoadingState === LoadingJoinConversationsState.ERROR
+              ? classes.buttonError
+              : undefined
+          }
+          onClick={joinHandleClick}
+          color="primary"
+          variant="outlined"
+        >
           Join
         </Button>
         <Button onClick={handleClose} variant="outlined">
