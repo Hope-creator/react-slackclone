@@ -19,7 +19,7 @@ import { registerValidators } from "../validations/register";
 import upload from "./multer";
 
 const createRoutes = (app: express.Express, io: socket.Server) => {
-  const AuthCtrl = new AuthController();
+  const AuthCtrl = new AuthController(io);
   const CompanyCtrl = new CompanyController();
   const ConversationCtrl = new ConversationController(io);
   const DialogCtrl = new DialogController(io);
@@ -82,16 +82,13 @@ const createRoutes = (app: express.Express, io: socket.Server) => {
 
   //# Dialog
   app.get("/api/dialogs", authencticateToken, DialogCtrl.index);
+  app.get("/api/dialogs/getid/:userid", authencticateToken, DialogCtrl.getId);
   app.get("/api/dialogs/:id", authencticateToken, DialogCtrl.show);
-  app.post("/api/dialogs", authencticateToken, DialogCtrl.create);
+  //app.post("/api/dialogs", authencticateToken, DialogCtrl.create); exist but no used
 
   //# Direct Messages
   app.get("/api/messages/dm/:id", authencticateToken, DirectMessageCtrl.index);
-  app.post(
-    "/api/messages/dm",
-    authencticateToken,
-    DirectMessageCtrl.create
-  );
+  app.post("/api/messages/dm", authencticateToken, DirectMessageCtrl.create);
 
   //# Mark Messages
   app.get("/api/messages/mark", authencticateToken, MarkedMessageCtrl.index);
