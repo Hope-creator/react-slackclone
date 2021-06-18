@@ -91,9 +91,9 @@ class UnreadMessagesController {
           { new: true }
         );
         if (conversation) {
-          this.io.to(userId).emit("SERVER:READ_ALL_CONVERSATION", conversation);
+          this.io.to(userId.toString()).emit("SERVER:READ_ALL_CONVERSATION", conversation);
         } else {
-          this.io.to(userId).emit("SERVER:READ_ALL");
+          this.io.to(userId.toString()).emit("SERVER:READ_ALL");
         }
         res.json({ status: "success", data: true });
       } catch (error) {
@@ -123,7 +123,7 @@ class UnreadMessagesController {
         )
           .populate("creator")
           .exec();
-        message && this.io.to(userId).emit("SERVER:READ_ONE", message.dest);
+        message && this.io.to(userId.toString()).emit("SERVER:READ_ONE", message.dest);
         res.json({ status: "success", data: true });
       } catch (error) {
         res.status(500).json({
