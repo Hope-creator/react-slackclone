@@ -8,6 +8,7 @@ export const useUnreadCount = (id: string) => {
 
   const handleListenerUnread = React.useCallback(
     (message: IMessage) => {
+      console.log(message);
       message.dest === id && setUnreadCount((prev) => ++prev);
     },
     [id]
@@ -24,9 +25,12 @@ export const useUnreadCount = (id: string) => {
     setUnreadCount(0);
   }, []);
 
-  const handleListenerReadAllConversation = React.useCallback((conversation: string) => {
-    conversation === id && setUnreadCount(0);;
-  }, [id]);
+  const handleListenerReadAllConversation = React.useCallback(
+    (conversation: string) => {
+      conversation === id && setUnreadCount(0);
+    },
+    [id]
+  );
 
   React.useEffect(() => {
     messagesApi
@@ -45,7 +49,7 @@ export const useUnreadCount = (id: string) => {
   React.useEffect(() => {
     socket.on("SERVER:READ_ONE", handleListenerReadOne);
     return function cleanUp() {
-      socket.removeEventListener("SERVER:NEW_UNREAD", handleListenerReadOne);
+      socket.removeEventListener("SERVER:READ_ONE", handleListenerReadOne);
     };
   }, [handleListenerReadOne]);
 
@@ -57,9 +61,15 @@ export const useUnreadCount = (id: string) => {
   }, [handleListenerReadAll]);
 
   React.useEffect(() => {
-    socket.on("SERVER:READ_ALL_CONVERSATION", handleListenerReadAllConversation);
+    socket.on(
+      "SERVER:READ_ALL_CONVERSATION",
+      handleListenerReadAllConversation
+    );
     return function cleanUp() {
-      socket.removeEventListener("SERVER:READ_ALL", handleListenerReadAllConversation);
+      socket.removeEventListener(
+        "SERVER:READ_ALL",
+        handleListenerReadAllConversation
+      );
     };
   }, [handleListenerReadAllConversation]);
 
