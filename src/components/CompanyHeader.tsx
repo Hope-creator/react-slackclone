@@ -7,17 +7,16 @@ import { StyledBadge } from "./StyledBadge";
 
 import AppBar from "@material-ui/core/AppBar/AppBar";
 import Grid from "@material-ui/core/Grid/Grid";
-import IconButton from "@material-ui/core/IconButton/IconButton";
 import Toolbar from "@material-ui/core/Toolbar/Toolbar";
-import Tooltip from "@material-ui/core/Tooltip/Tooltip";
 
-import AccessTimeIcon from "@material-ui/icons/AccessTime";
-import HelpOutlineIcon from "@material-ui/icons/HelpOutline";
-import Button from "@material-ui/core/Button/Button";
 import Avatar from "@material-ui/core/Avatar/Avatar";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import { IUser } from "../store/modules/user/types";
 import { AvatarProfileMenu } from "./AvatarProfileMenu";
+import { HelpButton } from "./HelpButton";
+
+import { SearchCompanyButton } from "./SearchCompanyButton";
+import { HistoryIconButton } from "./HistoryIconButton";
 
 interface ICompanyHeaderProps {
   user: IUser;
@@ -43,20 +42,6 @@ const useStyles = makeStyles((theme: Theme) =>
       width: theme.spacing(4),
       height: theme.spacing(4),
     },
-
-    button: {
-      color: "rgb(210,210,210)",
-      justifyContent: "start",
-      backgroundColor: "rgb(87,37,88)",
-      boxShadow: "inset 0 0 0 1px rgb(119 80 120)",
-      height: 24,
-      margin: "0 10px",
-      width: "60%",
-      "&:hover": {
-        backgroundColor: "rgb(92,44,93)",
-        boxShadow: "inset 0 0 0 1px rgb(165 138 165)",
-      },
-    },
   })
 );
 
@@ -81,19 +66,9 @@ export const CompanyHeader: React.FC<ICompanyHeaderProps> = ({ user }) => {
             justify="flex-end"
             xs={9}
           >
-            <Tooltip title="History" aria-label="History">
-              <IconButton className={classes.iconButton} aria-label="History">
-                <AccessTimeIcon />
-              </IconButton>
-            </Tooltip>
-            <Button className={classes.button} variant="outlined">
-              Search Test Company
-            </Button>
-            <Tooltip title="Help" aria-label="Help">
-              <IconButton className={classes.iconButton} aria-label="Help">
-                <HelpOutlineIcon />
-              </IconButton>
-            </Tooltip>
+            <HistoryIconButton user={user} />
+            <SearchCompanyButton user={user} />
+            <HelpButton />
           </Grid>
           <Grid container item justify="flex-end" xs={3}>
             <SimplePopover
