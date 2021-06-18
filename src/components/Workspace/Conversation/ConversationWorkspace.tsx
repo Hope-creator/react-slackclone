@@ -98,23 +98,23 @@ export const ConversationWorkspace: React.FC<IConversationWorkspaceProps> = ({
     conversationLoadingState === LoadingCurrentConversationState.LOADED &&
     conversation
   ) {
-    return  (<>
-    <WorkspaceHeader
-      leftSideContent={
-        <LeftSideConversationContent conversation={conversation} />
-      }
-      rightSideContent={
-        <RightSideConversationContent conversation={conversation} />
-      }
-    />
-    <WorkspaceContent
-      children={
-          <ConversationContent
-            user={user}
-            conversation={conversation}
-          />}
-    />
-  </>)
+    return (
+      <>
+        <WorkspaceHeader
+          leftSideContent={
+            <LeftSideConversationContent conversation={conversation} />
+          }
+          rightSideContent={
+            <RightSideConversationContent conversation={conversation} />
+          }
+        />
+        <WorkspaceContent
+          children={
+            <ConversationContent user={user} conversation={conversation} />
+          }
+        />
+      </>
+    );
   }
   return <DefaultWorkspace />;
 };
