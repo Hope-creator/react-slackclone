@@ -23,10 +23,89 @@ class DialogController {
     res: express.Response
   ): Promise<void> => {
     const user = req.user;
+    const search = req.query.search;
     try {
-      const dialogs = await DialogModel.find({ members: user._id })
-        .sort({ unread_count: 1 })
-        .exec();
+      let searchQuery = {};
+      if (typeof search === "string") {
+        const escapedSearch = search.replace(/[-[\]{}()*+?.,\\/^$|#\s]/g, "\\$&")
+        searchQuery = {
+          $or: [
+            {
+              "creator.name": { $regex: escapedSearch, $options: "i" },
+              "partner._id": user._id,
+            },
+            {
+              "partner.name": { $regex: escapedSearch, $options: "i" },
+              "creator._id": user._id,
+            },
+          ],
+        };
+      }
+
+      const dialogs = await DialogModel.aggregate([
+        { $match: { $or: [{ creator: user._id }, { partner: user._id }] } },
+        {
+          $lookup: {
+            from: "users",
+            localField: "creator",
+            foreignField: "_id",
+            as: "creator",
+          },
+        },
+        { $unwind: "$creator" },
+        {
+          $lookup: {
+            from: "users",
+            localField: "partner",
+            foreignField: "_id",
+            as: "partner",
+          },
+        },
+        { $unwind: "$partner" },
+        {
+          $lookup: {
+            from: "messages",
+            localField: "last_message",
+            foreignField: "_id",
+            as: "last_message",
+          },
+        },
+        {
+          $unwind: { path: "$last_message", preserveNullAndEmptyArrays: true },
+        },
+        {
+          $match: searchQuery,
+        },
+        {
+          $lookup: {
+            from: "users",
+            localField: "last_message.creator",
+            foreignField: "_id",
+            as: "last_message.creator",
+          },
+        },
+        {
+          $unwind: {
+            path: "$last_message.creator",
+            preserveNullAndEmptyArrays: true,
+          },
+        },
+        {
+          $lookup: {
+            from: "files",
+            localField: "last_message.attachments",
+            foreignField: "_id",
+            as: "last_message.attachments",
+          },
+        },
+        {
+          $unwind: {
+            path: "$last_message.attachments",
+            preserveNullAndEmptyArrays: true,
+          },
+        },
+      ]);
+
       res.json({ status: "success", data: dialogs });
     } catch (error) {
       res.status(500).json({
@@ -34,6 +113,49 @@ class DialogController {
         errors: JSON.stringify(error),
       });
       console.log("Error on DialogController / index:", error);
+    }
+  };
+
+  getId = async (
+    req: express.Request,
+    res: express.Response
+  ): Promise<void> => {
+    const user = req.user;
+    const partnerId = req.params.userid;
+    if (!isValidObjectId(partnerId)) {
+      res.status(403).json({
+        status: "error",
+        data: "Wrong type of ID",
+      });
+      return;
+    }
+    try {
+      const partner = await UserModel.findById(partnerId);
+
+      if (!partner) {
+        res
+          .status(404)
+          .json({ status: "error", data: "User dialog not founded" });
+        return;
+      }
+
+      const dialog = await DialogModel.findOne({
+        $or: [
+          { creator: user._id, partner: partner._id },
+          { creator: partner._id, partner: user._id },
+        ],
+      }).exec();
+      if (!dialog) {
+        res.status(404).json({ status: "error", data: "Dialog do not exists" });
+        return;
+      }
+      res.json({ status: "success", data: dialog._id });
+    } catch (error) {
+      res.status(500).json({
+        status: "error",
+        errors: JSON.stringify(error),
+      });
+      console.log("Error on ConversationController / show:", error);
     }
   };
 
@@ -50,8 +172,11 @@ class DialogController {
     try {
       const dialog = await DialogModel.findOne({
         _id: dialogId,
-        members: user._id,
-      });
+        $or: [{ creator: user._id }, { partner: user._id }],
+      })
+        .populate("creator")
+        .populate("partner")
+        .exec();
       if (!dialog) {
         res
           .status(404)
@@ -84,7 +209,10 @@ class DialogController {
       }
 
       const isDialogExist = await DialogModel.exists({
-        members: { $all: [user._id, destId] },
+        $or: [
+          { creator: user._id, partner: destId },
+          { creator: destId, partner: user._id },
+        ],
       });
 
       // Check if channel name already taken
@@ -96,7 +224,7 @@ class DialogController {
       // If no channel and no dm create it
       const postData = {
         creator: req.userId,
-        members: [user._id, destId],
+        partner: destId,
         unread_count: 0,
       };
       const dialog = await new DialogModel(postData).save();
