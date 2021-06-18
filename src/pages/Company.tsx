@@ -84,22 +84,32 @@ export const Company = () => {
   const itemType = useSelector(selectCurrentInfoItemType);
   const itemInfo = useSelector(selectCurrentInfoItem);
 
+  const handleListenerConversation = React.useCallback(() => {
+    dispatch(fetchConversations());
+  }, [dispatch]);
+
+  const handleListenerDialogs = React.useCallback(() => {
+    dispatch(fetchDialogs());
+  }, [dispatch]);
+
   useEffect(() => {
     if (user) {
       dispatch(fetchConversations());
       dispatch(fetchDialogs());
-      socket.on("SERVER:CONVERSATION_CREATED", () => dispatch(fetchConversations()));
-      socket.on("SERVER:NEW_MESSAGE", () => dispatch(fetchConversations()));
+      socket.on("SERVER:CONVERSATION_CREATED", handleListenerConversation);
+      socket.on("SERVER:DIALOG_CREATED", handleListenerDialogs);
     }
     return () => {
-      socket.removeListener("SERVER:DIALOG_CREATED", () =>
-        dispatch(fetchConversations())
+      socket.removeListener(
+        "SERVER:CONVERSATION_CREATED",
+        handleListenerConversation
       );
-      socket.removeListener("SERVER:NEW_MESSAGE", () =>
-        dispatch(fetchConversations())
+      socket.removeListener(
+        "SERVER:SERVER:DIALOG_CREATED",
+        handleListenerDialogs
       );
     };
-  }, [user, dispatch]);
+  }, [user, dispatch, handleListenerConversation, handleListenerDialogs]);
 
   if (!user) {
     history.push("/get-started");
@@ -118,10 +128,14 @@ export const Company = () => {
             >
               <CompanyMenuContent company={company} />
             </CompanyMenuButton>
-            <Navbar user={user} dialogs={dialogs} conversations={conversations} />
+            <Navbar
+              user={user}
+              dialogs={dialogs}
+              conversations={conversations}
+            />
           </Grid>
           <Grid item xs className={classes.workspace}>
-            <Workspace />
+            <Workspace user={user} />
           </Grid>
           {itemType !== InfoItemTypeState.NONE && itemInfo !== undefined ? (
             <Grid className={classes.rightSideInfoWrapper} item xs={3}>
