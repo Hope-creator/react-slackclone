@@ -8,6 +8,7 @@ import Paper from "@material-ui/core/Paper";
 import Popover from "@material-ui/core/Popover";
 import { SidebarListCreator } from "../functions/SidebarListCreator";
 import Divider from "@material-ui/core/Divider";
+import { PathesCustomNames } from "../constants";
 
 const useStyles = makeStyles({
   submenuIcon: {
@@ -58,11 +59,11 @@ export const MoreMenu: React.FC = (): React.ReactElement => {
         }}
       >
         <Paper className={classes.paper}>
-          {["All unreads", "All DMs"].map((item) => (
+          {[PathesCustomNames.ALLUNREADS, PathesCustomNames.ALLDIALOGS].map((item) => (
             <SidebarListCreator key={item} componentName={item} />
           ))}
           <Divider />
-          {["Channel browser", "People & user groups"].map((item) => (
+          {[PathesCustomNames.CHANNEL_BROWSER, PathesCustomNames.PEOPLE_AND_USERS_GROUP].map((item) => (
             <SidebarListCreator key={item} componentName={item} />
           ))}
         </Paper>

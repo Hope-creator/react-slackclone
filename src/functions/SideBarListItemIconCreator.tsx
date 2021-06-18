@@ -1,6 +1,6 @@
 import React from "react";
 
-import { pathes } from "../constants";
+import { Pathes } from "../constants";
 
 import SubjectOutlinedIcon from "@material-ui/icons/SubjectOutlined";
 import BookmarkBorderIcon from "@material-ui/icons/BookmarkBorder";
@@ -15,15 +15,15 @@ interface ISideBarListItemIconCreatorProps {
 export const SideBarListItemIconCreator: React.FC<ISideBarListItemIconCreatorProps> =
   ({ path }) => {
     switch (path) {
-      case pathes.SAVED_PAGE:
+      case Pathes.SAVED_PAGE:
         return <BookmarkBorderIcon />;
-      case pathes.ALLDMS:
+      case Pathes.ALLDIALOGS:
         return <QuestionAnswerOutlinedIcon />;
-      case pathes.UNREADS:
+      case Pathes.UNREADS:
         return <SubjectOutlinedIcon />;
-      case pathes.BROWSE_CHANNELS:
+      case Pathes.BROWSE_CHANNELS:
         return <PageviewOutlinedIcon />;
-      case pathes.MEMBERS:
+      case Pathes.MEMBERS:
         return <PermContactCalendarOutlinedIcon />;
 
       default:

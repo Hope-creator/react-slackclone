@@ -1,7 +1,7 @@
-export enum pathes {
+export enum Pathes {
   UNREADS = "unreads",
   SAVED_PAGE = "saved-page",
-  ALLDMS = "all-dms",
+  ALLDIALOGS = "all-dialogs",
   MEMBERS = "members",
   BROWSE_CHANNELS = "browse-channels",
 }
