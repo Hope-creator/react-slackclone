@@ -30,7 +30,7 @@ function* fetchUserSaga(action: PayloadAction<ILoginForm>) {
     const user: IUser = yield call(authApi.signIn, action.payload);
     yield put(setUser(user));
   } catch (e) {
-    yield put(setUserLoadingState(LoadingUserState.ERROR));
+    yield put(setUserLoadingState(LoadingUserState.ERRORLOGIN));
   }
 }
 

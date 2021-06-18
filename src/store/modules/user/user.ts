@@ -13,7 +13,7 @@ const userSlice = createSlice({
       state.loadingState = LoadingUserState.LOADING;
     },
     fetchUser(state, action: PayloadAction<ILoginForm>) {
-      state.loadingState = LoadingUserState.LOADING;
+      state.loadingState = LoadingUserState.LOADINGLOGIN;
     },
     createUser(state, action: PayloadAction<IGetStartedForm>) {
       state.loadingState = LoadingUserState.LOADINGCREATE;
@@ -25,12 +25,22 @@ const userSlice = createSlice({
     setUserLoadingState(state, action: PayloadAction<LoadingUserState>) {
       state.loadingState = action.payload;
     },
-    addUserConversations(state,action: PayloadAction<string[]>) {
-      if(state.user) state.user.conversations = [...state.user.conversations, ...action.payload]
-    }
+    addUserConversations(state, action: PayloadAction<string[]>) {
+      if (state.user) state.user.conversations = action.payload;
+    },
+    clearUserState() {
+      return initialState;
+    },
   },
 });
 
-export const { fetchUser, setUser, setUserLoadingState, fetchMe, createUser, addUserConversations } =
-  userSlice.actions;
+export const {
+  fetchUser,
+  setUser,
+  setUserLoadingState,
+  fetchMe,
+  createUser,
+  addUserConversations,
+  clearUserState,
+} = userSlice.actions;
 export default userSlice.reducer;
