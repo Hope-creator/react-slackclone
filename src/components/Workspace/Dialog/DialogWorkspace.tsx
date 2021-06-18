@@ -16,11 +16,9 @@ import {
 import {
   addNewMessage,
   clearMessagesState,
-  fetchMessagesConversation,
   fetchMessagesDialog,
 } from "../../../store/modules/messages/messages";
 import { CentralCircularProgress } from "../../CentralCircularProgress";
-import { useUserProfile } from "../../../hooks/useUserProfile";
 import { CircularProgress } from "@material-ui/core";
 import {
   clearCurrentDialog,
@@ -47,9 +45,6 @@ export const DialogWorkspace: React.FC<IDialogWorkspaceProps> = ({ user }) => {
   const history = useHistory();
   const path = history.location.pathname;
   const dialog = useSelector(selectCurrentDialog);
-  const partner = useUserProfile(
-    dialog?.members.filter((userId) => userId !== user._id)[0]
-  );
 
   const messages = useSelector(selectMessages);
   const messagesLoadingState = useSelector(selectMessagesLoadingState);
@@ -94,10 +89,13 @@ export const DialogWorkspace: React.FC<IDialogWorkspaceProps> = ({ user }) => {
     };
   }, [dialog, dispatch, messagesLoadingState, newMessageHandleListener]);
 
-  if (dialogLoadingState === LoadingCurrentDialogState.LOADING || !partner)
+  if (dialogLoadingState === LoadingCurrentDialogState.LOADING)
     return <CircularProgress />;
 
   if (dialogLoadingState === LoadingCurrentDialogState.LOADED && dialog) {
+    const partner =
+      dialog.creator._id !== user._id ? dialog.creator : dialog.partner;
+
     return (
       <>
         <WorkspaceHeader
