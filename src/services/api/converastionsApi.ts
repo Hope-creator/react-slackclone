@@ -4,9 +4,9 @@ import { IUser } from "../../store/modules/user/types";
 import { IResponse } from "./types";
 
 export const conversationsApi = {
-  async fetchConversations(): Promise<IConversation[] | []> {
+  async fetchConversations(search:string = ""): Promise<IConversation[] | []> {
     const response = await axios.get<IResponse<IConversation[] | []>>(
-      `/api/conversations`
+      `/api/conversations${search && "?search=" + search}`
     );
     return response.data.data;
   },
@@ -40,10 +40,8 @@ export const conversationsApi = {
     );
     return response.data.data;
   },
-  async joinConversations(
-    conversationId?: string
-  ): Promise<IConversation[] | []> {
-    const response = await axios.post<IResponse<IConversation[] | []>>(
+  async joinConversations(conversationId?: string): Promise<string[]> {
+    const response = await axios.post<IResponse<string[]>>(
       `/api/conversations/members/join`,
       { id: conversationId }
     );
