@@ -42,7 +42,7 @@ export const CompanyMenuContent: React.FC<ICompanyMenuItemProps> = ({
   const history = useHistory();
 
   const membersHandleClick = () => {
-    history.push("members")
+    history.push("/members")
   }
 
   return (
