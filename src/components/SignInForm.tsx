@@ -12,6 +12,7 @@ import { LoadingUserState } from "../store/modules/user/types";
 import TextField from "@material-ui/core/TextField";
 import { makeStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
+import { CircularProgress } from "@material-ui/core";
 
 export interface ILoginForm {
   email: string;
@@ -61,7 +62,7 @@ export const SignInForm = () => {
   };
 
   React.useEffect(() => {
-    if (userLoadingState === LoadingUserState.ERROR) {
+    if (userLoadingState === LoadingUserState.ERRORLOGIN) {
       setOpen(true);
     }
   }, [userLoadingState]);
@@ -125,15 +126,19 @@ export const SignInForm = () => {
           />
         )}
       />
-      <Button
-        type="submit"
-        className={classes.button}
-        variant="contained"
-        color="primary"
-        fullWidth
-      >
-        Sign in with Email
-      </Button>
+      {userLoadingState === LoadingUserState.LOADINGLOGIN ? (
+        <CircularProgress size={24} />
+      ) : (
+        <Button
+          type="submit"
+          className={classes.button}
+          variant="contained"
+          color="primary"
+          fullWidth
+        >
+          Sign in with Email
+        </Button>
+      )}
       <Snackbar
         open={open}
         autoHideDuration={6000}
