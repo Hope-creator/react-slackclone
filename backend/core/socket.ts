@@ -6,11 +6,12 @@ import { checkAuthByToken } from "../utils/function/checkAuthByToken";
 interface ISocket extends Socket {
   user?: string;
   conversationId?: string;
+  dialogId?: string;
   // other additional attributes here, example:
   // surname?: string;
 }
 
-export default (http: http.Server) => {
+const socket = (http: http.Server) => {
   const io = new Server(http, {
     cors: {
       origin: "*",
@@ -38,13 +39,20 @@ export default (http: http.Server) => {
   });
 
   io.on("connection", function (socket: ISocket) {
-    if(socket.user) socket.join(socket.user);
+    if (socket.user) socket.join(socket.user);
     socket.on("CONVERSATION:JOIN", (conversationId: string) => {
       socket.conversationId = conversationId;
       socket.join(conversationId);
     });
     socket.on("CONVERSATION:LEAVE", () => {
       if (socket.conversationId) socket.leave(socket.conversationId);
+    });
+    socket.on("DIALOG:JOIN", (dialogId: string) => {
+      socket.dialogId = dialogId;
+      socket.join(dialogId);
+    });
+    socket.on("DIALOG:LEAVE", () => {
+      if (socket.dialogId) socket.leave(socket.dialogId);
     });
     socket.on("DIALOGS:TYPING", (obj: any) => {
       socket.broadcast.emit("DIALOGS:TYPING", obj);
@@ -53,3 +61,5 @@ export default (http: http.Server) => {
 
   return io;
 };
+
+export default socket;
