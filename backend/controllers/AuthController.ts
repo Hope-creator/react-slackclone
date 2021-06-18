@@ -7,9 +7,20 @@ import { hashText, promisifyCompare } from "../utils/bcrypt";
 import cryptoRandomString from "crypto-random-string";
 import { tokenCreate } from "../utils/tokenCreate";
 import { CompanyModel } from "../models/CompanyModel";
+import { DialogModel } from "../models/DialogModel";
+import socket from "socket.io";
 
 class AuthController {
-  async create(req: express.Request, res: express.Response): Promise<void> {
+  io: socket.Server;
+
+  constructor(io: socket.Server) {
+    this.io = io;
+  }
+
+  create = async (
+    req: express.Request,
+    res: express.Response
+  ): Promise<void> => {
     try {
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
@@ -40,11 +51,27 @@ class AuthController {
       await newCode.save();
 
       // Adding user to company members
-      await CompanyModel.updateOne(
+      const company = await CompanyModel.findOneAndUpdate(
         { _id: "T01TE7T5WEV" },
-        { $addToSet: { members: user._id } }
+        { $addToSet: { members: user._id } },
+        { new: true }
       );
       const savedUser = await UserModel.findById(user._id).populate("company");
+      if (!company) {
+        res.status(404).json({ status: "error", data: "Company not found" });
+        return;
+      }
+      /*
+       * On registration creating dialogs with all existing members
+       */
+      const allUsersDialogData = company.members.map((memberId) => {
+        const dialog = { creator: user._id, partner: memberId };
+        return dialog;
+      });
+      await DialogModel.insertMany(allUsersDialogData);
+
+      this.io.emit("SERVER:DIALOG_CREATED");
+
       await sendEmail({
         email: email,
         baseUrl: baseUrl,
@@ -69,16 +96,20 @@ class AuthController {
           errors: error.message,
         });
       } else {
+        UserModel.remove({ email: req.body.email });
         res.status(500).json({
           status: "error",
           errors: JSON.stringify(error),
         });
-        console.log("Error on UserController / create:", error);
+        console.log("Error on AuthController / create:", error);
       }
     }
-  }
+  };
 
-  async verify(req: express.Request, res: express.Response): Promise<void> {
+  verify = async (
+    req: express.Request,
+    res: express.Response
+  ): Promise<void> => {
     try {
       const user = await UserModel.findById(req.params.userId);
       if (!user) {
@@ -107,9 +138,12 @@ class AuthController {
         error: JSON.stringify(error),
       });
     }
-  }
+  };
 
-  async login(req: express.Request, res: express.Response): Promise<void> {
+  login = async (
+    req: express.Request,
+    res: express.Response
+  ): Promise<void> => {
     try {
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
@@ -153,11 +187,14 @@ class AuthController {
       });
       console.log("Error on AuthController / login:", error);
     }
-  }
+  };
 
-  async getMe(req: express.Request, res: express.Response): Promise<void> {
+  getMe = async (
+    req: express.Request,
+    res: express.Response
+  ): Promise<void> => {
     try {
-      const userId = req.user._id
+      const userId = req.user._id;
       const user = await UserModel.findById(userId).populate("company");
       res.json({
         status: "success",
@@ -170,7 +207,7 @@ class AuthController {
       });
       console.log("Error on AuthController / getMe:", error);
     }
-  }
+  };
 }
 
 export default AuthController;
