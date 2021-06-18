@@ -8,6 +8,8 @@ import {
 } from "./currentConversation";
 import { IConversation } from "../conversations/types";
 import { conversationsApi } from "../../../services/api/converastionsApi";
+import { setLocalHistoryItem } from "../../../functions/setLocalHistoryItem";
+import { LocalHistoryItemType } from "../../../constants";
 
 function* fetchCurrentConversationSaga(action: PayloadAction<string>) {
   try {
@@ -16,10 +18,14 @@ function* fetchCurrentConversationSaga(action: PayloadAction<string>) {
       action.payload
     );
     yield put(setCurrentConversation(conversation));
+
     yield put(
       setCurrentConversationLoadingState(LoadingCurrentConversationState.LOADED)
     );
+    setLocalHistoryItem(conversation, LocalHistoryItemType.CONVERSATION);
   } catch (e) {
+    console.log(e)
+
     yield put(
       setCurrentConversationLoadingState(LoadingCurrentConversationState.ERROR)
     );

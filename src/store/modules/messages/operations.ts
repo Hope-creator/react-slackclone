@@ -22,6 +22,8 @@ import {
 } from "./messages";
 import { messagesApi } from "../../../services/api/messagesApi";
 import { ISendMessageForm } from "../../../components/SendMessageForm";
+import { setLocalHistoryItem } from "../../../functions/setLocalHistoryItem";
+import { LocalHistoryItemType, PathesCustomNames } from "../../../constants";
 
 function* fetchMessagesConversationSaga(action: PayloadAction<string>) {
   try {
@@ -54,6 +56,10 @@ function* fetchMessagesUnreadSaga() {
     const messages: IMessage[] | [] = yield call(messagesApi.getAllUnread);
     yield put(setMessages(messages));
     yield put(setMessagesLoadingState(LoadingMessagesState.LOADED));
+    setLocalHistoryItem(
+      PathesCustomNames.ALLUNREADS,
+      LocalHistoryItemType.CUSTOM
+    );
   } catch (e) {
     yield put(setMessagesLoadingState(LoadingMessagesState.ERROR));
   }
@@ -64,6 +70,10 @@ function* fetchMessagesMarkedSaga() {
     const messages: IMessage[] | [] = yield call(messagesApi.getMarkMessages);
     yield put(setMessages(messages));
     yield put(setMessagesLoadingState(LoadingMessagesState.LOADED));
+    setLocalHistoryItem(
+      PathesCustomNames.SAVED_ITEMS,
+      LocalHistoryItemType.CUSTOM
+    );
   } catch (e) {
     yield put(setMessagesLoadingState(LoadingMessagesState.ERROR));
   }
