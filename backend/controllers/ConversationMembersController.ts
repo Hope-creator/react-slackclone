@@ -71,9 +71,13 @@ class ConversationMembersController {
     } else {
       try {
         if (conversationId) {
-          const conversation = await ConversationModel.findById(conversationId);
+          const conversation = await ConversationModel.findOneAndUpdate(
+            { _id: conversationId },
+            { $inc: { num_members: 1 } },
+            { new: true }
+          );
           if (conversation) {
-            await UserModel.updateOne(
+            const userWithNewConversations = await UserModel.findOneAndUpdate(
               { _id: user._id },
               {
                 $addToSet: {
@@ -82,7 +86,14 @@ class ConversationMembersController {
               },
               { new: true }
             );
-            res.json({ status: "success", data: conversation });
+            if (userWithNewConversations) {
+              res.json({
+                status: "success",
+                data: userWithNewConversations.conversations,
+              });
+            } else {
+              res.status(404).json({ status: "error", data: "User not found" });
+            }
           } else {
             res
               .status(404)
@@ -91,18 +102,20 @@ class ConversationMembersController {
         } else {
           const conversations = await ConversationModel.find({
             is_private: false,
-            is_channel: false,
           }).distinct("_id");
-          console.log(conversations);
-          /*await UserModel.updateOne({_id: userId}, {
-            $addToSet: {
-              conversations: conversation._id,
+          await UserModel.updateOne(
+            { _id: user._id },
+            {
+              $addToSet: {
+                conversations: { $each: conversations },
+              },
             },
-          },{
-            new: true
-          })*/
+            {
+              new: true,
+            }
+          );
           // ДОДЕЛАТЬ
-          res.json({ status: "success", data: true });
+          res.json({ status: "success", data: conversations });
         }
       } catch (error) {
         res.status(500).json({
