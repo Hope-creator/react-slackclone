@@ -40,8 +40,8 @@ export const ProfileInfo: React.FC<IProfileInfoProps> = ({ user }) => {
 
   const handleStartDialogButtonClick = () => {
     dialogsApi
-      .createDialog(user._id)
-      .then((res) => history.push(`d/${res._id}`))
+      .getDialogId(user._id)
+      .then((res) => history.push(`/d/${res}`))
       .catch((err) => console.log(err));
   };
 
@@ -75,7 +75,7 @@ export const ProfileInfo: React.FC<IProfileInfoProps> = ({ user }) => {
           ) : (
             <IconButton onClick={handleStartDialogButtonClick}>
               <CommentOutlinedIcon />
-              Start dialog
+              Message
             </IconButton>
           )}
         </Box>
