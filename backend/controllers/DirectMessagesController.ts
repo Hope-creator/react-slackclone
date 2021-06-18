@@ -25,7 +25,7 @@ class DirectMessagesController {
       try {
         const dialog = await DialogModel.findOne({
           _id: dialogId,
-          members: user._id,
+          $or: [{ creator: user._id }, { partner: user._id }],
         }).exec();
         if (!dialog) {
           res
@@ -60,16 +60,18 @@ class DirectMessagesController {
     }
     try {
       const dialog = await DialogModel.findOne({
-        $and: [{ _id: dialogsId }, { members: user._id }],
+        _id: dialogsId,
+        $or: [{ creator: user._id }, { partner: user._id }],
       }).exec();
       if (!dialog) {
         res.status(400).json({ status: "error", data: "Dialog doesn't exist" });
       } else {
         let unreadBy = undefined;
-        const partnerId = dialog.members.filter(
-          (id) => id.toString() !== user._id.toString()
-        )[0];
-        if (partnerId) {
+        const partnerId =
+          dialog.creator.toString() !== user._id.toString()
+            ? dialog.creator
+            : dialog.partner;
+        if (partnerId.toString() !== user._id.toString()) {
           unreadBy = await UserModel.findOne({
             _id: partnerId,
           });
@@ -87,7 +89,14 @@ class DirectMessagesController {
           user._id
         );
         const message = aggregateArr[0];
-        this.io.to(message.dest.toString()).emit("SERVER:NEW_MESSAGE", message);
+        await DialogModel.findByIdAndUpdate(
+          dialog._id,
+          { last_message: data._id },
+          { new: true }
+        );
+        this.io
+          .to(message.dest.toString())
+          .emit("SERVER:NEW_DIRECTMESSAGE", message);
         // Check on user
         if (unreadBy) {
           this.io
