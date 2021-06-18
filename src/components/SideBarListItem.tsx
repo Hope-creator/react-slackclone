@@ -41,7 +41,7 @@ export const SideBarListItem: React.FC<ISideBarListItemProps> = ({
   };
 
   const handleClick = (path: string) => {
-    history.push(path);
+    history.push("/" + path);
   };
 
   return (
