@@ -1,11 +1,9 @@
 import React from "react";
-import { IConversation } from "../../../../store/modules/conversations/types";
 
 import { makeStyles, createStyles, Theme } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import { IUser } from "../../../../store/modules/user/types";
-import { IDialog } from "../../../../store/modules/dialogs/types";
 
 interface ILeftSideDialogContentProps {
   partner: IUser;
