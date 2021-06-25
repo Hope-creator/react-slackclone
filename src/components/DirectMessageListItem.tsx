@@ -9,8 +9,8 @@ import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
 import { IDialog } from "../store/modules/dialogs/types";
 
 interface IDirectMessageListItemProps {
-  dialog: IDialog;
   user: IUser;
+  me: IUser;
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -22,6 +22,9 @@ const useStyles = makeStyles((theme: Theme) =>
       marginLeft: "auto",
       textAlign: "center",
       backgroundColor: "pink",
+    },
+    container: {
+      height: 35
     },
     avatar: {
       width: 20,
@@ -50,45 +53,40 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 export const DirectMessageListItem: React.FC<IDirectMessageListItemProps> = ({
-  dialog,
   user,
+  me,
 }) => {
   const classes = useStyles();
-  const unread = useUnreadCount(dialog._id);
-
-  const partner =
-    dialog.creator._id !== user._id ? dialog.creator : dialog.partner;
 
   const history = useHistory();
 
-  const isActive = history.location.pathname.match(dialog._id) ? true : false;
+  const isActive = history.location.pathname.match(user._id) ? true : false;
 
   return (
     <ListItem
-      className={isActive ? classes.activeBg : undefined}
+      className={isActive ? classes.activeBg : classes.container}
       dense
       button
-      onClick={() => history.push(`/d/${dialog._id}`)}
+      onClick={() => history.push(`/d/${user._id}`)}
     >
       <ListItemAvatar>
         <Avatar
           className={classes.avatar}
-          alt={`user_avatar_+${partner.name}`}
-          src={partner.avatar || defaultAvatar}
+          alt={`user_avatar_+${user.name}`}
+          src={user.avatar || defaultAvatar}
           sizes="width: 10px; height: 10px"
         />
       </ListItemAvatar>
       <ListItemText
         className={isActive ? classes.activeText : classes.defaultText}
       >
-        {partner.name}
+        {user.name}
       </ListItemText>
-     {partner._id === user._id ? <ListItemText primaryTypographyProps={{variant: "caption", className: classes.selfText}}>
+     {me._id === user._id ? <ListItemText primaryTypographyProps={{variant: "caption", className: classes.selfText}}>
         you
       </ListItemText> :  <ListItemText
         primaryTypographyProps={{ color: "primary", className: classes.count }}
       >
-        {unread > 0 && unread}
       </ListItemText>}
     </ListItem>
   );
