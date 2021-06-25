@@ -2,8 +2,8 @@ import express from "express";
 import { isValidObjectId } from "mongoose";
 import cloudinary from "../core/cloudinary";
 import { ConversationModel } from "../models/ConversationModel";
-import { DialogModel } from "../models/DialogModel";
 import { FileModel } from "../models/FileModel";
+import { UserModel } from "../models/UserModel";
 
 class FileController {
   upload = async (
@@ -23,8 +23,8 @@ class FileController {
       } else {
         try {
           const isExist = ConversationModel.exists({ _id: dest });
-          const isDmExist = DialogModel.exists({ _id: dest });
-          if (!isExist || !isDmExist) {
+          const isUserExist = UserModel.exists({ _id: dest });
+          if (!isExist || !isUserExist) {
             res
               .status(404)
               .json({ status: "error", data: "Converastion does not exist" });

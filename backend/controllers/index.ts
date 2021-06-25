@@ -1,7 +1,6 @@
 export { default as UserController } from "./UserController";
 export { default as AuthController } from "./AuthController";
 export { default as CompanyController } from "./CompanyController";
-export { default as DialogController } from "./DialogController";
 export { default as DirectMessagesController } from "./DirectMessagesController";
 export { default as ConversationController } from "./ConversationController";
 export { default as ConversationMembersController } from "./ConversationMembersController";

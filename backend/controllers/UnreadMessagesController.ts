@@ -3,9 +3,8 @@ import { isValidObjectId } from "mongoose";
 import socket from "socket.io";
 import { mongoose } from "../core/db";
 import { ConversationModel } from "../models/ConversationModel";
-import { DialogModel } from "../models/DialogModel";
 import { MessageModel } from "../models/MessageModel";
-import { getAggregateMessage } from "../utils/function/getAggregateMessage";
+import { UserModel } from "../models/UserModel";
 import { getAggregateMessageWithPagination } from "../utils/function/getAggregateMessageWithPagination";
 
 class UnreadMessagesController {
@@ -43,21 +42,21 @@ class UnreadMessagesController {
     req: express.Request,
     res: express.Response
   ): Promise<void> => {
-    const dialogId = req.params.id;
-    if (!isValidObjectId(dialogId)) {
+    const user = req.user
+    const parnterId = req.params.id;
+    if (!isValidObjectId(parnterId)) {
       res.status(400).json({ status: "error", data: "Wrong type of ID" });
     } else {
       try {
-        const dialog = await DialogModel.exists({
-          _id: dialogId,
-        });
-        if (!dialog) {
+        const partner = await UserModel.findById(parnterId);
+        if (!partner) {
           res
             .status(400)
-            .json({ status: "error", data: "Dialog doesn't exist" });
+            .json({ status: "error", data: "Required user doesn't exist" });
         } else {
           const count = await MessageModel.countDocuments({
-            dest: dialogId,
+            creator: partner._id,
+            dest: user._id,
             unreadBy: req.user._id,
           });
           res.json({ status: "success", data: count });
@@ -96,7 +95,9 @@ class UnreadMessagesController {
           { new: true }
         );
         if (conversation) {
-          this.io.to(userId.toString()).emit("SERVER:READ_ALL_CONVERSATION", conversation);
+          this.io
+            .to(userId.toString())
+            .emit("SERVER:READ_ALL_CONVERSATION", conversation);
         } else {
           this.io.to(userId.toString()).emit("SERVER:READ_ALL");
         }
@@ -128,7 +129,8 @@ class UnreadMessagesController {
         )
           .populate("creator")
           .exec();
-        message && this.io.to(userId.toString()).emit("SERVER:READ_ONE", message.dest);
+        message &&
+          this.io.to(userId.toString()).emit("SERVER:READ_ONE", message.dest);
         res.json({ status: "success", data: true });
       } catch (error) {
         res.status(500).json({

@@ -9,7 +9,6 @@ import {
   UserController,
   UnreadMessagesController,
   ConversationMembersController,
-  DialogController,
   DirectMessagesController,
 } from "../controllers";
 import MessagesController from "../controllers/MessagesController";
@@ -22,7 +21,6 @@ const createRoutes = (app: express.Express, io: socket.Server) => {
   const AuthCtrl = new AuthController(io);
   const CompanyCtrl = new CompanyController();
   const ConversationCtrl = new ConversationController(io);
-  const DialogCtrl = new DialogController(io);
   const ConversationMembersCtrl = new ConversationMembersController(io);
   const UserCtrl = new UserController();
   const MessagesCtrl = new MessagesController(io);
@@ -82,14 +80,6 @@ const createRoutes = (app: express.Express, io: socket.Server) => {
   app.post("/api/conversations/update", authencticateToken, ConversationCtrl.update);
 
   app.post("/api/conversations/100", authencticateToken, ConversationCtrl.create100);
-
-
-
-  //# Dialog
-  app.get("/api/dialogs", authencticateToken, DialogCtrl.index);
-  app.get("/api/dialogs/getid/:userid", authencticateToken, DialogCtrl.getId);
-  app.get("/api/dialogs/:id", authencticateToken, DialogCtrl.show);
-  //app.post("/api/dialogs", authencticateToken, DialogCtrl.create); exist but no used
 
   //# Direct Messages
   app.get("/api/messages/dm/:id", authencticateToken, DirectMessageCtrl.index);

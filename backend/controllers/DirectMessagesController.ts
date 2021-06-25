@@ -1,7 +1,6 @@
 import express from "express";
 import { isValidObjectId } from "mongoose";
 import socket from "socket.io";
-import { DialogModel } from "../models/DialogModel";
 import { MessageModel } from "../models/MessageModel";
 import { UserModel } from "../models/UserModel";
 import { getAggregateMessage } from "../utils/function/getAggregateMessage";
@@ -72,15 +71,6 @@ class DirectMessagesController {
       if (!partner) {
         res.status(400).json({ status: "error", data: "User doesn't exist" });
       } else {
-        /*const partnerId =
-          dialog.creator.toString() !== user._id.toString()
-            ? dialog.creator
-            : dialog.partner;
-        if (partnerId.toString() !== user._id.toString()) {
-          unreadBy = await UserModel.findOne({
-            _id: partnerId,
-          });
-        }*/
         const unreadBy = partner._id;
         const postData = {
           creator: req.userId,
@@ -95,11 +85,6 @@ class DirectMessagesController {
           user._id
         );
         const message = aggregateArr[0];
-        /*await DialogModel.findByIdAndUpdate(
-          dialog._id,
-          { last_message: data._id },
-          { new: true }
-        );*/
         this.io
           .to([message.dest.toString(), user._id.toString()])
           .emit("SERVER:NEW_DIRECTMESSAGE", message);
