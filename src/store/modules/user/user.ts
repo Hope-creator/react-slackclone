@@ -26,7 +26,20 @@ const userSlice = createSlice({
       state.loadingState = action.payload;
     },
     addUserConversations(state, action: PayloadAction<string[]>) {
-      if (state.user) state.user.conversations = action.payload;
+      if (state.user) state.user.conversations = [...state.user.conversations,...action.payload];
+    },
+    addUserConversation(state, action: PayloadAction<string>) {
+      if (state.user) state.user.conversations.push(action.payload);
+    },
+    removeUserConversation(state, action: PayloadAction<string>) {
+      if (state.user) {
+        const index = state.user.conversations.findIndex(
+          (conv) => conv === action.payload
+        );
+        if (index !== -1) {
+          state.user.conversations.splice(index, 1);
+        }
+      }
     },
     clearUserState() {
       return initialState;
@@ -40,6 +53,7 @@ export const {
   setUserLoadingState,
   fetchMe,
   createUser,
+  removeUserConversation,
   addUserConversations,
   clearUserState,
 } = userSlice.actions;
