@@ -12,12 +12,13 @@ import CardActionArea from "@material-ui/core/CardActionArea";
 import Typography from "@material-ui/core/Typography";
 import { fetchCurrentInfoProfile } from "../../../../store/modules/currentInfo_side/currentInfo";
 
-export interface IMemberProps {
-  member: IUser;
+export interface IUserCardProps {
+  user: IUser;
 }
 
 const useStyles = makeStyles({
   root: {
+    height: 250,
     width: 150,
     margin: 10,
   },
@@ -27,13 +28,13 @@ const useStyles = makeStyles({
   },
 });
 
-export const Member: React.FC<IMemberProps> = ({ member }: IMemberProps) => {
+export const UserCard: React.FC<IUserCardProps> = ({ user }) => {
   const classes = useStyles();
 
   const dispatch = useDispatch();
 
   const handleClick = () => {
-    dispatch(fetchCurrentInfoProfile(member._id));
+    dispatch(fetchCurrentInfoProfile(user._id));
   };
 
   return (
@@ -41,16 +42,16 @@ export const Member: React.FC<IMemberProps> = ({ member }: IMemberProps) => {
       <CardActionArea>
         <CardMedia
           className={classes.media}
-          image={member.avatar || defaultAvatar}
-          title={`Profile picture of ${member.name}`}
+          image={user.avatar || defaultAvatar}
+          title={`Profile picture of ${user.name}`}
         />
         <CardContent>
           <Typography gutterBottom variant="h6">
-            {member.name}
+            {user.name}
           </Typography>
-          {member.work && (
+          {user.work && (
             <Typography variant="body2" color="textSecondary" component="p">
-              {member.work}
+              {user.work}
             </Typography>
           )}
         </CardContent>

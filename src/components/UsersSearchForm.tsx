@@ -3,11 +3,11 @@ import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import TextField from "@material-ui/core/TextField";
 import { makeStyles } from "@material-ui/core/styles";
 
-export interface IMembersSearchFormProps {
+export interface IUsersSearchFormProps {
   formSubmit: (name: string) => void;
 }
 
-export interface IMembersSearchForm {
+export interface IUsersSearchForm {
   name: string;
 }
 
@@ -26,13 +26,13 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export const MembersSearchForm: React.FC<IMembersSearchFormProps> = ({
+export const UsersSearchForm: React.FC<IUsersSearchFormProps> = ({
   formSubmit,
-}: IMembersSearchFormProps) => {
+}: IUsersSearchFormProps) => {
   const classes = useStyles();
 
   const { handleSubmit, control } = useForm();
-  const onSubmit: SubmitHandler<IMembersSearchForm> = (data) =>
+  const onSubmit: SubmitHandler<IUsersSearchForm> = (data) =>
     formSubmit(data.name);
 
   return (
@@ -54,7 +54,7 @@ export const MembersSearchForm: React.FC<IMembersSearchFormProps> = ({
             color="secondary"
             size="small"
             variant="outlined"
-            label="Search members"
+            label="Search Users"
           />
         )}
       />
