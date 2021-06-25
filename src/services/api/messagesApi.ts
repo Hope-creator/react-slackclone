@@ -1,18 +1,26 @@
 import axios from "axios";
 import { ISendMessageForm } from "../../components/SendMessageForm";
 import { IMessage } from "../../store/modules/messages/types";
-import { IResponse } from "./types";
+import { IPaginationData, IResponse, IResponsePagination } from "./types";
 
 export const messagesApi = {
-  async fetchMessages(id: string): Promise<IMessage[] | []> {
-    const response = await axios.get<IResponse<IMessage[] | []>>(
-      `/api/messages/${id}`
+  async fetchMessages(
+    id: string,
+    page: number = 1,
+    count: number = 40
+  ): Promise<IPaginationData<IMessage[]>> {
+    const response = await axios.get<IResponsePagination<IMessage[]>>(
+      `/api/messages/${id}${"?page=" + page + "&count=" + count}`
     );
     return response.data.data;
   },
-  async fetchDirectMessages(id: string): Promise<IMessage[] | []> {
-    const response = await axios.get<IResponse<IMessage[] | []>>(
-      `/api/messages/dm/${id}`
+  async fetchDirectMessages(
+    id: string,
+    page: number = 1,
+    count: number = 40
+  ): Promise<IPaginationData<IMessage[]>> {
+    const response = await axios.get<IResponsePagination<IMessage[]>>(
+      `/api/messages/dm/${id}${"?page=" + page + "&count=" + count}`
     );
     return response.data.data;
   },
@@ -51,9 +59,12 @@ export const messagesApi = {
     );
     return response.data.data;
   },
-  async getAllUnread(): Promise<IMessage[] | []> {
-    const response = await axios.get<IResponse<IMessage[] | []>>(
-      `/api/messages/unread`
+  async getAllUnread(
+    page: number = 1,
+    count: number = 40
+  ): Promise<IPaginationData<IMessage[]>> {
+    const response = await axios.get<IResponsePagination<IMessage[]>>(
+      `/api/messages/unread${"?page=" + page + "&count=" + count}`
     );
     return response.data.data;
   },
@@ -77,9 +88,12 @@ export const messagesApi = {
     );
     return response.data.data;
   },
-  async getMarkMessages(): Promise<IMessage[]> {
-    const response = await axios.get<IResponse<IMessage[]>>(
-      `/api/messages/mark`
+  async getMarkMessages(
+    page: number = 1,
+    count: number = 40
+  ): Promise<IPaginationData<IMessage[]>> {
+    const response = await axios.get<IResponsePagination<IMessage[]>>(
+      `/api/messages/mark${"?page=" + page + "&count=" + count}`
     );
     return response.data.data;
   },
