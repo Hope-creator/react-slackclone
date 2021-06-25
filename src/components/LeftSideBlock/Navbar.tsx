@@ -13,17 +13,29 @@ import ListItemIcon from "@material-ui/core/ListItemIcon";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
-import { JoinAllModal } from "../JoinAllModal";
-import PlaylistAddIcon from "@material-ui/icons/PlaylistAdd";
 import { CreateConversationModal } from "../CreateConversationlModal";
 import { IUser } from "../../store/modules/user/types";
-import { IDialog } from "../../store/modules/dialogs/types";
 import { PathesCustomNames } from "../../constants";
+import InfiniteScroll from "react-infinite-scroll-component";
+import { useDispatch, useSelector } from "react-redux";
+import { CentralCircularProgress } from "../CentralCircularProgress";
+import { fetchUsers } from "../../store/modules/users/users";
+import {
+  selectUsersPage,
+  selectUsersCount,
+  selectUsersTotalCount,
+} from "../../store/modules/users/selectors";
+import {
+  selectConversationsCount,
+  selectConversationsPage,
+  selectConversationsTotalCount,
+} from "../../store/modules/conversations/selectors";
+import { fetchConversations } from "../../store/modules/conversations/conversations";
 
 interface INavbarProps {
   conversations: IConversation[];
-  dialogs: IDialog[];
-  user: IUser;
+  users: IUser[];
+  me: IUser;
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -40,15 +52,43 @@ const useStyles = makeStyles((theme: Theme) =>
         borderRadius: "4px",
       },
     },
+    infinityScrollContainer: {
+      overflowY: "auto",
+      overflowX: "hidden",
+      "&::-webkit-scrollbar": {
+        width: "0.5em",
+      },
+      "&::-webkit-scrollbar-thumb": {
+        backgroundColor: theme.palette.secondary.light,
+        borderRadius: "4px",
+      },
+    },
   })
 );
 
 export const Navbar: React.FC<INavbarProps> = ({
   conversations,
-  dialogs,
-  user,
+  users,
+  me,
 }: INavbarProps) => {
   const classes = useStyles();
+  const dispatch = useDispatch();
+
+  const pageUsers = useSelector(selectUsersPage);
+  const countUsers = useSelector(selectUsersCount);
+  const totalCountUsers = useSelector(selectUsersTotalCount);
+
+  const pageConversations = useSelector(selectConversationsPage);
+  const countConversations = useSelector(selectConversationsCount);
+  const totalCountConversations = useSelector(selectConversationsTotalCount);
+
+  const fetchData = () => {
+    dispatch(fetchUsers());
+  };
+
+  const fetchDataConversations = () => {
+    dispatch(fetchConversations());
+  };
 
   return (
     <Box className={classes.channelSideBarItemsWrapper}>
@@ -57,9 +97,32 @@ export const Navbar: React.FC<INavbarProps> = ({
         <MoreMenu />
       </List>
       <NestedList listTitle="Channels">
-        {conversations.map(channel => (
-          <Channel key={channel._id} channel={channel} />
-        ))}
+        <div>
+          <InfiniteScroll
+            className={classes.infinityScrollContainer}
+            height={35 * 19}
+            /*
+             * 35px is height of 1 dialog item, so we render
+             * with one less item to see scroll
+             * */
+            dataLength={conversations.length}
+            next={() => fetchDataConversations()}
+            hasMore={
+              pageConversations * countConversations < totalCountConversations
+            }
+            loader={<CentralCircularProgress />}
+            endMessage={
+              <p style={{ textAlign: "center" }}>
+                <b>Yay! You have seen it all</b>
+              </p>
+            }
+          >
+            {conversations.map((channel) => (
+              <Channel key={channel._id} channel={channel} />
+            ))}
+          </InfiniteScroll>
+        </div>
+
         <CreateConversationModal
           opener={
             <ListItem dense button>
@@ -72,23 +135,31 @@ export const Navbar: React.FC<INavbarProps> = ({
             </ListItem>
           }
         />
-        <JoinAllModal
-          opener={
-            <ListItem dense button>
-              <ListItemIcon>
-                <PlaylistAddIcon color="primary" />
-              </ListItemIcon>
-              <ListItemText primaryTypographyProps={{ color: "primary" }}>
-                Join all channels
-              </ListItemText>
-            </ListItem>
-          }
-        />
       </NestedList>
       <NestedList listTitle="Direct messages">
-        {dialogs.map((dialog) => (
-          <DirectMessageListItem key={dialog._id} user={user} dialog={dialog} />
-        ))}
+        <div>
+          <InfiniteScroll
+            className={classes.infinityScrollContainer}
+            height={35 * 19}
+            /*
+             * 35px is height of 1 dialog item, so we render
+             * with one less item to see scroll
+             * */
+            dataLength={users.length}
+            next={() => fetchData()}
+            hasMore={pageUsers * countUsers < totalCountUsers}
+            loader={<CentralCircularProgress />}
+            endMessage={
+              <p style={{ textAlign: "center" }}>
+                <b>Yay! You have seen it all</b>
+              </p>
+            }
+          >
+            {users.map((user) => (
+              <DirectMessageListItem key={user._id} user={user} me={me} />
+            ))}
+          </InfiniteScroll>
+        </div>
       </NestedList>
     </Box>
   );
