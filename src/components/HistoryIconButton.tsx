@@ -107,7 +107,7 @@ export const HistoryIconButton: React.FC<IHistoryIconButtonProps> = ({
             {currentHistoryItems.length > 0 &&
               currentHistoryItems.map((item) => (
                 <HistoryItemFactory
-                  user={user}
+                  me={user}
                   onClick={handleClose}
                   item={item}
                   key={historyItemKeyFactory(item)}
