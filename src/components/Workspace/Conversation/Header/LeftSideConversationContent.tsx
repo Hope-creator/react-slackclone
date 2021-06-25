@@ -5,6 +5,7 @@ import { makeStyles, createStyles, Theme } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import LockIcon from "@material-ui/icons/Lock";
+import { ConvTopicEditModal } from "../../../ConvTopicEditModal";
 
 interface ILeftSideConversationContentProps {
   conversation: IConversation;
@@ -52,15 +53,12 @@ export const LeftSideConversationContent: React.FC<ILeftSideConversationContentP
           </Typography>
         </Grid>
         <Grid item>
-          {conversation.topic || (
-            <Typography
-              variant="body2"
-              className={classes.addTopicText}
-              onClick={() => console.log("type")}
-            >
-              Add a topic
-            </Typography>
-          )}
+          <ConvTopicEditModal
+            conversation={conversation}
+            opener={
+              <Typography>{conversation.topic || "Add a topic"}</Typography>
+            }
+          />
         </Grid>
       </Grid>
     );
