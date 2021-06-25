@@ -1,10 +1,10 @@
+import { IUser } from './../store/modules/user/types';
 import { LocalHistoryItemType } from "../constants";
 import { IConversation } from "./../store/modules/conversations/types";
-import { IDialog } from "./../store/modules/dialogs/types";
 import { LocalHistoryItem } from "./getLocalHistoryItems";
 
 export const setLocalHistoryItem = (
-  item: IDialog | IConversation | string,
+  item: IUser | IConversation | string,
   type: LocalHistoryItemType
 ) => {
   const history: string | undefined = localStorage["history"];
@@ -16,11 +16,10 @@ export const setLocalHistoryItem = (
     const index = parsed.findIndex((_checkItem) => {
 
       if (
-        type === LocalHistoryItemType.DIALOG &&
-        _checkItem.type === LocalHistoryItemType.DIALOG
+        type === LocalHistoryItemType.USER &&
+        _checkItem.type === LocalHistoryItemType.USER
       ) {
-        console.log('ISTRUE',(_checkItem.item as IDialog)._id === (item as IDialog)._id )
-        return (_checkItem.item as IDialog)._id === (item as IDialog)._id;
+        return (_checkItem.item as IUser)._id === (item as IUser)._id;
       }
       if (
         type === LocalHistoryItemType.CONVERSATION &&

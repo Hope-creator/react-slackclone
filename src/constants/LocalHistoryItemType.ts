@@ -1,5 +1,5 @@
 export enum LocalHistoryItemType {
-  DIALOG = "DIALOG",
+  USER = "USER",
   CONVERSATION = "CONVERSATION",
   CUSTOM = "CUSTOM",
 }
