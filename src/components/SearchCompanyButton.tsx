@@ -148,7 +148,7 @@ export const SearchCompanyButton: React.FC<ISearchCompanyButtonProps> = ({
             <SearchCompanyForm />
             <Divider />
             <div onClick={handleClose}>
-              <SearchCompanyContent user={user} />
+              <SearchCompanyContent me={user} />
             </div>
           </div>
           <div className={classes.styledBottomBlock}>
