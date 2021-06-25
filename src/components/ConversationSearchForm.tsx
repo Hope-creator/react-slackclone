@@ -13,6 +13,7 @@ import {
 import {
   clearCurrentConversationsState,
   fetchCurrentConversations,
+  setCurrentConversationsSearchName,
 } from "../store/modules/currentConversations/currentConversations";
 import CancelIcon from "@material-ui/icons/Cancel";
 
@@ -47,10 +48,8 @@ export const ConversationSearchForm = () => {
 
   const { handleSubmit, control, watch, reset } = useForm();
   const onSubmit: SubmitHandler<IConversationSearchForm> = (data) => {
-    if (data.name) dispatch(fetchCurrentConversations(data.name));
-    else {
-      dispatch(clearCurrentConversationsState());
-    }
+      dispatch(setCurrentConversationsSearchName(data.name));
+      dispatch(fetchCurrentConversations());
   };
 
   const handleClear = () => {
