@@ -7,7 +7,7 @@ export interface IConversation {
   is_channel?: boolean;
   createdAt: Date;
   creator?: string | IUser;
-  purpose?: string;
+  description?: string;
   topic?: string;
   messages: IMessage[];
   is_private: boolean;
@@ -24,5 +24,8 @@ export enum LoadingConversationsState {
 
 export interface IConversationsState {
   conversations: IConversation[];
+  page: number;
+  count: number;
+  totalCount: number;
   loadingState: LoadingConversationsState;
 }
