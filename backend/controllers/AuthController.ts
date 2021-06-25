@@ -6,8 +6,6 @@ import { UserModel } from "../models/UserModel";
 import { hashText, promisifyCompare } from "../utils/bcrypt";
 import cryptoRandomString from "crypto-random-string";
 import { tokenCreate } from "../utils/tokenCreate";
-import { CompanyModel } from "../models/CompanyModel";
-import { DialogModel } from "../models/DialogModel";
 import socket from "socket.io";
 
 class AuthController {
@@ -49,28 +47,8 @@ class AuthController {
         code: secretCode,
       });
       await newCode.save();
-
-      // Adding user to company members
-      const company = await CompanyModel.findOneAndUpdate(
-        { _id: "T01TE7T5WEV" },
-        { $addToSet: { members: user._id } },
-        { new: true }
-      );
       const savedUser = await UserModel.findById(user._id).populate("company");
-      if (!company) {
-        res.status(404).json({ status: "error", data: "Company not found" });
-        return;
-      }
-      /*
-       * On registration creating dialogs with all existing members
-       */
-      const allUsersDialogData = company.members.map((memberId) => {
-        const dialog = { creator: user._id, partner: memberId };
-        return dialog;
-      });
-      await DialogModel.insertMany(allUsersDialogData);
-
-      this.io.emit("SERVER:DIALOG_CREATED");
+    
 
       await sendEmail({
         email: email,
@@ -82,6 +60,7 @@ class AuthController {
             console.log(err);
             res.status(500).json({ status: "error" });
           } else {
+            this.io.emit("SERVER:NEW_USER", savedUser);
             res.json({
               status: "success",
               data: savedUser,
@@ -208,6 +187,43 @@ class AuthController {
       console.log("Error on AuthController / getMe:", error);
     }
   };
+
+  create100Test = async (
+    req: express.Request,
+    res: express.Response
+  ): Promise<void> => {
+    try {
+      const createRandUser = (index: number) => {
+        return {
+          name: "Xest" + index,
+          email: "Xest" + index + "@mail.ru",
+          passwords: "123456"
+        }
+      }
+      for(let i = 0; i<1000; i++) {
+        const user = createRandUser(i);
+        const newUser = new UserModel(user);
+        await newUser.save()
+      }
+
+    } catch (error) {
+      if (error.message === "Email must be unique") {
+        res.status(409).json({
+          status: "error",
+          errors: error.message,
+        });
+      } else {
+        UserModel.remove({ email: req.body.email });
+        res.status(500).json({
+          status: "error",
+          errors: JSON.stringify(error),
+        });
+        console.log("Error on AuthController / create:", error);
+      }
+    }
+  };
+
+
 }
 
 export default AuthController;
