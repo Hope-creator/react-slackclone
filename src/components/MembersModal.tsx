@@ -9,13 +9,13 @@ import {
   Typography,
 } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
-import { MembersSearchForm } from "./MembersSearchForm";
+import { UsersSearchForm } from "./UsersSearchForm";
 import { UserListItem } from "./UserListItem";
 import { useDispatch, useSelector } from "react-redux";
 import { selectUser } from "../store/modules/user/selectors";
 import {
-  selectConversationMembers,
   selectConversationsMembersLoadingState,
+  selectFilteredConversationMembers,
 } from "../store/modules/conversationMembers/selectors";
 import { LoadingConversationsMembersState } from "../store/modules/conversationMembers/types";
 import { IConversation } from "../store/modules/conversations/types";
@@ -23,6 +23,9 @@ import {
   clearConversationMembers,
   fetchConverastionMembers,
 } from "../store/modules/conversationMembers/conversationMembers";
+import { IUser } from "../store/modules/user/types";
+import socket from "../services/socket/socket";
+import { FixedSizeList as List } from "react-window";
 
 interface IMembersModalProps {
   conversation: IConversation;
@@ -66,7 +69,7 @@ export const MembersModal: React.FC<IMembersModalProps> = ({
 
   const [filterName, setFilterName] = React.useState<string>("");
 
-  const members = useSelector(selectConversationMembers);
+  const members = useSelector(selectFilteredConversationMembers(filterName));
 
   const membersLoadingState = useSelector(
     selectConversationsMembersLoadingState
@@ -79,6 +82,41 @@ export const MembersModal: React.FC<IMembersModalProps> = ({
     };
   }, [conversation._id, dispatch]);
 
+  const handleListenerNewUsers = React.useCallback(
+    (conversationId: string) => {
+      if (conversationId === conversation._id)
+        dispatch(fetchConverastionMembers(conversation._id));
+    },
+    [dispatch, conversation._id]
+  );
+
+  const handleListenerNewUser = React.useCallback(
+    (user: IUser, conversationId: string) => {
+      if (conversationId === conversation._id)
+        dispatch(fetchConverastionMembers(conversation._id));
+    },
+    [dispatch, conversation._id]
+  );
+
+  React.useEffect(() => {
+    if (conversation) {
+      socket.emit("CONVERSATION:JOIN", conversation._id);
+      socket.on("SERVER:NEW_CONVERSATION_MEMBER", handleListenerNewUser);
+      socket.on("SERVER:NEW_CONVERSATION_MEMBER_MANY", handleListenerNewUsers);
+    }
+    return () => {
+      socket.emit("CONVERSATION:LEAVE");
+      socket.removeListener(
+        "SERVER:NEW_CONVERSATION_MEMBER",
+        handleListenerNewUser
+      );
+      socket.removeListener(
+        "SERVER:NEW_CONVERSATION_MEMBER_MANY",
+        handleListenerNewUsers
+      );
+    };
+  }, [dispatch, conversation, handleListenerNewUsers, handleListenerNewUser]);
+
   const handleOpen = () => {
     setOpen(true);
   };
@@ -89,6 +127,11 @@ export const MembersModal: React.FC<IMembersModalProps> = ({
 
   const changeFilterName = (name: string) => {
     setFilterName(name);
+  };
+
+  const itemKey = (index: number, data: IUser[]) => {
+      const user = data[index];
+      return user._id;
   };
 
   const children = () => (
@@ -110,19 +153,26 @@ export const MembersModal: React.FC<IMembersModalProps> = ({
               <CloseIcon />
             </IconButton>
           </Grid>
-          <MembersSearchForm formSubmit={changeFilterName} />
-          {me &&
-            (
-              (filterName &&
-                members.filter((user) => user.name === filterName)) ||
-              members
-            ).map((user) => (
-              <UserListItem
-                key={user._id}
-                user={user}
-                isMe={me._id === user._id}
-              />
-            ))}
+          <UsersSearchForm formSubmit={changeFilterName} />
+          {me && (
+            <List
+              height={240}
+              itemCount={members.length}
+              itemSize={60}
+              itemData={members}
+              itemKey={itemKey}
+              width="inherit"
+            >
+              {({ index, style }) => {
+                const user = members[index];
+                return (
+                  <div style={style}>
+                    <UserListItem user={user} isMe={me._id === user._id} />
+                  </div>
+                );
+              }}
+            </List>
+          )}
         </>
       )}
     </Paper>
