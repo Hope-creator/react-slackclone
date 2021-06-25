@@ -16,9 +16,9 @@ import {
 import {
   selectMessages,
   selectMessagesLoadingState,
+  selectMessagesTotalCount,
 } from "../../../store/modules/messages/selectors";
 import { LoadingMessagesState } from "../../../store/modules/messages/types";
-import { CentralCircularProgress } from "../../CentralCircularProgress";
 
 interface IUnreadsWorkspaceProps {
   user: IUser;
@@ -30,6 +30,7 @@ export const UnreadsWorkspace: React.FC<IUnreadsWorkspaceProps> = ({
   const dispatch = useDispatch();
   const messagesLoadingState = useSelector(selectMessagesLoadingState);
   const messages = useSelector(selectMessages);
+  const messagesTotalCount = useSelector(selectMessagesTotalCount);
 
   React.useEffect(() => {
     dispatch(fetchMessagesUnread());
@@ -47,28 +48,22 @@ export const UnreadsWorkspace: React.FC<IUnreadsWorkspaceProps> = ({
   );
 
   React.useEffect(() => {
-    socket.addEventListener("SERVER:NEW_UNREAD", handleListener);
+    if (messagesLoadingState === LoadingMessagesState.LOADED) {
+      socket.addEventListener("SERVER:NEW_UNREAD", handleListener);
+    }
     return function cleanUp() {
       socket.removeEventListener("SERVER:NEW_UNREAD", handleListener);
     };
-  }, [handleListener]);
+  }, [handleListener, messagesLoadingState]);
 
   return (
     <>
       <WorkspaceHeader
-        leftSideContent={
-          <LeftSideUnreads unreadsCount={messages.length || 0} />
-        }
+        leftSideContent={<LeftSideUnreads unreadsCount={messagesTotalCount} />}
         rightSideContent={<RightSideUnreads messages={messages} />}
       />
       <WorkspaceContent
-        children={
-          messagesLoadingState === LoadingMessagesState.LOADING ? (
-            <CentralCircularProgress />
-          ) : (
-            <UnreadsContent user={user} messages={messages} />
-          )
-        }
+        children={<UnreadsContent user={user} messages={messages} />}
       />
     </>
   );
