@@ -4,8 +4,53 @@ import { UserModel } from "../models/UserModel";
 
 class UserController {
   async index(req: express.Request, res: express.Response): Promise<void> {
+    const { page = 1, count = 20, search } = req.query;
+    const skipPage = page > 0 ? (Number(page) - 1) * Number(count) : 0;
+
+    const searhQuery =
+      search && typeof search === "string"
+        ? {
+            name: {
+              $regex: search.replace(/[-[\]{}()*+?.,\\/^$|#\s]/g, "\\$&"),
+              $options: "i",
+            },
+          }
+        : {};
     try {
-      const users = await UserModel.find({}).exec();
+      const users = (
+        await UserModel.aggregate([
+          {
+            $match: searhQuery,
+          },
+          {$sort: {"createdAt": -1}},
+          {
+            $facet: {
+              results: [
+                { $skip: skipPage },
+                { $limit: Number(count) },
+                {
+                  $project: {
+                    status: 0,
+                    password: 0,
+                  },
+                },
+              ],
+              totalCount: [
+                {
+                  $count: "total",
+                },
+              ],
+            },
+          },
+          {
+            $addFields: {
+              totalCount: {
+                $arrayElemAt: ["$totalCount.total", 0],
+              },
+            },
+          },
+        ])
+      )[0];
       res.json({
         status: "success",
         data: users,
@@ -52,7 +97,7 @@ class UserController {
       const userId = req.userId;
       const query = req.params.query;
       const users = await UserModel.find({
-        _id: {$ne: userId},
+        _id: { $ne: userId },
         $or: [{ name: query }, { email: query }],
       }).exec();
       res.json({
