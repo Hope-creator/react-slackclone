@@ -9,11 +9,11 @@ import { makeStyles } from "@material-ui/core/styles";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchCurrentInfoChannel } from "../store/modules/currentInfo_side/currentInfo";
 import { selectCurrentInfoItem } from "../store/modules/currentInfo_side/selectors";
-import { fetchJoinOneConversation } from "../store/modules/joinConversations/joinConversations";
+import { fetchJoinOneConversation } from "../store/modules/conversationsAccess/conversationsAccess";
 import {
-  selectIsConversationsJoinError,
-  selectIsConversationsJoinFetching,
-} from "../store/modules/joinConversations/selectors";
+  selectIsConversationsAccessFetching,
+  selectIsConversationsAccessError,
+} from "../store/modules/conversationsAccess/selectors";
 import { CircularProgress } from "@material-ui/core";
 
 interface IViewConversationBlockBox {
@@ -48,10 +48,10 @@ export const ViewConversationBlock: React.FC<IViewConversationBlockBox> = ({
   ) as IConversation;
 
   const isJoinFetching = useSelector(
-    selectIsConversationsJoinFetching(conversation._id)
+    selectIsConversationsAccessFetching(conversation._id)
   );
   const isJoinError = useSelector(
-    selectIsConversationsJoinError(conversation._id)
+    selectIsConversationsAccessError(conversation._id)
   );
 
   const handleJoinClick = () => {
