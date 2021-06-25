@@ -8,8 +8,17 @@ import AccordionSummary from "@material-ui/core/AccordionSummary";
 import AccordionDetails from "@material-ui/core/AccordionDetails";
 import Typography from "@material-ui/core/Typography";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-import { Avatar, Button, Container, Grid, IconButton, Link } from "@material-ui/core";
+import {
+  Avatar,
+  Button,
+  Container,
+  Grid,
+  IconButton,
+  Link,
+} from "@material-ui/core";
 import { IConversation } from "../../../store/modules/conversations/types";
+import { DescriptionEditModal } from "../../ConvDescriptionEditModal";
+import { ConvTopicEditModal } from "../../ConvTopicEditModal";
 
 interface AboutProps {
   user?: {
@@ -18,41 +27,41 @@ interface AboutProps {
     phoneNumber?: number;
     email?: string;
   };
-  channel?: IConversation
+  channel?: IConversation;
 }
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     channelAboutItem: {
-        backgroundColor: "rgba(29,28,29,.04)",
-        padding: "12px 16px",
-        marginBottom: theme.spacing(0.1)
+      backgroundColor: "rgba(29,28,29,.04)",
+      padding: "12px 16px",
+      marginBottom: theme.spacing(0.1),
     },
     fullWidht: {
-        width: "100%"
+      width: "100%",
     },
     small: {
-        width: theme.spacing(3),
-        height: theme.spacing(3)
+      width: theme.spacing(3),
+      height: theme.spacing(3),
     },
     smallButton: {
-        padding: 0,
-        borderRadius: "50%"
+      padding: 0,
+      borderRadius: "50%",
     },
     channelAboutHeaderText: {
       color: "rgba(28,28,28,0.7)",
       fontSize: 13,
-      fontWeight: 700
+      fontWeight: 700,
     },
     channelAboutContentText: {
       color: "rgba(28,28,28,0.7)",
-      fontSize: 15
+      fontSize: 15,
     },
     channelAboutButton: {
       padding: 0,
       color: theme.palette.secondary.main,
-      width: "100%"
-    }
+      width: "100%",
+    },
   })
 );
 
@@ -61,7 +70,8 @@ export const About: React.FC<AboutProps> = ({ user, channel }) => {
 
   const classes = useStyles();
 
-  if (user) content = () => {
+  if (user)
+    content = () => {
       return (
         <>
           {user.displayName && (
@@ -74,27 +84,56 @@ export const About: React.FC<AboutProps> = ({ user, channel }) => {
       );
     };
 
-  if (channel) {content = () => {
+  if (channel) {
+    content = () => {
       return (
-        <Grid direction="column" className={classes.fullWidht} >
+        <Grid direction="column" className={classes.fullWidht}>
           <Container disableGutters className={classes.channelAboutItem}>
-            <Typography className={classes.channelAboutHeaderText}>Topic</Typography>
+            <Typography className={classes.channelAboutHeaderText}>
+              Topic
+            </Typography>
             <Typography className={classes.channelAboutContentText}>
               {channel.topic ? channel.topic : "What's up for discussion?"}
             </Typography>
-            <Button size="small" className={classes.channelAboutButton}>Edit</Button>
+            <ConvTopicEditModal
+              conversation={channel}
+              opener={
+                <Button size="small" className={classes.channelAboutButton}>
+                  Edit
+                </Button>
+              }
+            />
           </Container>
           <Container disableGutters className={classes.channelAboutItem}>
-            <Typography className={classes.channelAboutHeaderText}>Description</Typography>
+            <Typography className={classes.channelAboutHeaderText}>
+              Description
+            </Typography>
             <Typography className={classes.channelAboutContentText}>
-              {channel.purpose
-                ? channel.purpose
+              {channel.description
+                ? channel.description
                 : "Describe what this channel is so people can find it."}
             </Typography>
-            <Button className={classes.channelAboutButton}>Edit</Button>
+            <DescriptionEditModal
+              conversation={channel}
+              opener={
+                <Button className={classes.channelAboutButton}>Edit</Button>
+              }
+            />
           </Container>
-          <Grid container justify="space-between" wrap="nowrap" alignItems="center" className={classes.channelAboutItem}>
-            <IconButton disableRipple className={classes.smallButton}><Avatar className={classes.small}  alt="User photo" src={defaultAvatar} /></IconButton>
+          <Grid
+            container
+            justify="space-between"
+            wrap="nowrap"
+            alignItems="center"
+            className={classes.channelAboutItem}
+          >
+            <IconButton disableRipple className={classes.smallButton}>
+              <Avatar
+                className={classes.small}
+                alt="User photo"
+                src={defaultAvatar}
+              />
+            </IconButton>
             <Link variant="subtitle2">
               Created on {new Date(channel.createdAt).toDateString()}
             </Link>
@@ -102,7 +141,7 @@ export const About: React.FC<AboutProps> = ({ user, channel }) => {
         </Grid>
       );
     };
-}
+  }
 
   return (
     <Accordion square>
