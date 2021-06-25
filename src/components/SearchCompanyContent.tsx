@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import {
   selectSearchedConversations,
   selectSearchedCustoms,
-  selectSearchedDialogs,
+  selectSearchedUsers,
 } from "../store/modules/search/selectors";
 import { DirectMessageListItem } from "./DirectMessageListItem";
 import { IUser } from "../store/modules/user/types";
@@ -11,20 +11,20 @@ import { Channel } from "./Channel";
 import { SidebarListCreator } from "../functions/SidebarListCreator";
 
 interface ISearchCompanyContentProps {
-  user: IUser;
+  me: IUser;
 }
 
 export const SearchCompanyContent: React.FC<ISearchCompanyContentProps> = ({
-  user,
+  me,
 }) => {
   const searchedConversations = useSelector(selectSearchedConversations);
-  const searchedDialogs = useSelector(selectSearchedDialogs);
+  const searchedUsers = useSelector(selectSearchedUsers);
   const searchedCustoms = useSelector(selectSearchedCustoms);
 
   return (
     <>
-      {searchedDialogs.map((dialog) => (
-        <DirectMessageListItem key={dialog._id} user={user} dialog={dialog} />
+      {searchedUsers.map((user) => (
+        <DirectMessageListItem key={user._id} user={user} me={me} />
       ))}
       {searchedConversations.map((conversation) => (
         <Channel key={conversation._id} channel={conversation} />
