@@ -6,9 +6,12 @@ import PersonAddOutlinedIcon from "@material-ui/icons/PersonAddOutlined";
 import FindInPageOutlinedIcon from "@material-ui/icons/FindInPageOutlined";
 import CreateOutlinedIcon from "@material-ui/icons/CreateOutlined";
 import ExitToAppOutlinedIcon from "@material-ui/icons/ExitToAppOutlined";
+import { AddPeopleModal } from "../AddPeopleModal";
+import { IConversation } from "../../store/modules/conversations/types";
+import { ConvNameEditModal } from "../ConvNameEditModal";
 
 interface IContentButtonsProps {
-  name: string;
+  channel: IConversation;
 }
 
 const useStyles = makeStyles(() =>
@@ -27,7 +30,7 @@ const useStyles = makeStyles(() =>
 );
 
 export const ContentButtons: React.FC<IContentButtonsProps> = ({
-  name,
+  channel,
 }: IContentButtonsProps) => {
   const classes = useStyles();
 
@@ -39,18 +42,24 @@ export const ContentButtons: React.FC<IContentButtonsProps> = ({
       justify="space-around"
       alignItems="center"
     >
-      <IconButton>
-        <PersonAddOutlinedIcon />
-        Add
-      </IconButton>
-      <IconButton>
-        <FindInPageOutlinedIcon />
-        Find
-      </IconButton>
-      <IconButton>
-        <CreateOutlinedIcon />
-        Rename
-      </IconButton>
+      <AddPeopleModal
+        conversation={channel}
+        opener={
+          <IconButton>
+            <PersonAddOutlinedIcon />
+            Add
+          </IconButton>
+        }
+      />
+      <ConvNameEditModal
+        conversation={channel}
+        opener={
+          <IconButton>
+            <CreateOutlinedIcon />
+            Rename
+          </IconButton>
+        }
+      />
       <IconButton className={classes.leaveButton}>
         <ExitToAppOutlinedIcon />
         Leave
