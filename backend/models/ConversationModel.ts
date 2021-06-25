@@ -2,18 +2,11 @@ import { IMessage } from "./MessageModel";
 import { Schema, Document } from "mongoose";
 import { mongoose } from "../core/db";
 
-export interface IPurpose {
-  value: string;
-  creator: Schema.Types.ObjectId;
-}
-
-export interface ITopic extends IPurpose {}
-
 export interface IConversation {
   name?: string;
   creator?: Schema.Types.ObjectId;
-  purpose?: IPurpose;
-  topic?: ITopic;
+  description?: string;
+  topic?: string;
   messages: IMessage[];
   is_private: boolean;
   num_members: number;
@@ -30,10 +23,8 @@ const ConversationSchema = new Schema(
       value: String,
       creator: Schema.Types.ObjectId,
     },
-    topic: {
-      value: String,
-      creator: Schema.Types.ObjectId,
-    },
+    topic: {type: String, required: false},
+    description: {type: String, required: false},
     is_private: {
       type: Boolean,
       default: false,
