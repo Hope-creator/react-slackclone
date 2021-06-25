@@ -1,26 +1,43 @@
-import { takeEvery, call, put } from "redux-saga/effects";
+import { takeEvery, call, put, select } from "redux-saga/effects";
 import { LoadingCurrentConversationsState } from "./types";
-import { PayloadAction } from "@reduxjs/toolkit";
 import {
   setCurrentConversations,
   setCurrentConversationsLoadingState,
   fetchCurrentConversations,
+  setPageCurrentConversations,
+  setTotalCountCurrentConversations,
 } from "./currentConversations";
 import { IConversation } from "../conversations/types";
 import { conversationsApi } from "../../../services/api/converastionsApi";
 import { setLocalHistoryItem } from "../../../functions/setLocalHistoryItem";
 import { LocalHistoryItemType, PathesCustomNames } from "../../../constants";
+import { IPaginationData } from "../../../services/api/types";
+import {
+  selectCurrentConversationsSearchName,
+  selectCurrentConversationsPage,
+  selectCurrentConversationsCount,
+} from "./selectors";
 
-function* fetchCurrentConversationsSaga(action: PayloadAction<string>) {
+function* fetchCurrentConversationsSaga() {
   try {
-    const conversations: IConversation[] = yield call(
-      conversationsApi.fetchConversations,
-      action.payload
+    const searchName: string = yield select(
+      selectCurrentConversationsSearchName
     );
-    yield put(setCurrentConversations(conversations));
-
+    const page: number = yield select(selectCurrentConversationsPage);
+    const count: number = yield select(selectCurrentConversationsCount);
+    const data: IPaginationData<IConversation[]> = yield call(
+      conversationsApi.fetchConversations,
+      searchName,
+      page + 1,
+      count
+    );
+    yield put(setTotalCountCurrentConversations(data.totalCount || 0));
+    yield put(setPageCurrentConversations(page + 1));
+    yield put(setCurrentConversations(data.results));
     yield put(
-      setCurrentConversationsLoadingState(LoadingCurrentConversationsState.LOADED)
+      setCurrentConversationsLoadingState(
+        LoadingCurrentConversationsState.LOADED
+      )
     );
     setLocalHistoryItem(
       PathesCustomNames.CHANNEL_BROWSER,
@@ -30,11 +47,16 @@ function* fetchCurrentConversationsSaga(action: PayloadAction<string>) {
     console.log(e);
 
     yield put(
-      setCurrentConversationsLoadingState(LoadingCurrentConversationsState.ERROR)
+      setCurrentConversationsLoadingState(
+        LoadingCurrentConversationsState.ERROR
+      )
     );
   }
 }
 
 export function* currentConversationsSaga() {
-  yield takeEvery(fetchCurrentConversations.type, fetchCurrentConversationsSaga);
+  yield takeEvery(
+    fetchCurrentConversations.type,
+    fetchCurrentConversationsSaga
+  );
 }
