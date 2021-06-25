@@ -19,6 +19,7 @@ export interface IUser {
   display_name?: string;
   work?: string;
   phone?: number;
+  createdAt: string;
 }
 
 export enum LoadingUserState {
