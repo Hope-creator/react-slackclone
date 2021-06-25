@@ -17,6 +17,8 @@ import {
 import { LoadingSideInfoMembersState } from "../../../store/modules/SideInfoMembers/types";
 import { CircularProgress } from "@material-ui/core";
 import { fetchSideInfoMembers } from "../../../store/modules/SideInfoMembers/SideInfoMembers";
+import {FixedSizeList as List } from "react-window";
+import { IUser } from "../../../store/modules/user/types";
 
 interface IMembersProps {
   channel: IConversation;
@@ -46,6 +48,11 @@ export const Members: React.FC<IMembersProps> = ({ channel }) => {
     dispatch(fetchSideInfoMembers(channel._id));
   }, [channel, dispatch]);
 
+  const itemKey = React.useCallback((index: number, data: IUser[]) => {
+    const user = data[index];
+    return user._id
+  },[]) 
+
   return (
     <Accordion square>
       <AccordionSummary
@@ -63,7 +70,21 @@ export const Members: React.FC<IMembersProps> = ({ channel }) => {
           {membersLoadingState === LoadingSideInfoMembersState.LOADING ? (
             <CircularProgress />
           ) : (
-            members.map((user) => <MembersItem user={user} />)
+            <List
+              height={200}
+              itemCount={members.length}
+              itemData={members}
+              itemSize={35}
+              width="inherit"
+              itemKey={itemKey}
+            >
+               {({index,style}) => {
+                 const user = members[index];
+                 return <div style={style}>
+                <MembersItem user={user} />
+               </div>
+               }}
+            </List>
           )}
         </Grid>
       </AccordionDetails>
