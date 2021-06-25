@@ -1,5 +1,5 @@
 import React from "react";
-import { Avatar, Button, Grid, ListItem, Typography } from "@material-ui/core";
+import { Avatar, Button, Grid, ListItem, Typography, Box } from "@material-ui/core";
 import { IUser } from "../store/modules/user/types";
 import defaultAvatar from "../images/defaultAvatar.png";
 import { UserPopover } from "./UserPopover";
@@ -7,6 +7,7 @@ import { UserPopover } from "./UserPopover";
 interface IUserListItemProps {
   user: IUser;
   isMe: boolean;
+
 }
 
 export const UserListItem: React.FC<IUserListItemProps> = ({ user, isMe }) => {
@@ -17,7 +18,8 @@ export const UserListItem: React.FC<IUserListItemProps> = ({ user, isMe }) => {
       anchorPopupBlockHorizontal="center"
       anchorPopupBlockVertical="center"
       opener={
-        <ListItem button onClick={() => console.log("userlist")}>
+        <Box height={60}>
+        <ListItem button >
           <Grid container justify="space-between">
             <Grid item container alignItems="center" xs={10}>
               <Avatar
@@ -33,6 +35,7 @@ export const UserListItem: React.FC<IUserListItemProps> = ({ user, isMe }) => {
             </Grid>
           </Grid>
         </ListItem>
+        </Box>
       }
       user={user}
     />
