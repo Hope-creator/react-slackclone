@@ -8,8 +8,8 @@ export const selectSearch = (state: IRootState) =>
 export const selectSearchedConversations = (state: IRootState) =>
   selectSearchState(state).resultsConversations;
 
-export const selectSearchedDialogs = (state: IRootState) =>
-  selectSearchState(state).resultsDialogs;
+export const selectSearchedUsers= (state: IRootState) =>
+  selectSearchState(state).resultsUsers;
 
 export const selectSearchedCustoms = (state: IRootState) =>
   selectSearchState(state).resultsCustom;
