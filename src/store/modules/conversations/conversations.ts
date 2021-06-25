@@ -7,6 +7,9 @@ import {
 
 const initialState = {
   conversations: [],
+  page: 0,
+  count: 20,
+  totalCount: 20,
   loadingState: LoadingConversationsState.NEVER,
 } as IConversationsState;
 
@@ -18,8 +21,13 @@ const conversationsSlice = createSlice({
       state.loadingState = LoadingConversationsState.LOADING;
     },
     setConversations(state, action: PayloadAction<IConversation[] | []>) {
-      state.conversations = action.payload;
-      state.loadingState = LoadingConversationsState.LOADED;
+      state.conversations = [...state.conversations, ...action.payload];
+    },
+    setPageConversations(state, action: PayloadAction<number>) {
+      state.page = action.payload;
+    },
+    setTotalCountConversations(state, action: PayloadAction<number>) {
+      state.totalCount = action.payload;
     },
     setConversationsLoadingState(
       state,
@@ -27,16 +35,21 @@ const conversationsSlice = createSlice({
     ) {
       state.loadingState = action.payload;
     },
-    addOneConversation(state, action: PayloadAction<IConversation>) {
+    updateConversation(state, action: PayloadAction<IConversation>) {
       const index = state.conversations.findIndex(
         (conversation) => conversation._id === action.payload._id
       );
-      if (index) state.conversations[index] = action.payload;
-      else {
-        state.conversations = [...state.conversations, action.payload].sort(
-          (a, b) => (a.name > b.name ? 1 : -1)
-        );
-      }
+      if (index !== -1) state.conversations.splice(index, 1, action.payload);
+    },
+    addMemberConversations(state, action: PayloadAction<string>) {
+      const index = state.conversations.findIndex(
+        (conversation) => conversation._id === action.payload
+      );
+      if (index !== -1) state.conversations[index].num_members++;
+    },
+    addOneConversation(state, action: PayloadAction<IConversation>) {
+      state.conversations = [...state.conversations, action.payload];
+      state.conversations.sort((a, b) => (a.name > b.name ? 1 : -1));
     },
   },
 });
@@ -46,5 +59,9 @@ export const {
   setConversations,
   setConversationsLoadingState,
   addOneConversation,
+  updateConversation,
+  addMemberConversations,
+  setPageConversations,
+  setTotalCountConversations,
 } = conversationsSlice.actions;
 export default conversationsSlice.reducer;
