@@ -10,9 +10,9 @@ import socket from "../../../services/socket/socket";
 import { addNewMessage } from "../../../store/modules/messages/messages";
 import { useHistory } from "react-router";
 import {
-  addMemberCurrentConversation,
   clearCurrentConversation,
   fetchCurrentConversation,
+  updateCurrentConversation,
 } from "../../../store/modules/currentConversation/currentConversation";
 import {
   selectCurrentConversation,
@@ -24,6 +24,7 @@ import { LeftSideConversationContent } from "./Header/LeftSideConversationConten
 import { RightSideConversationContent } from "./Header/RightSideConversationContent";
 import { WorkspaceContent } from "../WorkspaceContent";
 import { ConversationContent } from "./Content/ConversationContent";
+import { IConversation } from "../../../store/modules/conversations/types";
 
 interface IConversationWorkspaceProps {
   user: IUser;
@@ -58,11 +59,13 @@ export const ConversationWorkspace: React.FC<IConversationWorkspaceProps> = ({
     [dispatch]
   );
 
-  const newMemberHandleListener = React.useCallback(
-    (member: string) => {
-      dispatch(addMemberCurrentConversation());
+  const conversationUpdateHandleListener = React.useCallback(
+    (_conversation: IConversation) => {
+      if (conversation && conversation._id === _conversation._id) {
+        dispatch(updateCurrentConversation(_conversation));
+      }
     },
-    [dispatch]
+    [dispatch, conversation]
   );
 
   React.useEffect(() => {
@@ -70,17 +73,17 @@ export const ConversationWorkspace: React.FC<IConversationWorkspaceProps> = ({
       conversation &&
       conversationLoadingState === LoadingCurrentConversationState.LOADED
     ) {
-      socket.on("SERVER:NEW_MEMBER", newMemberHandleListener);
+      socket.on("SERVER:CONVERSATION_UPDATE", conversationUpdateHandleListener);
     }
     return function clearConnect() {
-      socket.removeListener("SERVER:NEW_MEMBER", newMemberHandleListener);
+      socket.removeListener("SERVER:CONVERSATION_UPDATE", conversationUpdateHandleListener);
     };
   }, [
     conversation,
     dispatch,
     messagesLoadingState,
-    newMemberHandleListener,
     conversationLoadingState,
+    conversationUpdateHandleListener
   ]);
 
   React.useEffect(() => {
