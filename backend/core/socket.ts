@@ -47,16 +47,6 @@ const socket = (http: http.Server) => {
     socket.on("CONVERSATION:LEAVE", () => {
       if (socket.conversationId) socket.leave(socket.conversationId);
     });
-    socket.on("DIALOG:JOIN", (dialogId: string) => {
-      socket.dialogId = dialogId;
-      socket.join(dialogId);
-    });
-    socket.on("DIALOG:LEAVE", () => {
-      if (socket.dialogId) socket.leave(socket.dialogId);
-    });
-    socket.on("DIALOGS:TYPING", (obj: any) => {
-      socket.broadcast.emit("DIALOGS:TYPING", obj);
-    });
   });
 
   return io;
