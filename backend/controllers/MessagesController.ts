@@ -3,8 +3,8 @@ import { isValidObjectId } from "mongoose";
 import socket from "socket.io";
 import { ConversationModel } from "../models/ConversationModel";
 import { MessageModel } from "../models/MessageModel";
-import { UserModel } from "../models/UserModel";
 import { getAggregateMessage } from "../utils/function/getAggregateMessage";
+import { getAggregateMessageWithPagination } from "../utils/function/getAggregateMessageWithPagination";
 
 class MessagesController {
   io: socket.Server;
@@ -19,6 +19,8 @@ class MessagesController {
   ): Promise<void> => {
     const user = req.user;
     const conversationsId = req.params.id;
+    const { page = 1, count = 40 } = req.query;
+    const skipPage = page > 0 ? (Number(page) - 1) * Number(count) : 0;
     if (!isValidObjectId(conversationsId)) {
       res.status(400).json({ status: "error", data: "Wrong type of ID" });
     } else {
@@ -37,9 +39,11 @@ class MessagesController {
             user.conversations.includes(conversation._id)) ||
           !conversation.is_private
         ) {
-          const messages = await getAggregateMessage(
+          const messages = await getAggregateMessageWithPagination(
             { dest: conversation._id },
-            user._id
+            user._id,
+            skipPage,
+            Number(count)
           );
           res.json({ status: "success", data: messages });
         } else {
