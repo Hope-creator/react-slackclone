@@ -2,9 +2,26 @@ import React from "react";
 import { IConversation } from "../store/modules/conversations/types";
 
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
-import { Button, Grid, Typography } from "@material-ui/core";
+import {
+  Button,
+  CircularProgress,
+  Grid,
+  Typography,
+  ListItemIcon,
+} from "@material-ui/core";
 import { IUser } from "../store/modules/user/types";
 import DoneIcon from "@material-ui/icons/Done";
+import LockIcon from "@material-ui/icons/Lock";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  fetchJoinOneConversation,
+  fetchLeaveOneConversation,
+} from "../store/modules/conversationsAccess/conversationsAccess";
+import {
+  selectIsConversationsAccessError,
+  selectIsConversationsAccessFetching,
+} from "../store/modules/conversationsAccess/selectors";
+import { useHistory } from "react-router-dom";
 
 interface IConversationItemProps {
   conversation: IConversation;
@@ -28,6 +45,13 @@ const useStyles = makeStyles((theme: Theme) =>
     joinedText: {
       color: "green",
     },
+    errorButton: {
+      color: "red",
+    },
+    lockIcon: {
+      fontSize: 14,
+      minWidth: 0
+    }
   })
 );
 
@@ -37,7 +61,19 @@ export const ConversationItem: React.FC<IConversationItemProps> = ({
 }) => {
   const classes = useStyles();
 
+  const dispatch = useDispatch();
+
+  const history = useHistory();
+
   const [isHovered, setIsHovered] = React.useState<boolean>(false);
+
+  const isConversationAccessFetching = useSelector(
+    selectIsConversationsAccessFetching(conversation._id)
+  );
+
+  const isConversationAccessError = useSelector(
+    selectIsConversationsAccessError(conversation._id)
+  );
 
   const isMember = user.conversations.includes(conversation._id);
 
@@ -49,6 +85,20 @@ export const ConversationItem: React.FC<IConversationItemProps> = ({
     setIsHovered(false);
   };
 
+  const handleLeaveButton = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.stopPropagation();
+    dispatch(fetchLeaveOneConversation(conversation._id));
+  };
+
+  const handleJoinButton = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.stopPropagation();
+    dispatch(fetchJoinOneConversation(conversation._id));
+  };
+
+  const handleClickContainer = () => {
+    history.push(conversation._id)
+  }
+
   return (
     <Grid
       onMouseEnter={setIsHoveredTrue}
@@ -58,9 +108,21 @@ export const ConversationItem: React.FC<IConversationItemProps> = ({
       justify="space-between"
       alignItems="center"
       wrap="nowrap"
+      onClick={handleClickContainer}
     >
       <Grid item>
-        <Typography variant="subtitle2">#{conversation.name}</Typography>
+        <Typography variant="subtitle2">
+          <>
+            {conversation.is_private ? (
+              <ListItemIcon className={classes.lockIcon}   >
+                <LockIcon className={classes.lockIcon} color="inherit" />
+              </ListItemIcon>
+            ) : (
+              "#"
+            )}
+          </>
+          {conversation.name}
+        </Typography>
         <Grid container wrap="nowrap" alignItems="center">
           {isMember && (
             <>
@@ -76,9 +138,37 @@ export const ConversationItem: React.FC<IConversationItemProps> = ({
         </Grid>
       </Grid>
       {isHovered && (
-        <Grid item>
-          {isMember ? <Button color="inherit" variant="outlined">Leave</Button> : <Button color="primary" variant="contained">Join</Button>}
-        </Grid>
+        <>
+          {isConversationAccessFetching ? (
+            <CircularProgress />
+          ) : (
+            <Grid item>
+              {isMember ? (
+                <Button
+                  onClick={handleLeaveButton}
+                  color="inherit"
+                  variant="outlined"
+                  className={
+                    isConversationAccessError ? classes.errorButton : undefined
+                  }
+                >
+                  Leave
+                </Button>
+              ) : (
+                <Button
+                  onClick={handleJoinButton}
+                  color="primary"
+                  variant="contained"
+                  className={
+                    isConversationAccessError ? classes.errorButton : undefined
+                  }
+                >
+                  Join
+                </Button>
+              )}
+            </Grid>
+          )}
+        </>
       )}
     </Grid>
   );
