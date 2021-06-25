@@ -6,6 +6,7 @@ import { ConversationModel } from "../models/ConversationModel";
 import { DialogModel } from "../models/DialogModel";
 import { MessageModel } from "../models/MessageModel";
 import { getAggregateMessage } from "../utils/function/getAggregateMessage";
+import { getAggregateMessageWithPagination } from "../utils/function/getAggregateMessageWithPagination";
 
 class UnreadMessagesController {
   io: socket.Server;
@@ -19,10 +20,14 @@ class UnreadMessagesController {
     res: express.Response
   ): Promise<void> => {
     const userId = req.userId;
+    const { page = 1, count = 20 } = req.query;
+    const skipPage = page > 0 ? (Number(page) - 1) * Number(count) : 0;
     try {
-      const messages = await getAggregateMessage(
+      const messages = await getAggregateMessageWithPagination(
         { unreadBy: mongoose.Types.ObjectId(userId) },
-        userId
+        userId,
+        skipPage,
+        Number(count)
       );
       res.json({ status: "success", data: messages });
     } catch (error) {
