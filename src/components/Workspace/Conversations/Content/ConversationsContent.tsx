@@ -1,15 +1,23 @@
 import React from "react";
 
+import InfiniteScroll from "react-infinite-scroll-component";
 import Grid from "@material-ui/core/Grid";
 import { makeStyles, createStyles, Theme } from "@material-ui/core/styles";
 import { IUser } from "../../../../store/modules/user/types";
 import { IConversation } from "../../../../store/modules/conversations/types";
 import { ConversationItem } from "../../../ConversationItem";
 import { ConversationSearchForm } from "../../../ConversationSearchForm";
-import { useSelector } from "react-redux";
-import { selectCurrentConversationsLoadingState } from "../../../../store/modules/currentConversations/selectors";
-import { LoadingCurrentConversationsState } from "../../../../store/modules/currentConversations/types";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  selectCurrentConversationsCount,
+  selectCurrentConversationsPage,
+  selectCurrentConversationsTotalCount,
+} from "../../../../store/modules/currentConversations/selectors";
 import { CircularProgress, Typography } from "@material-ui/core";
+import {
+  clearCurrentConversationsState,
+  fetchCurrentConversations,
+} from "../../../../store/modules/currentConversations/currentConversations";
 
 export interface IConversationsContentProps {
   conversations: IConversation[];
@@ -33,9 +41,9 @@ const useStyles = makeStyles((theme: Theme) =>
       color: "#616061",
       margin: "10px 0 20px 0",
       "&:hover": {
-        color: "#000"
-      }
-    }
+        color: "#000",
+      },
+    },
   })
 );
 
@@ -44,10 +52,24 @@ export const ConversationsContent: React.FC<IConversationsContentProps> = ({
   user,
 }) => {
   const classes = useStyles();
+  const dispatch = useDispatch();
 
-  const conversationsWithFilterLoadingState = useSelector(
-    selectCurrentConversationsLoadingState
+  React.useEffect(() => {
+    dispatch(fetchCurrentConversations());
+    return function clearUsers() {
+      dispatch(clearCurrentConversationsState());
+    };
+  }, [dispatch]);
+
+  const pageCurrentConversations = useSelector(selectCurrentConversationsPage);
+  const countCurrenConversations = useSelector(selectCurrentConversationsCount);
+  const totalCountCurrentConversations = useSelector(
+    selectCurrentConversationsTotalCount
   );
+
+  const fetchDataCurrentMembers = () => {
+    dispatch(fetchCurrentConversations());
+  };
 
   return (
     <>
@@ -57,23 +79,38 @@ export const ConversationsContent: React.FC<IConversationsContentProps> = ({
         className={classes.workspaceContent}
         direction="column"
         wrap="nowrap"
+        id="scrollableDiv"
       >
         <ConversationSearchForm />
         <Typography className={classes.channelNumText}>
-          {conversations.length > 0 ? conversations.length + " channels" : "No results"}
+          {totalCountCurrentConversations > 0
+            ? totalCountCurrentConversations + " channels"
+            : "No results"}
         </Typography>
-        {conversationsWithFilterLoadingState ===
-        LoadingCurrentConversationsState.LOADING ? (
-          <CircularProgress />
-        ) : (
-          conversations.map((conversation) => (
+        <InfiniteScroll
+          dataLength={conversations.length}
+          next={() => fetchDataCurrentMembers()}
+          hasMore={
+            pageCurrentConversations * countCurrenConversations <
+            totalCountCurrentConversations
+          }
+          loader={<CircularProgress />}
+          scrollableTarget="scrollableDiv"
+          style={{ overflowY: "hidden" }}
+          endMessage={
+            <p style={{ textAlign: "center" }}>
+              <b>Yay! You have seen it all</b>
+            </p>
+          }
+        >
+          {conversations.map((conversation) => (
             <ConversationItem
               user={user}
               key={conversation._id}
               conversation={conversation}
             />
-          ))
-        )}
+          ))}
+        </InfiniteScroll>
       </Grid>
     </>
   );
