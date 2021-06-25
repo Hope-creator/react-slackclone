@@ -13,36 +13,40 @@ interface IMembersItemProps {
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     smallAvatar: {
-      width: theme.spacing(3),
-      height: theme.spacing(3),
+      width: "20px !important",
+      height: "20px !important",
       marginRight: theme.spacing(1),
+    },
+    itemContainer: {
+      height: 35,
+      minHeight: 0,
     },
   })
 );
 
-export const MembersItem: React.FC<IMembersItemProps> = ({
-  user,
-}: IMembersItemProps) => {
+export const MembersItem: React.FC<IMembersItemProps> = ({ user }) => {
   const classes = useStyles();
 
   return (
-    <>
-      <UserPopover
-        opener={
-          <MenuItem aria-describedby="Administation">
-            <Avatar
-              className={classes.smallAvatar}
-              src={user.avatar || defaultAvatar}
-            />
-            {user.display_name ? user.display_name : user.name}
-          </MenuItem>
-        }
-        anchorOriginBlockVertical="center"
-        anchorOriginBlockHorizontal="left"
-        anchorPopupBlockVertical="center"
-        anchorPopupBlockHorizontal="right"
-        user={user}
-      />
-    </>
+    <UserPopover
+      opener={
+        <MenuItem
+          className={classes.itemContainer}
+          aria-describedby="Administation"
+        >
+          <Avatar
+            className={classes.smallAvatar}
+            src={user.avatar || defaultAvatar}
+            sizes="width: 20px; height: 20px"
+          />
+          {user.display_name ? user.display_name : user.name}
+        </MenuItem>
+      }
+      anchorOriginBlockVertical="center"
+      anchorOriginBlockHorizontal="left"
+      anchorPopupBlockVertical="center"
+      anchorPopupBlockHorizontal="right"
+      user={user}
+    />
   );
 };
