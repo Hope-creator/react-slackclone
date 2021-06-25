@@ -1,5 +1,5 @@
+import { IUser } from '../user/types';
 import { IConversation } from './../conversations/types';
-import { IDialog } from './../dialogs/types';
 
 
 export enum LoadingSearchState {
@@ -12,7 +12,7 @@ export enum LoadingSearchState {
 export interface ISearchState {
   search: string;
   resultsConversations: IConversation[];
-  resultsDialogs: IDialog[];
+  resultsUsers: IUser[];
   resultsCustom: string[];
   loadingState: LoadingSearchState;
 }
