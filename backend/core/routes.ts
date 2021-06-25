@@ -79,6 +79,11 @@ const createRoutes = (app: express.Express, io: socket.Server) => {
   app.get("/api/conversations", authencticateToken, ConversationCtrl.index);
   app.get("/api/conversations/:id", authencticateToken, ConversationCtrl.show);
   app.post("/api/conversations", authencticateToken, ConversationCtrl.create);
+  app.post("/api/conversations/update", authencticateToken, ConversationCtrl.update);
+
+  app.post("/api/conversations/100", authencticateToken, ConversationCtrl.create100);
+
+
 
   //# Dialog
   app.get("/api/dialogs", authencticateToken, DialogCtrl.index);
@@ -123,6 +128,12 @@ const createRoutes = (app: express.Express, io: socket.Server) => {
     authencticateToken,
     upload.array("images", 10),
     FileCtrl.upload
+  );
+
+  //# Test
+  app.post(
+    "/api/100",
+    AuthCtrl.create100Test
   );
 };
 
