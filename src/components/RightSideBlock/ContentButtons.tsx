@@ -3,7 +3,6 @@ import React from "react";
 import { Grid, IconButton } from "@material-ui/core";
 import { createStyles, makeStyles } from "@material-ui/core/styles";
 import PersonAddOutlinedIcon from "@material-ui/icons/PersonAddOutlined";
-import FindInPageOutlinedIcon from "@material-ui/icons/FindInPageOutlined";
 import CreateOutlinedIcon from "@material-ui/icons/CreateOutlined";
 import ExitToAppOutlinedIcon from "@material-ui/icons/ExitToAppOutlined";
 import { AddPeopleModal } from "../AddPeopleModal";
