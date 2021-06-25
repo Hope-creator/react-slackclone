@@ -34,12 +34,18 @@ export const authencticateToken = (
             { new: true }
           )
             .then((user) => {
-              user
-                ? (req.user = user)
-                : res
-                    .status(404)
-                    .json({ status: "error", data: "User is not find" });
-              next();
+              if (user) {
+                req.user = user;
+                next();
+              } else {
+                res
+                  .status(404)
+                  .json({
+                    status: "error",
+                    data: "Token check failed: user do not exists",
+                  });
+                return;
+              }
             })
             .catch((err) => {
               res
@@ -49,6 +55,7 @@ export const authencticateToken = (
                 "checkAuthWithUpdate / Cannot update last seen:",
                 err
               );
+              return;
             });
         }
       }
