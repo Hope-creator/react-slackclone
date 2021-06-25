@@ -11,11 +11,8 @@ import {
 } from "../../../store/modules/messages/messages";
 import {
   selectMarkedMessages,
-  selectMessagesLoadingState,
 } from "../../../store/modules/messages/selectors";
-import { LoadingMessagesState } from "../../../store/modules/messages/types";
 import { MarkedContent } from "./Content/MarkedContent";
-import { CentralCircularProgress } from "../../CentralCircularProgress";
 
 interface IMarkedWorkspaceProps {
   user: IUser;
@@ -23,7 +20,6 @@ interface IMarkedWorkspaceProps {
 
 export const MarkedWorkspace: React.FC<IMarkedWorkspaceProps> = ({ user }) => {
   const dispatch = useDispatch();
-  const messagesLoadingState = useSelector(selectMessagesLoadingState);
   const messages = useSelector(selectMarkedMessages);
 
   React.useEffect(() => {
@@ -42,11 +38,7 @@ export const MarkedWorkspace: React.FC<IMarkedWorkspaceProps> = ({ user }) => {
       />
       <WorkspaceContent
         children={
-          messagesLoadingState === LoadingMessagesState.LOADING ? (
-            <CentralCircularProgress />
-          ) : (
             <MarkedContent user={user} messages={messages} />
-          )
         }
       />
     </>
