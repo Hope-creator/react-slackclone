@@ -13,7 +13,8 @@ interface ChannelProps {
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    active: {
+    activeContainer: {
+      height: 35,
       backgroundColor: theme.palette.primary.dark,
       "&:hover": {
         backgroundColor: theme.palette.primary.dark
@@ -21,6 +22,9 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     activeIcon: {
       color: "#fff",
+    },
+    container: {
+      height: 35
     }
   })
 );
@@ -37,7 +41,7 @@ export const Channel: React.FC<ChannelProps> = ({ channel }) => {
   );
   return (
     <ListItem
-      className={isActive ? classes.active : undefined}
+      className={isActive ? classes.activeContainer : classes.container}
       dense
       button
       onClick={() => pushChannel(channel._id)}
