@@ -1,4 +1,4 @@
-import { IDialog } from "./../dialogs/types";
+import { IUser } from './../user/types';
 import { IConversation } from "./../conversations/types";
 import { ISearchState, LoadingSearchState } from "./types";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
@@ -6,7 +6,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 const initialState = {
   search: "",
   resultsConversations: [],
-  resultsDialogs: [],
+  resultsUsers: [],
   resultsCustom: [],
   loadingState: LoadingSearchState.NEVER,
 } as ISearchState;
@@ -22,8 +22,8 @@ const searchSlice = createSlice({
     setResultsConversations(state, action: PayloadAction<IConversation[]>) {
       state.resultsConversations = action.payload;
     },
-    setResultsDialogs(state, action: PayloadAction<IDialog[]>) {
-      state.resultsDialogs = action.payload;
+    setResultsUsers(state, action: PayloadAction<IUser[]>) {
+      state.resultsUsers = action.payload;
     },
     setResultsCustom(state, action: PayloadAction<string[]>) {
       state.resultsCustom = action.payload;
@@ -40,7 +40,7 @@ const searchSlice = createSlice({
 export const {
   setSearch,
   setResultsConversations,
-  setResultsDialogs,
+  setResultsUsers,
   setResultsCustom,
   setSearchLoadingState,
   clearSearchState,
