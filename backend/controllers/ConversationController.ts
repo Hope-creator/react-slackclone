@@ -31,7 +31,8 @@ class ConversationController {
   ): Promise<void> => {
     const userId = req.userId;
     const _user = req.user;
-    const search = req.query.search;
+    const { page = 1, count = 10, search } = req.query;
+    const skipPage = page > 0 ? (Number(page) - 1) * Number(count) : 0;
     try {
       const user = await UserModel.findById(userId);
       if (!user) {
@@ -40,7 +41,10 @@ class ConversationController {
           .json({ status: "error", data: "User doest not exists" });
         return;
       }
-      const searchQuery = typeof search === "string" ? search.replace(/[-[\]{}()*+?.,\\/^$|#\s]/g, "\\$&") : undefined;
+      const searchQuery =
+        typeof search === "string"
+          ? search.replace(/[-[\]{}()*+?.,\\/^$|#\s]/g, "\\$&")
+          : undefined;
       const matchQuery = searchQuery
         ? {
             $match: {
@@ -59,34 +63,32 @@ class ConversationController {
               ],
             },
           };
-      const conversations = await ConversationModel.aggregate([
-        matchQuery,
-        {
-          $lookup: {
-            from: "users",
-            let: { conv_id: "$_id", isChannel: "$is_channel" },
-            pipeline: [
-              {
-                $match: {
-                  $and: [
-                    { $expr: { $eq: ["$$isChannel", false] } },
-                    { $expr: { $in: ["$$conv_id", "$conversations"] } },
-                    { $expr: { $ne: ["$_id", _user._id] } },
-                  ],
+      const conversations = (
+        await ConversationModel.aggregate([
+          matchQuery,
+          {$sort: {
+            "createdAt": -1
+          }},
+          {
+            $facet: {
+              results: [{ $skip: skipPage }, { $limit: Number(count) }],
+              totalCount: [
+                {
+                  $count: "total",
                 },
-              },
-              {
-                $group: {
-                  _id: "$_id",
-                },
-              },
-            ],
-            as: "user",
+              ],
+            },
           },
-        },
-      ])
-        .sort({ name: 1 })
-        .exec();
+          {
+            $addFields: {
+              totalCount: {
+                $arrayElemAt: ["$totalCount.total", 0],
+              },
+            },
+          },
+        ])
+          .exec()
+      )[0];
       res.json({ status: "success", data: conversations });
     } catch (error) {
       res.status(500).json({
@@ -138,15 +140,6 @@ class ConversationController {
       const isChannelExist = await ConversationModel.exists({
         name: req.body.name,
       });
-      const destId = req.body.id;
-      // If body have id the it will be NOT channel and have only 2 members
-      if (!isValidObjectId(destId)) {
-        res.status(403).json({
-          status: "error",
-          data: "That ID is not correct.",
-        });
-        return;
-      }
       // Check if channel name already taken
       if (isChannelExist) {
         res.status(403).json({
@@ -154,36 +147,25 @@ class ConversationController {
           data: "That name is already taken by a channel.",
         });
         return;
-      } else {
-        // Check if Direct message already exist
-        const isDMExist = await ConversationModel.findOne({
-          _id: { $in: user.conversations },
-          is_channel: false,
-        });
-        // If Direct message exist redirect to that DM ID
-        if (isDMExist) {
-          res.status(409).redirect(isDMExist._id.toString());
-        } else {
-          // If no channel and no dm create it
-          const postData = {
-            name: req.body.name,
-            is_channel: req.body.isChannel,
-            creator: req.userId,
-            purpose: req.body.purpose,
-            topic: req.body.topic,
-            is_private: (destId && true) || req.body.isPrivate,
-            num_members: req.body.isChannel ? 1 : 2,
-            unread_count: 0,
-          };
-          const conversation = await new ConversationModel(postData).save();
-          await UserModel.updateOne(
-            { _id: user._id },
-            { $addToSet: { conversations: conversation._id } }
-          );
-          this.io.emit("SERVER:CONVERSATION_CREATED");
-          res.json({ status: "success", data: conversation });
-        }
       }
+      const postData = {
+        name: req.body.name,
+        is_channel: req.body.isChannel,
+        creator: req.userId,
+        purpose: req.body.purpose,
+        topic: req.body.topic,
+        is_private: req.body.isPrivate,
+        num_members: 1,
+        unread_count: 0,
+      };
+      const conversation = await new ConversationModel(postData).save();
+      await UserModel.updateOne(
+        { _id: user._id },
+        { $addToSet: { conversations: conversation._id } }
+      );
+      !conversation.is_private &&
+        this.io.emit("SERVER:CONVERSATION_CREATED", conversation);
+      res.json({ status: "success", data: conversation });
     } catch (error) {
       res.status(500).json({
         status: "error",
@@ -198,27 +180,56 @@ class ConversationController {
     res: express.Response
   ): Promise<void> => {
     try {
-      const conversationId = req.body._id;
+      const user = req.user;
+      const conversationId = req.body.id;
       const postData = {
         name: req.body.name,
-        purpose: req.body.purpose,
+        description: req.body.description,
         topic: req.body.topic,
-        is_private: req.body.isPrivate,
+        is_private: req.body.is_private,
       };
-      const isNameExist =
-        (await ConversationModel.findOne(postData.name)) ||
-        UserModel.findOne(postData.name);
-      if (isNameExist) {
+      if (!user.conversations.includes(conversationId)) {
         res.status(403).json({
           status: "error",
-          data: "That name is already taken by a channel, username, or user group.",
+          data: "Not in channel.",
+        });
+        return;
+      }
+      const isNameConvExist = await ConversationModel.findOne({
+        name: postData.name,
+      });
+      if (postData.name === "") {
+        res.status(403).json({
+          status: "error",
+          data: "Name cannot be empty string.",
+        });
+        return;
+      }
+      if (isNameConvExist) {
+        res.status(403).json({
+          status: "error",
+          data: "That name is already taken by a channel.",
         });
       } else {
         const conversation = await ConversationModel.findByIdAndUpdate(
           conversationId,
           postData,
-          { new: true }
+          { new: true, omitUndefined: true }
         ).exec();
+        if (!conversation) {
+          res.status(404).json({
+            status: "error",
+            data: "Channel doesn't exists or you don't have right to do this",
+          });
+          return;
+        }
+
+        const users = (
+          await UserModel.find({
+            conversations: conversation._id,
+          }).distinct("_id")
+        ).map((id) => id.toString());
+        this.io.to(users).emit("SERVER:CONVERSATION_UPDATE", conversation);
         res.json({ status: "success", conversation });
       }
     } catch (error) {
@@ -227,6 +238,39 @@ class ConversationController {
         errors: JSON.stringify(error),
       });
       console.log("Error on ConversationController / update:", error);
+    }
+  };
+
+  create100 = async (
+    req: express.Request,
+    res: express.Response
+  ): Promise<void> => {
+    try {
+      const user = req.user;
+      console.time("start 100");
+      for (let i = 0; i < 1000; i++) {
+        const postData = {
+          name: "Test" + i,
+          creator: user._id,
+          num_members: 1,
+          unread_count: 0,
+        };
+        const conversation = await new ConversationModel(postData).save();
+        await UserModel.updateOne(
+          { _id: user._id },
+          { $addToSet: { conversations: conversation._id } }
+        );
+        !conversation.is_private &&
+          this.io.emit("SERVER:CONVERSATION_CREATED", conversation);
+      }
+      console.timeEnd("start 100");
+      res.json({status: true})
+    } catch (error) {
+      res.status(500).json({
+        status: "error",
+        errors: JSON.stringify(error),
+      });
+      console.log("Error on ConversationController / create:", error);
     }
   };
 }
