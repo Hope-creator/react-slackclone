@@ -1,4 +1,4 @@
-import { takeEvery, call, put } from "redux-saga/effects";
+import { takeEvery, call, put, select } from "redux-saga/effects";
 import {
   IMessage,
   LoadingMessagesState,
@@ -19,19 +19,29 @@ import {
   fetchMessagesMarked,
   fetchMessagesDialog,
   sendNewDirectMessage,
+  setPageMessages,
+  setTotalCountMessages,
 } from "./messages";
 import { messagesApi } from "../../../services/api/messagesApi";
 import { ISendMessageForm } from "../../../components/SendMessageForm";
 import { setLocalHistoryItem } from "../../../functions/setLocalHistoryItem";
 import { LocalHistoryItemType, PathesCustomNames } from "../../../constants";
+import { selectMessagesCount, selectMessagesPage } from "./selectors";
+import { IPaginationData } from "../../../services/api/types";
 
 function* fetchMessagesConversationSaga(action: PayloadAction<string>) {
   try {
-    const messages: IMessage[] | [] = yield call(
+    const page: number = yield select(selectMessagesPage);
+    const count: number = yield select(selectMessagesCount);
+    const data: IPaginationData<IMessage[] | []> = yield call(
       messagesApi.fetchMessages,
-      action.payload
+      action.payload,
+      page + 1,
+      count
     );
-    yield put(setMessages(messages));
+    yield put(setTotalCountMessages(data.totalCount || 0));
+    yield put(setMessages(data.results));
+    yield put(setPageMessages(page + 1));
     yield put(setMessagesLoadingState(LoadingMessagesState.LOADED));
   } catch (e) {
     yield put(setMessagesLoadingState(LoadingMessagesState.ERROR));
@@ -40,11 +50,17 @@ function* fetchMessagesConversationSaga(action: PayloadAction<string>) {
 
 function* fetchMessagesDialogSaga(action: PayloadAction<string>) {
   try {
-    const messages: IMessage[] | [] = yield call(
+    const page: number = yield select(selectMessagesPage);
+    const count: number = yield select(selectMessagesCount);
+    const data: IPaginationData<IMessage[] | []> = yield call(
       messagesApi.fetchDirectMessages,
-      action.payload
+      action.payload,
+      page + 1,
+      count
     );
-    yield put(setMessages(messages));
+    yield put(setTotalCountMessages(data.totalCount || 0));
+    yield put(setMessages(data.results));
+    yield put(setPageMessages(page + 1));
     yield put(setMessagesLoadingState(LoadingMessagesState.LOADED));
   } catch (e) {
     yield put(setMessagesLoadingState(LoadingMessagesState.ERROR));
@@ -53,8 +69,16 @@ function* fetchMessagesDialogSaga(action: PayloadAction<string>) {
 
 function* fetchMessagesUnreadSaga() {
   try {
-    const messages: IMessage[] | [] = yield call(messagesApi.getAllUnread);
-    yield put(setMessages(messages));
+    const page: number = yield select(selectMessagesPage);
+    const count: number = yield select(selectMessagesCount);
+    const data: IPaginationData<IMessage[] | []> = yield call(
+      messagesApi.getAllUnread,
+      page + 1,
+      count
+    );
+    yield put(setTotalCountMessages(data.totalCount || 0));
+    yield put(setMessages(data.results));
+    yield put(setPageMessages(page + 1));
     yield put(setMessagesLoadingState(LoadingMessagesState.LOADED));
     setLocalHistoryItem(
       PathesCustomNames.ALLUNREADS,
@@ -67,8 +91,16 @@ function* fetchMessagesUnreadSaga() {
 
 function* fetchMessagesMarkedSaga() {
   try {
-    const messages: IMessage[] | [] = yield call(messagesApi.getMarkMessages);
-    yield put(setMessages(messages));
+    const page: number = yield select(selectMessagesPage);
+    const count: number = yield select(selectMessagesCount);
+    const data: IPaginationData<IMessage[] | []> = yield call(
+      messagesApi.getMarkMessages,
+      page + 1,
+      count
+    );
+    yield put(setTotalCountMessages(data.totalCount || 0));
+    yield put(setMessages(data.results));
+    yield put(setPageMessages(page + 1));
     yield put(setMessagesLoadingState(LoadingMessagesState.LOADED));
     setLocalHistoryItem(
       PathesCustomNames.SAVED_ITEMS,

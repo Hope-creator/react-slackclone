@@ -1,11 +1,10 @@
 import { IFile } from "../../../services/api/uploadApi";
-import { IConversation } from "../conversations/types";
 import { IUser } from "../user/types";
 
 export interface IMessage extends Object {
   _id: string;
   creator: IUser;
-  dest: IConversation | string;
+  dest: string;
   text: string;
   unreadBy: string[];
   marked: boolean;
@@ -29,6 +28,9 @@ export enum LoadingSendMessageState {
 
 export interface IMessagesState {
   messages: IMessage[];
+  page: number;
+  count: number;
+  totalCount: number;
   loadingState: LoadingMessagesState;
   loadingSendMessageState: LoadingSendMessageState;
 }

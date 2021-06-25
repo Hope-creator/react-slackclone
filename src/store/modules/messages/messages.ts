@@ -9,6 +9,9 @@ import {
 
 const initialState = {
   messages: [],
+  page: 0,
+  count: 50,
+  totalCount: 50,
   loadingState: LoadingMessagesState.NEVER,
   loadingSendMessageState: LoadingSendMessageState.NEVER,
 } as IMessagesState;
@@ -29,6 +32,15 @@ const messagesSlicer = createSlice({
     fetchMessagesMarked(state) {
       state.loadingState = LoadingMessagesState.LOADING;
     },
+    setPageMessages(state, action: PayloadAction<number>) {
+      state.page = action.payload;
+    },
+    setCountMessages(state, action: PayloadAction<number>) {
+      state.count = action.payload;
+    },
+    setTotalCountMessages(state, action: PayloadAction<number>) {
+      state.totalCount = action.payload;
+    },
     setMessagesLoadingState(
       state,
       action: PayloadAction<LoadingMessagesState>
@@ -36,7 +48,7 @@ const messagesSlicer = createSlice({
       state.loadingState = action.payload;
     },
     setMessages(state, action: PayloadAction<IMessage[] | []>) {
-      state.messages = [...action.payload];
+      state.messages = [...state.messages,...action.payload];
     },
     sendNewMessage(state, action: PayloadAction<ISendMessageForm>) {
       state.loadingSendMessageState = LoadingSendMessageState.LOADING;
@@ -78,7 +90,7 @@ const messagesSlicer = createSlice({
       state.messages[index].unreadBy.pop();
     },
     addNewMessage(state, action: PayloadAction<IMessage>) {
-      state.messages.push(action.payload);
+      state.messages = [action.payload, ...state.messages]
     },
     clearMessagesState() {
       return initialState;
@@ -99,10 +111,13 @@ export const {
   markMessage,
   markMessageInState,
   unmarkMessage,
+  setPageMessages,
+  setCountMessages,
+  setTotalCountMessages,
   unmarkMessageInState,
   readMessageInState,
   setMessagesLoadingState,
   readedAllInStateUnread,
-  fetchMessagesDialog
+  fetchMessagesDialog,
 } = messagesSlicer.actions;
 export default messagesSlicer.reducer;
