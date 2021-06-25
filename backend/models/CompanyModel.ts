@@ -7,7 +7,6 @@ export interface ICompany {
     user_id: string;
     email: string;
   };
-  members: Schema.Types.ObjectId[];
 }
 
 export interface ICompanyDocument extends ICompany, Document {}
@@ -33,7 +32,6 @@ const CompanySchema = new Schema(
         default: "goryachkin.ivan1@mail.ru",
       },
     },
-    members: [{ type: Schema.Types.ObjectId, ref: "User" }],
   },
   { versionKey: false }
 );
