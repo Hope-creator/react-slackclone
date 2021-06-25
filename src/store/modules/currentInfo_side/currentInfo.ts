@@ -1,5 +1,5 @@
+import { IConversation } from "./../conversations/types";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { IConversation } from "../conversations/types";
 import { IUser } from "../user/types";
 import {
   ICurrentInfoState,
@@ -37,8 +37,18 @@ const currentInfoSlicer = createSlice({
     ) {
       state.loadingState = action.payload;
     },
+    updateCurrentInfoConversation(state, action: PayloadAction<IConversation>) {
+      if (state.type === InfoItemTypeState.CHANNEL) {
+        state.item = action.payload;
+      }
+    },
+    updateCurrentInfoProfile(state, action: PayloadAction<IUser>) {
+      if (state.type === InfoItemTypeState.PROFILE) {
+        state.item = action.payload;
+      }
+    },
     clearCurrentInfo() {
-      return initialState
+      return initialState;
     },
   },
 });
@@ -49,6 +59,8 @@ export const {
   setCurrentInfoChannel,
   setCurrentInfoProfile,
   setCurrentInfoLoadingState,
-  clearCurrentInfo
+  updateCurrentInfoConversation,
+  updateCurrentInfoProfile,
+  clearCurrentInfo,
 } = currentInfoSlicer.actions;
 export default currentInfoSlicer.reducer;
