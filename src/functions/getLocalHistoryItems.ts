@@ -1,9 +1,9 @@
+import { IUser } from './../store/modules/user/types';
 import { LocalHistoryItemType } from "../constants";
 import { IConversation } from "./../store/modules/conversations/types";
-import { IDialog } from "./../store/modules/dialogs/types";
 
 export type LocalHistoryItem = {
-  item: IDialog | IConversation | string;
+  item: IUser | IConversation | string;
   type: LocalHistoryItemType;
 };
 

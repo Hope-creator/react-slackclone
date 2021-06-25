@@ -3,21 +3,20 @@ import { Channel } from "../components/Channel";
 import { DirectMessageListItem } from "../components/DirectMessageListItem";
 import { LocalHistoryItemType } from "../constants";
 import { IConversation } from "../store/modules/conversations/types";
-import { IDialog } from "../store/modules/dialogs/types";
 import { IUser } from "../store/modules/user/types";
 import { LocalHistoryItem } from "./getLocalHistoryItems";
 import { SidebarListCreator } from "./SidebarListCreator";
 
 interface IHistoryItemFactoryProps {
   item: LocalHistoryItem;
-  user: IUser;
+  me: IUser;
   onClick: () => void;
 }
 
 export const HistoryItemFactory: React.FC<IHistoryItemFactoryProps> = ({
   item,
   onClick,
-  user
+  me
 }) => {
   if (item.type === LocalHistoryItemType.CONVERSATION) {
     return (
@@ -29,13 +28,13 @@ export const HistoryItemFactory: React.FC<IHistoryItemFactoryProps> = ({
       </div>
     );
   }
-  if (item.type === LocalHistoryItemType.DIALOG) {
+  if (item.type === LocalHistoryItemType.USER) {
     return (
       <div onClick={onClick}>
         <DirectMessageListItem
-          key={(item.item as IDialog)._id}
-          dialog={item.item as IDialog}
-          user={user}
+          key={(item.item as IUser)._id}
+          user={item.item as IUser}
+          me={me}
         />
       </div>
     );
