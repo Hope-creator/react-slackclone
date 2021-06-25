@@ -1,7 +1,7 @@
 import express from "express";
 import { isValidObjectId } from "mongoose";
 import { MessageModel } from "../models/MessageModel";
-import { getAggregateMessage } from "../utils/function/getAggregateMessage";
+import { getAggregateMessageWithPagination } from "../utils/function/getAggregateMessageWithPagination";
 
 class MarkedMessageController {
   index = async (
@@ -9,10 +9,14 @@ class MarkedMessageController {
     res: express.Response
   ): Promise<void> => {
     const user = req.user;
+    const { page = 1, count = 40 } = req.query;
+    const skipPage = page > 0 ? (Number(page) - 1) * Number(count) : 0;
     try {
-      const markedMessages = await getAggregateMessage(
+      const markedMessages = await getAggregateMessageWithPagination(
         { markedBy: user._id },
-        user._id
+        user._id,
+        skipPage,
+        Number(count)
       );
       res.json({ status: "success", data: markedMessages });
     } catch (error) {
