@@ -26,6 +26,9 @@ const currentConversationSlicer = createSlice({
     ) {
       state.loadingState = action.payload;
     },
+    updateCurrentConversation(state, action: PayloadAction<IConversation>){
+     if(state.currentConversation) state.currentConversation = action.payload;
+    },
     addMemberCurrentConversation(state) {
       if (state.currentConversation) state.currentConversation.num_members++;
     },
@@ -40,6 +43,7 @@ export const {
   setCurrentConversation,
   setCurrentConversationLoadingState,
   addMemberCurrentConversation,
+  updateCurrentConversation,
   clearCurrentConversation,
 } = currentConversationSlicer.actions;
 export default currentConversationSlicer.reducer;
