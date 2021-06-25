@@ -5,7 +5,6 @@ import currentConversation from "./modules/currentConversation/currentConversati
 import currentConversations from "./modules/currentConversations/currentConversations";
 import currentInfo from "./modules/currentInfo_side/currentInfo";
 import currentUsers from "./modules/currentUsers/currentUsers";
-import dialogs from "./modules/dialogs/dialogs";
 import messages from "./modules/messages/messages";
 import readMessage from "./modules/readMessage/readMessage";
 import search from "./modules/search/search";
@@ -30,7 +29,6 @@ export const rootReducer = combineReducers({
   messages: messages,
   conversationMembers: conversationMembers,
   sideInfoMembers: SideInfoMembers,
-  dialogs: dialogs,
   conversationsAccess: conversationsAccess,
   search: search,
 });

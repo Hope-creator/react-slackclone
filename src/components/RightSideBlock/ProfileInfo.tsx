@@ -11,7 +11,6 @@ import CommentOutlinedIcon from "@material-ui/icons/CommentOutlined";
 import { IUser } from "../../store/modules/user/types";
 import { useSelector } from "react-redux";
 import { selectUser } from "../../store/modules/user/selectors";
-import { dialogsApi } from "../../services/api/dialogsApi";
 import { useHistory } from "react-router-dom";
 
 interface IProfileInfoProps {
@@ -39,10 +38,7 @@ export const ProfileInfo: React.FC<IProfileInfoProps> = ({ user }) => {
   const isMe = me && me._id === user._id;
 
   const handleStartDialogButtonClick = () => {
-    dialogsApi
-      .getDialogId(user._id)
-      .then((res) => history.push(`/d/${res}`))
-      .catch((err) => console.log(err));
+    history.push(`/d/${user._id}`);
   };
 
   return (

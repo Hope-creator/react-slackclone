@@ -15,7 +15,6 @@ import { IReadMessageState } from "./modules/readMessage/types";
 import { IMessagesState } from "./modules/messages/types";
 import { IConversationMembersState } from "./modules/conversationMembers/types";
 import { ISideInfoMembersState } from "./modules/SideInfoMembers/types";
-import { IDialogsState } from "./modules/dialogs/types";
 import { ICurrentConversationsState } from "./modules/currentConversations/types";
 import { ICurrentDMState } from './modules/currentDM/types';
 
@@ -38,7 +37,6 @@ export interface IRootState {
   messages: IMessagesState;
   conversationMembers: IConversationMembersState;
   sideInfoMembers: ISideInfoMembersState;
-  dialogs: IDialogsState;
   conversationsAccess: IConversationsAccessState;
   search: ISearchState;
 }

@@ -5,7 +5,6 @@ import { currentConversationSaga } from "./modules/currentConversation/operation
 import { currentConversationsSaga } from "./modules/currentConversations/operations";
 import { currentInfoSaga } from "./modules/currentInfo_side/operations";
 import { currentUsersSaga } from "./modules/currentUsers/operations";
-import { dialogsSaga } from "./modules/dialogs/operations";
 import { conversationsAccessSaga } from "./modules/conversationsAccess/operations";
 import { messagesSaga } from "./modules/messages/operations";
 import { readMessageSaga } from "./modules/readMessage/operations";
@@ -31,7 +30,6 @@ export default function* rootSaga() {
     messagesSaga(),
     sideInfoMembersSaga(),
     conversationMembersSaga(),
-    dialogsSaga(),
     conversationsAccessSaga(),
     searchSaga(),
   ]);

@@ -4,9 +4,7 @@ import ListItemText from "@material-ui/core/ListItemText";
 import defaultAvatar from "../images/defaultAvatar.png";
 import { IUser } from "../store/modules/user/types";
 import { useHistory } from "react-router-dom";
-import { useUnreadCount } from "../hooks/useUnreadCount";
 import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
-import { IDialog } from "../store/modules/dialogs/types";
 
 interface IDirectMessageListItemProps {
   user: IUser;
