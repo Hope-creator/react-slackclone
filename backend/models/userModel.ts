@@ -62,7 +62,7 @@ const UserSchema = new Schema(
       default: new Date(),
     },
   },
-  { versionKey: false }
+  { versionKey: false, timestamps: true }
 );
 
 UserSchema.virtual("isOnline").get(function (this: any) {
