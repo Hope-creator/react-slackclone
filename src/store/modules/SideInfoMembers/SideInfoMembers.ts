@@ -18,6 +18,25 @@ const sideInfoMembersSlice = createSlice({
       state.members = action.payload;
       state.loadingState = LoadingSideInfoMembersState.LOADED;
     },
+    addOneSideInfoMembers(state, action: PayloadAction<IUser>) {
+      state.members = [action.payload, ...state.members];
+    },
+    updateOneSideInfoMembers(state, action: PayloadAction<IUser>) {
+      const index = state.members.findIndex(
+        (member) => member._id === action.payload._id
+      );
+      if (index !== -1) {
+        state.members[index] = action.payload;
+      }
+    },
+    deleteOneSideInfoMembers(state, action: PayloadAction<IUser>) {
+      const index = state.members.findIndex(
+        (member) => member._id === action.payload._id
+      );
+      if (index !== -1) {
+        state.members.splice(index, 1);
+      }
+    },
     setSideInfoMembersLoadingState(
       state,
       action: PayloadAction<LoadingSideInfoMembersState>
@@ -34,6 +53,9 @@ export const {
   fetchSideInfoMembers,
   setSideInfoMembers,
   setSideInfoMembersLoadingState,
+  addOneSideInfoMembers,
+  updateOneSideInfoMembers,
+  deleteOneSideInfoMembers,
   clearSideInfoMebmers,
 } = sideInfoMembersSlice.actions;
 export default sideInfoMembersSlice.reducer;
