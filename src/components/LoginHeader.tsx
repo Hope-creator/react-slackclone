@@ -10,7 +10,7 @@ interface LoginHeaderProps {
 export const LoginHeader: React.FC<LoginHeaderProps> = ({
   newToSlackShow,
   title,
-}: LoginHeaderProps): React.ReactElement => {
+}) => {
   return (
     <Grid container direction="column">
       {newToSlackShow && (
