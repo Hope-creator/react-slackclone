@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { ISendMessageForm } from "../../../components/SendMessageForm";
+import { IUser } from "../user/types";
 import {
   IMessagesState,
   IMessage,
@@ -48,7 +49,7 @@ const messagesSlicer = createSlice({
       state.loadingState = action.payload;
     },
     setMessages(state, action: PayloadAction<IMessage[] | []>) {
-      state.messages = [...state.messages,...action.payload];
+      state.messages = [...state.messages, ...action.payload];
     },
     sendNewMessage(state, action: PayloadAction<ISendMessageForm>) {
       state.loadingSendMessageState = LoadingSendMessageState.LOADING;
@@ -79,6 +80,7 @@ const messagesSlicer = createSlice({
     },
     readedAllInStateUnread(state) {
       state.messages = [];
+      state.totalCount = 0;
     },
     readMessageInState(state, action: PayloadAction<string>) {
       // Unread message can be only in direct messages
@@ -90,7 +92,29 @@ const messagesSlicer = createSlice({
       state.messages[index].unreadBy.pop();
     },
     addNewMessage(state, action: PayloadAction<IMessage>) {
-      state.messages = [action.payload, ...state.messages]
+      state.messages = [action.payload, ...state.messages];
+      state.totalCount = state.totalCount + 1;
+    },
+    deleteOneMessage(state, action: PayloadAction<string>) {
+      const index = state.messages.findIndex(
+        (message) => message._id === action.payload
+      );
+      if (index !== -1) {
+        state.messages.splice(index, 1);
+      }
+      state.totalCount = state.totalCount - 1;
+    },
+    updateUserMessages(state, action: PayloadAction<IUser>) {
+      const index = state.messages.findIndex(
+        (message) => message.creator._id === action.payload._id
+      );
+      if (index !== -1) {
+        state.messages.map((message) => {
+          if (message.creator._id === action.payload._id)
+            message.creator = action.payload;
+          return message;
+        });
+      }
     },
     clearMessagesState() {
       return initialState;
@@ -105,6 +129,8 @@ export const {
   setMessages,
   clearMessagesState,
   addNewMessage,
+  deleteOneMessage,
+  updateUserMessages,
   sendNewMessage,
   sendNewDirectMessage,
   setSendNewMessageState,
