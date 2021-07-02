@@ -19,7 +19,7 @@ export const UserPopover: React.FC<UserPopoverProps> = ({
   anchorPopupBlockHorizontal,
   opener,
   user,
-}: UserPopoverProps): React.ReactElement => {
+}) => {
   const [anchorEl, setAnchorEl] = React.useState<HTMLDivElement | null>(null);
 
   const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {

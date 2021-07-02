@@ -14,6 +14,6 @@ export interface IPaginationData<T> {
 }
 
 export interface IResponsePagination<T> {
-    status: ResponseStatus;
-    data: IPaginationData<T>;
+  status: ResponseStatus;
+  data: IPaginationData<T>;
 }

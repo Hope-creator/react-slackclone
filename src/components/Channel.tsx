@@ -17,15 +17,15 @@ const useStyles = makeStyles((theme: Theme) =>
       height: 35,
       backgroundColor: theme.palette.primary.dark,
       "&:hover": {
-        backgroundColor: theme.palette.primary.dark
-      }
+        backgroundColor: theme.palette.primary.dark,
+      },
     },
     activeIcon: {
       color: "#fff",
     },
     container: {
-      height: 35
-    }
+      height: 35,
+    },
   })
 );
 
@@ -48,11 +48,18 @@ export const Channel: React.FC<ChannelProps> = ({ channel }) => {
     >
       {channel.is_private ? (
         <ListItemIcon>
-          <LockIcon className={isActive ? classes.activeIcon : undefined} color="primary" />
+          <LockIcon
+            className={isActive ? classes.activeIcon : undefined}
+            color="primary"
+          />
         </ListItemIcon>
       ) : (
         <ListItemIcon>
-          <Typography className={isActive ? classes.activeIcon : undefined} color="primary" variant="h6">
+          <Typography
+            className={isActive ? classes.activeIcon : undefined}
+            color="primary"
+            variant="h6"
+          >
             &nbsp;&nbsp;#
           </Typography>
         </ListItemIcon>

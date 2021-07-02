@@ -7,7 +7,6 @@ import Collapse from "@material-ui/core/Collapse";
 import ArrowRightIcon from "@material-ui/icons/ArrowRight";
 import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown";
 
-
 interface NestedListProps {
   listTitle: string;
   children: React.ReactNode | React.ReactNode[];
@@ -17,19 +16,17 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       width: "100%",
-      maxWidth: 360,
     },
     nested: {
       paddingLeft: theme.spacing(4),
     },
-    
   })
 );
 
 export const NestedList: React.FC<NestedListProps> = ({
   listTitle,
   children,
-}: NestedListProps): React.ReactElement => {
+}) => {
   const classes = useStyles();
   const [open, setOpen] = React.useState<boolean>(false);
 

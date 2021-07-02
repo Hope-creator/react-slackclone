@@ -2,7 +2,7 @@ import React from "react";
 
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import { IUser } from "../store/modules/user/types";
-import { conversationsApi } from "../services/api/converastionsApi";
+import { conversationsApi } from "../services/api/conversationsApi";
 import { AddPeopleFormPopover } from "./AddPeopleFormPopover";
 
 import TextField from "@material-ui/core/TextField";
@@ -47,7 +47,7 @@ const useStyles = makeStyles((theme) => ({
 
 export const AddPeopleModalForm: React.FC<IAddPeopleModalProps> = ({
   conversationId,
-}: IAddPeopleModalProps) => {
+}) => {
   const classes = useStyles();
 
   const [selectedUser, setSelectedUser] = React.useState<IUser | null>(null);
@@ -56,12 +56,7 @@ export const AddPeopleModalForm: React.FC<IAddPeopleModalProps> = ({
     setSelectedUser(user);
   };
 
-  const {
-    handleSubmit,
-    control,
-    watch,
-    setValue,
-  } = useForm();
+  const { handleSubmit, control, watch, setValue } = useForm();
   const onSubmit: SubmitHandler<IAddPeopleModalForm> = (data) =>
     conversationsApi.addUsers(conversationId, selectedUser?._id);
 
@@ -125,7 +120,7 @@ export const AddPeopleModalForm: React.FC<IAddPeopleModalProps> = ({
                     color="secondary"
                     size="small"
                     variant="outlined"
-                    label="Type user name or email and press enter"
+                    label="Type user name and press enter"
                   />
                   {selectedUser && (
                     <Button

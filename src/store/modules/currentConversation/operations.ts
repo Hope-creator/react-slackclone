@@ -7,7 +7,7 @@ import {
   fetchCurrentConversation,
 } from "./currentConversation";
 import { IConversation } from "../conversations/types";
-import { conversationsApi } from "../../../services/api/converastionsApi";
+import { conversationsApi } from "../../../services/api/conversationsApi";
 import { setLocalHistoryItem } from "../../../functions/setLocalHistoryItem";
 import { LocalHistoryItemType } from "../../../constants";
 
@@ -24,7 +24,7 @@ function* fetchCurrentConversationSaga(action: PayloadAction<string>) {
     );
     setLocalHistoryItem(conversation, LocalHistoryItemType.CONVERSATION);
   } catch (e) {
-    console.log(e)
+    console.log(e);
 
     yield put(
       setCurrentConversationLoadingState(LoadingCurrentConversationState.ERROR)

@@ -1,5 +1,5 @@
 import { takeEvery, call, put } from "redux-saga/effects";
-import { conversationsApi } from "../../../services/api/converastionsApi";
+import { conversationsApi } from "../../../services/api/conversationsApi";
 import {
   fetchSideInfoMembers,
   setSideInfoMembers,

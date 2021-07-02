@@ -62,7 +62,12 @@ export const MessageFilesBox: React.FC<IMessageFilesBoxProps> = ({ files }) => {
       <Collapse timeout={0} in={open}>
         <Grid container>
           {files.map((file) => (
-            <img key={file.url} className={classes.image} src={file.url} alt="123" />
+            <img
+              key={file.url}
+              className={classes.image}
+              src={file.url}
+              alt="123"
+            />
           ))}
         </Grid>
       </Collapse>

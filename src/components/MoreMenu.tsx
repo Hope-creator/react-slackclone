@@ -59,11 +59,16 @@ export const MoreMenu: React.FC = (): React.ReactElement => {
         }}
       >
         <Paper className={classes.paper}>
-          {[PathesCustomNames.ALLUNREADS, PathesCustomNames.ALLDIALOGS].map((item) => (
-            <SidebarListCreator key={item} componentName={item} />
-          ))}
+          {[PathesCustomNames.ALLUNREADS, PathesCustomNames.ALLDIALOGS].map(
+            (item) => (
+              <SidebarListCreator key={item} componentName={item} />
+            )
+          )}
           <Divider />
-          {[PathesCustomNames.CHANNEL_BROWSER, PathesCustomNames.PEOPLE_AND_USERS_GROUP].map((item) => (
+          {[
+            PathesCustomNames.CHANNEL_BROWSER,
+            PathesCustomNames.PEOPLE_AND_USERS_GROUP,
+          ].map((item) => (
             <SidebarListCreator key={item} componentName={item} />
           ))}
         </Paper>

@@ -1,6 +1,6 @@
-import  dotenv from 'dotenv';
+import dotenv from "dotenv";
 import cloudinary from "cloudinary";
-dotenv.config()
+dotenv.config();
 
 if (
   !process.env.CLOUDINARY_NAME ||

@@ -1,5 +1,5 @@
 import React from "react";
-import { conversationsApi } from "../services/api/converastionsApi";
+import { conversationsApi } from "../services/api/conversationsApi";
 import { IConversation } from "../store/modules/conversations/types";
 import { ConversationEditModal } from "./ConversationEditModal";
 

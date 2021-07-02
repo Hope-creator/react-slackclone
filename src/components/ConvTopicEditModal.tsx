@@ -1,5 +1,5 @@
 import React from "react";
-import { conversationsApi } from "../services/api/converastionsApi";
+import { conversationsApi } from "../services/api/conversationsApi";
 import { IConversation } from "../store/modules/conversations/types";
 import { ConversationEditModal } from "./ConversationEditModal";
 
@@ -52,7 +52,9 @@ export const ConvTopicEditModal: React.FC<IConvTopicEditModalProps> = ({
       handleCloseError={handleCloseError}
       edit={conversation.topic}
       textHeader={"Edit topic"}
-      textFooter={`Let people know what #${<b>{conversation.name}</b>} is focused on right
+      textFooter={`Let people know what #${(
+        <b>{conversation.name}</b>
+      )} is focused on right
       now. Topics are always visible in the header.`}
       errorMessage={errorMessage}
       saveHandle={handleSave}

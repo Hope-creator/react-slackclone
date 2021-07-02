@@ -4,20 +4,6 @@ import socket from "socket.io";
 import { ConversationModel } from "../models/ConversationModel";
 import { UserModel } from "../models/UserModel";
 
-/*
-  name: string;
-  is_channel?: boolean;
-  created: Date;
-  creator?: Schema.Types.ObjectId;
-  purpose?: IPurpose;
-  topic?: ITopic;
-  messages: IMessage[];
-  is_private: boolean;
-  members: IUser[] | never[] | string;
-  num_members: number;
-  unread_count: number;
-  */
-
 class ConversationController {
   io: socket.Server;
 
@@ -66,9 +52,11 @@ class ConversationController {
       const conversations = (
         await ConversationModel.aggregate([
           matchQuery,
-          {$sort: {
-            "createdAt": -1
-          }},
+          {
+            $sort: {
+              createdAt: -1,
+            },
+          },
           {
             $facet: {
               results: [{ $skip: skipPage }, { $limit: Number(count) }],
@@ -86,8 +74,7 @@ class ConversationController {
               },
             },
           },
-        ])
-          .exec()
+        ]).exec()
       )[0];
       res.json({ status: "success", data: conversations });
     } catch (error) {
@@ -264,7 +251,7 @@ class ConversationController {
           this.io.emit("SERVER:CONVERSATION_CREATED", conversation);
       }
       console.timeEnd("start 100");
-      res.json({status: true})
+      res.json({ status: true });
     } catch (error) {
       res.status(500).json({
         status: "error",

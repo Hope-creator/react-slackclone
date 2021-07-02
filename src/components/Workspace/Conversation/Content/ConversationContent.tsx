@@ -56,7 +56,7 @@ const useStyles = makeStyles((theme: Theme) =>
 export const ConversationContent: React.FC<IConversationContentProps> = ({
   conversation,
   user,
-}: IConversationContentProps) => {
+}) => {
   const classes = useStyles();
 
   const messages = useSelector(selectMessages);
@@ -85,7 +85,7 @@ export const ConversationContent: React.FC<IConversationContentProps> = ({
       className={classes.workspaceContentMessages}
       direction="column-reverse"
       wrap="nowrap"
-      id="scrollableDiv"
+      id="scrollableDivConvContent"
     >
       <Grid
         className={isMember ? classes.textareaBlock : classes.viewChannelBlock}
@@ -103,10 +103,10 @@ export const ConversationContent: React.FC<IConversationContentProps> = ({
         next={() => fetchDataMessagesConversation()}
         hasMore={pageMessages * countMessages < totalCountMessages}
         loader={<CircularProgress />}
-        scrollableTarget="scrollableDiv"
+        scrollableTarget="scrollableDivConvContent"
         style={{
           height: "100%",
-          overflow: "auto",
+          overflow: "hidden",
           display: "flex",
           flexDirection: "column-reverse",
         }} //To put endMessage and loader to the top.

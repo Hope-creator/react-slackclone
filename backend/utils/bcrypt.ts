@@ -7,6 +7,7 @@ const promisifyGenSalt = promisify(genSalt);
 const promisifyHash = promisify(hash);
 const promisifyCompare = promisify(compare);
 
-const hashText = (plainTextPw: string) => promisifyGenSalt().then((salt) => promisifyHash(plainTextPw, salt));
+const hashText = (plainTextPw: string) =>
+  promisifyGenSalt().then((salt) => promisifyHash(plainTextPw, salt));
 
 export { promisifyCompare, hashText };

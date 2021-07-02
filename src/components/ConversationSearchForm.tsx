@@ -5,11 +5,7 @@ import { useDispatch } from "react-redux";
 
 import TextField from "@material-ui/core/TextField";
 import { makeStyles } from "@material-ui/core/styles";
-import {
-  IconButton,
-  InputAdornment,
-  Tooltip,
-} from "@material-ui/core";
+import { IconButton, InputAdornment, Tooltip } from "@material-ui/core";
 import {
   clearCurrentConversationsState,
   fetchCurrentConversations,
@@ -24,7 +20,7 @@ export interface IConversationSearchForm {
 const useStyles = makeStyles((theme) => ({
   input: {
     margin: "0 0 20px",
-    border: "none"
+    border: "none",
   },
 
   button: {
@@ -48,8 +44,8 @@ export const ConversationSearchForm = () => {
 
   const { handleSubmit, control, watch, reset } = useForm();
   const onSubmit: SubmitHandler<IConversationSearchForm> = (data) => {
-      dispatch(setCurrentConversationsSearchName(data.name));
-      dispatch(fetchCurrentConversations());
+    dispatch(setCurrentConversationsSearchName(data.name));
+    dispatch(fetchCurrentConversations());
   };
 
   const handleClear = () => {

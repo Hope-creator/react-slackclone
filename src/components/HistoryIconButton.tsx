@@ -44,8 +44,9 @@ export const HistoryIconButton: React.FC<IHistoryIconButtonProps> = ({
 }) => {
   const classes = useStyles();
 
-  const [anchorEl, setAnchorEl] =
-    React.useState<HTMLButtonElement | null>(null);
+  const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
+    null
+  );
 
   const [currentHistoryItems, setCurrentHistoryItems] = React.useState<
     LocalHistoryItem[]
@@ -59,15 +60,12 @@ export const HistoryIconButton: React.FC<IHistoryIconButtonProps> = ({
   const handleClose = React.useCallback(() => {
     setAnchorEl(null);
   }, []);
-  
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
     const items = getLocalHistoryItems();
     setCurrentHistoryItems(items);
   };
-
-
 
   const open = Boolean(anchorEl);
   const id = open ? "search-company-popover" : undefined;

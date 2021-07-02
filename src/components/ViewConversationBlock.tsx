@@ -7,8 +7,8 @@ import Typography from "@material-ui/core/Typography";
 import { IConversation } from "../store/modules/conversations/types";
 import { makeStyles } from "@material-ui/core/styles";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchCurrentInfoChannel } from "../store/modules/currentInfo_side/currentInfo";
-import { selectCurrentInfoItem } from "../store/modules/currentInfo_side/selectors";
+import { fetchInfoSideChannel } from "../store/modules/infoSide/infoSide";
+import { selectInfoSideItem } from "../store/modules/infoSide/selectors";
 import { fetchJoinOneConversation } from "../store/modules/conversationsAccess/conversationsAccess";
 import {
   selectIsConversationsAccessFetching,
@@ -43,9 +43,7 @@ export const ViewConversationBlock: React.FC<IViewConversationBlockBox> = ({
 }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
-  const conversationDetail = useSelector(
-    selectCurrentInfoItem
-  ) as IConversation;
+  const conversationDetail = useSelector(selectInfoSideItem) as IConversation;
 
   const isJoinFetching = useSelector(
     selectIsConversationsAccessFetching(conversation._id)
@@ -59,7 +57,7 @@ export const ViewConversationBlock: React.FC<IViewConversationBlockBox> = ({
   };
 
   const handleDetailsClick = () => {
-    dispatch(fetchCurrentInfoChannel(conversation._id));
+    dispatch(fetchInfoSideChannel(conversation._id));
   };
 
   return (

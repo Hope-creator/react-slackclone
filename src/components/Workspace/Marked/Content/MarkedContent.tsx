@@ -59,13 +59,13 @@ export const MarkedContent: React.FC<IUnreadsContentProps> = ({
   };
 
   return (
-    <div className={classes.workspaceContentMessages} id="scrollableDiv">
+    <div className={classes.workspaceContentMessages} id="scrollableDivMarked">
       <InfiniteScroll
         dataLength={messages.length}
         next={() => fetchDataCurrentMembers()}
         hasMore={pageMessages * countMessages < totalCountMessages}
         loader={<CircularProgress />}
-        scrollableTarget="scrollableDiv"
+        scrollableTarget="scrollableDivMarked"
         endMessage={
           <p style={{ textAlign: "center" }}>
             <b>Yay! You have seen it all</b>

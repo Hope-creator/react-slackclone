@@ -22,7 +22,7 @@ class UserController {
           {
             $match: searhQuery,
           },
-          {$sort: {"createdAt": -1}},
+          { $sort: { createdAt: -1 } },
           {
             $facet: {
               results: [

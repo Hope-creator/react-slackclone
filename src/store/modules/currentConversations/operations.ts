@@ -8,7 +8,7 @@ import {
   setTotalCountCurrentConversations,
 } from "./currentConversations";
 import { IConversation } from "../conversations/types";
-import { conversationsApi } from "../../../services/api/converastionsApi";
+import { conversationsApi } from "../../../services/api/conversationsApi";
 import { setLocalHistoryItem } from "../../../functions/setLocalHistoryItem";
 import { LocalHistoryItemType, PathesCustomNames } from "../../../constants";
 import { IPaginationData } from "../../../services/api/types";

@@ -39,7 +39,7 @@ const useStyles = makeStyles((theme: Theme) =>
 export const WorkspaceHeader: React.FC<IWorkspaceHeaderProps> = ({
   leftSideContent,
   rightSideContent,
-}: IWorkspaceHeaderProps) => {
+}) => {
   const classes = useStyles();
 
   return (
@@ -50,10 +50,18 @@ export const WorkspaceHeader: React.FC<IWorkspaceHeaderProps> = ({
       className={classes.workspaceHeader}
       wrap="nowrap"
     >
-      <Grid item xs={10}>
+      <Grid item xs={8} md={10}>
         {leftSideContent}
       </Grid>
-      <Grid item alignItems="center" container xs={2} wrap="nowrap" justify="center">
+      <Grid
+        item
+        alignItems="center"
+        container
+        xs={4}
+        md={2}
+        wrap="nowrap"
+        justify="center"
+      >
         {rightSideContent}
       </Grid>
     </Grid>

@@ -28,7 +28,7 @@ const useStyles = makeStyles((theme) => ({
 
 export const UsersSearchForm: React.FC<IUsersSearchFormProps> = ({
   formSubmit,
-}: IUsersSearchFormProps) => {
+}) => {
   const classes = useStyles();
 
   const { handleSubmit, control } = useForm();

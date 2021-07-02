@@ -1,6 +1,6 @@
 import nodemailer from "nodemailer";
-import dotenv from 'dotenv';
-dotenv.config()
+import dotenv from "dotenv";
+dotenv.config();
 
 const emailService = nodemailer.createTransport({
   host: process.env.NODEMAILER_HOST || "smtp.mailtrap.io",
@@ -24,7 +24,7 @@ const sendEmail = ({
   baseUrl,
   userId,
   secretCode,
-  callback
+  callback,
 }: ISendEmailParams) => {
   const mailData = {
     from: `admin@slackclone.com`,

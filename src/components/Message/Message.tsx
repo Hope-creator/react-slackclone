@@ -10,10 +10,7 @@ export interface IMessageProps {
   user: IUser;
 }
 
-export const Message: React.FC<IMessageProps> = ({
-  message,
-  user,
-}: IMessageProps) => {
+export const Message: React.FC<IMessageProps> = ({ message, user }) => {
   return (
     <MessagePane message={message} user={user}>
       <Typography>{message.text}</Typography>

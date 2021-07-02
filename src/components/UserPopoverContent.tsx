@@ -6,7 +6,7 @@ import Button from "@material-ui/core/Button";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 import { useDispatch } from "react-redux";
-import { fetchCurrentInfoProfile } from "../store/modules/currentInfo_side/currentInfo";
+import { fetchInfoSideProfile } from "../store/modules/infoSide/infoSide";
 import { useHistory } from "react-router-dom";
 
 interface IUserPopoverContentProps {
@@ -28,7 +28,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export const UserPopoverContent: React.FC<IUserPopoverContentProps> = ({
   user,
-}: IUserPopoverContentProps): React.ReactElement => {
+}) => {
   const classes = useStyles();
 
   const dispatch = useDispatch();
@@ -36,7 +36,7 @@ export const UserPopoverContent: React.FC<IUserPopoverContentProps> = ({
   const history = useHistory();
 
   const userInfoHandleClick = () => {
-    dispatch(fetchCurrentInfoProfile(user._id));
+    dispatch(fetchInfoSideProfile(user._id));
   };
 
   const dialogHandleClick = () => {

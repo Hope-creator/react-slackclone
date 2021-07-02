@@ -7,9 +7,7 @@ import { useSelector } from "react-redux";
 import { ConversationsContent } from "./Content/ConversationsContent";
 import { Typography, Button } from "@material-ui/core";
 import { CreateConversationModal } from "../../CreateConversationlModal";
-import {
-  selectCurrentConversations,
-} from "../../../store/modules/currentConversations/selectors";
+import { selectCurrentConversations } from "../../../store/modules/currentConversations/selectors";
 
 interface IConversationsWorkspaceProps {
   user: IUser;
@@ -18,7 +16,6 @@ interface IConversationsWorkspaceProps {
 export const ConversationsWorkspace: React.FC<IConversationsWorkspaceProps> = ({
   user,
 }) => {
-
   const conversations = useSelector(selectCurrentConversations);
 
   return (
@@ -37,10 +34,7 @@ export const ConversationsWorkspace: React.FC<IConversationsWorkspaceProps> = ({
       />
       <WorkspaceContent
         children={
-          <ConversationsContent
-            user={user}
-            conversations={conversations}
-          />
+          <ConversationsContent user={user} conversations={conversations} />
         }
       />
     </>

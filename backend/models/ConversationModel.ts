@@ -23,8 +23,8 @@ const ConversationSchema = new Schema(
       value: String,
       creator: Schema.Types.ObjectId,
     },
-    topic: {type: String, required: false},
-    description: {type: String, required: false},
+    topic: { type: String, required: false },
+    description: { type: String, required: false },
     is_private: {
       type: Boolean,
       default: false,

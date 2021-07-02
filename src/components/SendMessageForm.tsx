@@ -75,14 +75,10 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export const SendMessageForm: React.FC<ISendMessageProps> = ({
-  dest,
-  dm,
-}: ISendMessageProps) => {
+export const SendMessageForm: React.FC<ISendMessageProps> = ({ dest, dm }) => {
   const classes = useStyles();
 
   const dispatch = useDispatch();
-  console.log(dest)
 
   const sendMessageLoadingState = useSelector(selectSendNewMessageLoadingState);
 
@@ -118,8 +114,8 @@ export const SendMessageForm: React.FC<ISendMessageProps> = ({
             attachments: files,
           };
           dm
-          ? dispatch(sendNewDirectMessage(messageData))
-          : dispatch(sendNewMessage(messageData));
+            ? dispatch(sendNewDirectMessage(messageData))
+            : dispatch(sendNewMessage(messageData));
         })
         .catch((err) =>
           dispatch(setSendNewMessageState(LoadingSendMessageState.ERROR))

@@ -1,10 +1,10 @@
 import io from "socket.io-client";
 
-const socket = io({reconnectionAttempts: 3});
+const socket = io({ reconnectionAttempts: 3 });
 
-socket.on("connect",()=> {
+socket.on("connect", () => {
   sessionStorage.setItem("connection", "1");
-})
+});
 
 socket.on("connect_error", (err: any) => {
   socket.disconnect();

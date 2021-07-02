@@ -1,15 +1,15 @@
-import React from 'react';
-import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
-import Modal from '@material-ui/core/Modal';
+import React from "react";
+import Modal from "@material-ui/core/Modal";
 
 interface SimpleModalProps {
-    opener: React.ReactNode;
-    children: React.ReactElement;
+  opener: React.ReactNode;
+  children: React.ReactElement;
 }
 
-
-export const SimpleModal: React.FC<SimpleModalProps> = ({opener, children}) => {
-
+export const SimpleModal: React.FC<SimpleModalProps> = ({
+  opener,
+  children,
+}) => {
   const [open, setOpen] = React.useState(false);
 
   const handleOpen = () => {
@@ -20,12 +20,9 @@ export const SimpleModal: React.FC<SimpleModalProps> = ({opener, children}) => {
     setOpen(false);
   };
 
-
   return (
     <div>
-        <div onClick={handleOpen}>
-            {opener}
-        </div>
+      <div onClick={handleOpen}>{opener}</div>
       <Modal
         open={open}
         onClose={handleClose}
@@ -36,4 +33,4 @@ export const SimpleModal: React.FC<SimpleModalProps> = ({opener, children}) => {
       </Modal>
     </div>
   );
-}
+};

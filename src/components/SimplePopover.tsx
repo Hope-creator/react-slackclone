@@ -18,8 +18,8 @@ export const SimplePopover: React.FC<SimplePopOverProps> = ({
   anchorPopupBlockVertical,
   anchorPopupBlockHorizontal,
   opener,
-  isOpen
-}: SimplePopOverProps): React.ReactElement => {
+  isOpen,
+}) => {
   const [anchorEl, setAnchorEl] = React.useState<HTMLDivElement | null>(null);
 
   const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
@@ -35,7 +35,7 @@ export const SimplePopover: React.FC<SimplePopOverProps> = ({
 
   return (
     <div>
-      <div onClick={handleClick} style={{cursor: "pointer"}}>
+      <div onClick={handleClick} style={{ cursor: "pointer" }}>
         {opener}
       </div>
       <Popover

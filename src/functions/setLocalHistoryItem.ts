@@ -38,7 +38,6 @@ export const setLocalHistoryItem = (
       }
       return false;
     });
-    console.log("index",index)
     if (index !== -1) {
       parsed.splice(index, 1);
     }

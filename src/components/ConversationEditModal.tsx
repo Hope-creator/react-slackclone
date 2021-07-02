@@ -79,15 +79,13 @@ export const ConversationEditModal: React.FC<IConversationEditModalProps> = ({
 }) => {
   const classes = useStyles();
 
-  console.log(edit)
-
   const [value, setValue] = React.useState<string>("");
 
   React.useEffect(() => {
     if (edit) {
       setValue(edit);
     } else {
-      setValue("")
+      setValue("");
     }
   }, [edit]);
 

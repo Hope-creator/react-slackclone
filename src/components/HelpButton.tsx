@@ -39,8 +39,9 @@ const useStyles = makeStyles((theme: Theme) =>
 export const HelpButton = () => {
   const classes = useStyles();
 
-  const [anchorEl, setAnchorEl] =
-    React.useState<HTMLButtonElement | null>(null);
+  const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
+    null
+  );
 
   const handleClose = React.useCallback(() => {
     setAnchorEl(null);

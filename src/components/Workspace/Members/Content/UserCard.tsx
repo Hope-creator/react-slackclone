@@ -10,7 +10,7 @@ import CardMedia from "@material-ui/core/CardMedia";
 import CardContent from "@material-ui/core/CardContent";
 import CardActionArea from "@material-ui/core/CardActionArea";
 import Typography from "@material-ui/core/Typography";
-import { fetchCurrentInfoProfile } from "../../../../store/modules/currentInfo_side/currentInfo";
+import { fetchInfoSideProfile } from "../../../../store/modules/infoSide/infoSide";
 
 export interface IUserCardProps {
   user: IUser;
@@ -34,7 +34,7 @@ export const UserCard: React.FC<IUserCardProps> = ({ user }) => {
   const dispatch = useDispatch();
 
   const handleClick = () => {
-    dispatch(fetchCurrentInfoProfile(user._id));
+    dispatch(fetchInfoSideProfile(user._id));
   };
 
   return (

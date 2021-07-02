@@ -17,7 +17,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export const WorkspaceContent: React.FC<IWorkspaceContentProps> = ({
   children,
-}: IWorkspaceContentProps) => {
+}) => {
   const classes = useStyles();
 
   return (

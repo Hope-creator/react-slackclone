@@ -1,31 +1,29 @@
-import React from 'react';
-import { withStyles } from '@material-ui/core/styles';
-import Button from '@material-ui/core/Button';
-import Menu, { MenuProps } from '@material-ui/core/Menu';
-
-
+import React from "react";
+import { withStyles } from "@material-ui/core/styles";
+import Button from "@material-ui/core/Button";
+import Menu, { MenuProps } from "@material-ui/core/Menu";
 
 const StyledMenu = withStyles({
   paper: {
-    border: '1px solid #d3d4d5',
+    border: "1px solid #d3d4d5",
   },
 })((props: MenuProps) => (
   <Menu
     elevation={0}
     getContentAnchorEl={null}
     anchorOrigin={{
-      vertical: 'bottom',
-      horizontal: 'center',
+      vertical: "bottom",
+      horizontal: "center",
     }}
     transformOrigin={{
-      vertical: 'top',
-      horizontal: 'center',
+      vertical: "top",
+      horizontal: "center",
     }}
     {...props}
   />
 ));
 
-export const StyledLeftSideMenu: React.FC = (): React.ReactElement => {
+export const StyledLeftSideMenu = () => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -53,8 +51,7 @@ export const StyledLeftSideMenu: React.FC = (): React.ReactElement => {
         keepMounted
         open={Boolean(anchorEl)}
         onClose={handleClose}
-      >
-      </StyledMenu>
+      ></StyledMenu>
     </div>
   );
-}
+};

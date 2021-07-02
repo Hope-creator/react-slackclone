@@ -7,8 +7,7 @@ import Typography from "@material-ui/core/Typography";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import Grid from "@material-ui/core/Grid/Grid";
 
-export const Files: React.FC = () => {
-
+export const Files = () => {
   return (
     <Accordion square>
       <AccordionSummary
