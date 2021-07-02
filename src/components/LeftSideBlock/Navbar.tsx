@@ -70,7 +70,7 @@ export const Navbar: React.FC<INavbarProps> = ({
   conversations,
   users,
   me,
-}: INavbarProps) => {
+}) => {
   const classes = useStyles();
   const dispatch = useDispatch();
 
@@ -81,6 +81,11 @@ export const Navbar: React.FC<INavbarProps> = ({
   const pageConversations = useSelector(selectConversationsPage);
   const countConversations = useSelector(selectConversationsCount);
   const totalCountConversations = useSelector(selectConversationsTotalCount);
+
+  React.useEffect(() => {
+    dispatch(fetchConversations());
+    dispatch(fetchUsers());
+  }, [dispatch]);
 
   const fetchData = () => {
     dispatch(fetchUsers());
