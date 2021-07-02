@@ -1,13 +1,9 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import {
-  LoadingConversationsAccessState,
-  IConversationsAccessState,
-} from "./types";
+import { IConversationsAccessState } from "./types";
 
 const initialState = {
   fetchingConversations: [],
   errorConversations: [],
-  loadingState: LoadingConversationsAccessState.NEVER, // loading state using for join all button
 } as IConversationsAccessState;
 
 const conversationsAccessSlice = createSlice({
@@ -24,29 +20,14 @@ const conversationsAccessSlice = createSlice({
       if (index !== -1) state.errorConversations.splice(index, 1);
       state.fetchingConversations.push(action.payload);
     },
-    successJoinOneConversation(state, action: PayloadAction<string>) {
+    successAccessOneConversation(state, action: PayloadAction<string>) {
       const index = state.fetchingConversations.indexOf(action.payload);
       if (index !== -1) state.fetchingConversations.splice(index, 1);
     },
-    errorJoinOneConversation(state, action: PayloadAction<string>) {
+    errorAccesOneConversation(state, action: PayloadAction<string>) {
       const index = state.fetchingConversations.indexOf(action.payload);
       if (index !== -1) state.fetchingConversations.splice(index, 1);
       state.errorConversations.push(action.payload);
-    },
-    fetchJoinAllConversations(state, action: PayloadAction<string[]>) {
-      state.loadingState = LoadingConversationsAccessState.LOADING;
-      state.errorConversations = [];
-      state.fetchingConversations = action.payload;
-    },
-    errorJoinAllConversations(state, action: PayloadAction<string[]>) {
-      state.fetchingConversations = [];
-      state.errorConversations = action.payload;
-    },
-    setJoinConversationsLoadingState(
-      state,
-      action: PayloadAction<LoadingConversationsAccessState>
-    ) {
-      state.loadingState = action.payload;
     },
     clearJoinConversationsState() {
       return initialState;
@@ -56,12 +37,8 @@ const conversationsAccessSlice = createSlice({
 
 export const {
   fetchJoinOneConversation,
-  errorJoinOneConversation,
-  successJoinOneConversation,
-  setJoinConversationsLoadingState,
-  fetchJoinAllConversations,
-
-  errorJoinAllConversations,
+  successAccessOneConversation,
+  errorAccesOneConversation,
   fetchLeaveOneConversation,
   clearJoinConversationsState,
 } = conversationsAccessSlice.actions;
