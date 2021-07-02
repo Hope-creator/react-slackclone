@@ -2,14 +2,14 @@ import React from "react";
 import { useDispatch } from "react-redux";
 import Button from "@material-ui/core/Button";
 
-import { fetchReadingAllMessagesUnread } from "../../../../store/modules/readMessage/readMessage";
+import { fetchReadingAllMessagesUnread } from "../../../../store/modules/messagesAffect/messagesAffect";
 import { IMessage } from "../../../../store/modules/messages/types";
 
-interface IRightSIdeUnreadsProps {
+interface IHeaderRightUnreadsProps {
   messages: IMessage[];
 }
 
-export const RightSideUnreads: React.FC<IRightSIdeUnreadsProps> = ({
+export const HeaderRightUnreads: React.FC<IHeaderRightUnreadsProps> = ({
   messages,
 }) => {
   const dispatch = useDispatch();
@@ -18,5 +18,9 @@ export const RightSideUnreads: React.FC<IRightSIdeUnreadsProps> = ({
     dispatch(fetchReadingAllMessagesUnread(messages));
   };
 
-  return <Button onClick={handleClick}>Mark all as read</Button>;
+  return (
+    <Button style={{ minWidth: 100 }} onClick={handleClick}>
+      Mark all as read
+    </Button>
+  );
 };

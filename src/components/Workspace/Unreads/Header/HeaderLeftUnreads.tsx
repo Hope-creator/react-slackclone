@@ -3,11 +3,11 @@ import React from "react";
 import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
 
-interface ILeftSideUnreadsProps {
+interface IHeaderLeftUnreadsProps {
   unreadsCount: number;
 }
 
-export const LeftSideUnreads: React.FC<ILeftSideUnreadsProps> = ({
+export const HeaderLeftUnreads: React.FC<IHeaderLeftUnreadsProps> = ({
   unreadsCount,
 }) => {
   return (
@@ -16,7 +16,7 @@ export const LeftSideUnreads: React.FC<ILeftSideUnreadsProps> = ({
         All unreads
       </Typography>
       <Typography variant="caption" color="initial">
-        {unreadsCount > 0 && unreadsCount + " messages"} 
+        {unreadsCount > 0 && unreadsCount + " messages"}
       </Typography>
     </Grid>
   );
