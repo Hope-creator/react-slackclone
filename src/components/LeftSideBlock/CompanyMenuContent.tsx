@@ -10,6 +10,8 @@ import Divider from "@material-ui/core/Divider/Divider";
 import DeveloperBoardIcon from "@material-ui/icons/DeveloperBoard";
 import { CreateConversationModal } from "../CreateConversationlModal";
 import { useHistory } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { logoutUser } from "../../store/modules/user/user";
 
 interface ICompanyMenuItemProps {
   company: ICompany;
@@ -36,14 +38,20 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export const CompanyMenuContent: React.FC<ICompanyMenuItemProps> = ({
   company,
-}): React.ReactElement => {
+}) => {
   const classes = useStyles();
 
   const history = useHistory();
 
+  const dispatch = useDispatch();
+
   const membersHandleClick = () => {
-    history.push("/members")
-  }
+    history.push("/members");
+  };
+
+  const signOutHandleClick = () => {
+    dispatch(logoutUser());
+  };
 
   return (
     <>
@@ -62,9 +70,6 @@ export const CompanyMenuContent: React.FC<ICompanyMenuItemProps> = ({
         </Typography>
       </Grid>
       <Divider />
-      <MenuItem>
-        <Typography variant="body1">Invite people to {company.name}</Typography>
-      </MenuItem>
       <CreateConversationModal
         opener={
           <MenuItem>
@@ -76,7 +81,7 @@ export const CompanyMenuContent: React.FC<ICompanyMenuItemProps> = ({
       <MenuItem button onClick={membersHandleClick}>
         <Typography variant="body1">Members</Typography>
       </MenuItem>
-      <MenuItem>
+      <MenuItem button onClick={signOutHandleClick}>
         <Typography variant="body1">Sign out of {company.name}</Typography>
       </MenuItem>
     </>
