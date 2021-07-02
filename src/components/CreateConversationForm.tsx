@@ -8,13 +8,14 @@ import CloseIcon from "@material-ui/icons/Close";
 import TextField from "@material-ui/core/TextField";
 import { makeStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
-import { conversationsApi } from "../services/api/converastionsApi";
+import { conversationsApi } from "../services/api/conversationsApi";
 import { useHistory } from "react-router";
 import Switch from "@material-ui/core/Switch";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import { Typography } from "@material-ui/core";
-import { addUserConversations } from "../store/modules/user/user";
+import { addUserConversation } from "../store/modules/user/user";
 import { useDispatch } from "react-redux";
+import { addOneConversation } from "../store/modules/conversations/conversations";
 
 export interface ICreateConversationFormProps {
   closeModalFunction: () => void;
@@ -43,7 +44,7 @@ const useStyles = makeStyles((theme) => ({
 
 export const CreateConversationForm: React.FC<ICreateConversationFormProps> = ({
   closeModalFunction,
-}: ICreateConversationFormProps) => {
+}) => {
   const classes = useStyles();
 
   const history = useHistory();
@@ -63,7 +64,10 @@ export const CreateConversationForm: React.FC<ICreateConversationFormProps> = ({
     conversationsApi
       .createChannel(data.name, data.isPrivate)
       .then((conversation) => {
-        dispatch(addUserConversations([conversation._id]));
+        dispatch(addUserConversation(conversation._id));
+        if (conversation.is_private) {
+          dispatch(addOneConversation(conversation));
+        }
         history.push(`/${conversation._id}`);
         closeModalFunction();
       })
