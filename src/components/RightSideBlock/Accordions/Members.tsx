@@ -17,7 +17,7 @@ import {
 import { LoadingSideInfoMembersState } from "../../../store/modules/SideInfoMembers/types";
 import { CircularProgress } from "@material-ui/core";
 import { fetchSideInfoMembers } from "../../../store/modules/SideInfoMembers/SideInfoMembers";
-import {FixedSizeList as List } from "react-window";
+import { FixedSizeList as List } from "react-window";
 import { IUser } from "../../../store/modules/user/types";
 
 interface IMembersProps {
@@ -28,11 +28,6 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     fullWidht: {
       width: "100%",
-    },
-    smallAvatar: {
-      width: theme.spacing(3),
-      height: theme.spacing(3),
-      marginRight: theme.spacing(1),
     },
   })
 );
@@ -50,8 +45,8 @@ export const Members: React.FC<IMembersProps> = ({ channel }) => {
 
   const itemKey = React.useCallback((index: number, data: IUser[]) => {
     const user = data[index];
-    return user._id
-  },[]) 
+    return user._id;
+  }, []);
 
   return (
     <Accordion square>
@@ -78,12 +73,14 @@ export const Members: React.FC<IMembersProps> = ({ channel }) => {
               width="inherit"
               itemKey={itemKey}
             >
-               {({index,style}) => {
-                 const user = members[index];
-                 return <div style={style}>
-                <MembersItem user={user} />
-               </div>
-               }}
+              {({ index, style }) => {
+                const user = members[index];
+                return (
+                  <div style={style}>
+                    <MembersItem user={user} />
+                  </div>
+                );
+              }}
             </List>
           )}
         </Grid>
