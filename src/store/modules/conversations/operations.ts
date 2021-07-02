@@ -1,6 +1,6 @@
 import { takeEvery, call, put, select } from "redux-saga/effects";
 import { IConversation, LoadingConversationsState } from "./types";
-import { conversationsApi } from "../../../services/api/converastionsApi";
+import { conversationsApi } from "../../../services/api/conversationsApi";
 import {
   fetchConversations,
   setConversations,
