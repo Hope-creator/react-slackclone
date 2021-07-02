@@ -1,4 +1,5 @@
 import express from "express";
+import path from "path";
 import "./core/db";
 import { createServer } from "http";
 import createSocket from "./core/socket";
@@ -27,7 +28,13 @@ app.use(
 
 createRoutes(app, io);
 
-//# mongoDB
+// For build
+const staticPath = path.join(__dirname, "../build")
+app.use(express.static(staticPath));
+const index = path.join(__dirname, "../build/index.html")
+app.get("*", (req, res) => {
+    res.sendFile(index);
+});
 
 http.listen(port, () => {
   console.log(`Server is up on ${port}`);
