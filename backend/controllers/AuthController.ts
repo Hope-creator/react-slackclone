@@ -39,7 +39,7 @@ class AuthController {
       });
       const user = await newUser.save();
       const token = tokenCreate(user._id);
-      req.session.token = token;
+      if (req.session) req.session.token = token;
       const baseUrl = req.protocol + "://" + req.get("host");
       const secretCode = cryptoRandomString(6);
       const newCode = new CodeModel({
@@ -48,7 +48,6 @@ class AuthController {
       });
       await newCode.save();
       const savedUser = await UserModel.findById(user._id).populate("company");
-    
 
       await sendEmail({
         email: email,
@@ -135,7 +134,11 @@ class AuthController {
         password: string;
       };
 
-      const user = await UserModel.findOne({ email: email })
+      const user = await UserModel.findOneAndUpdate(
+        { email: email },
+        { online: true },
+        { new: true }
+      )
         .select("+password")
         .populate("company");
       if (!user) {
@@ -152,7 +155,7 @@ class AuthController {
           });
         } else {
           const token = tokenCreate(user._id);
-          req.session.token = token;
+          if (req.session) req.session.token = token;
           res.json({
             status: "success",
             data: user,
@@ -168,13 +171,55 @@ class AuthController {
     }
   };
 
+  update = async (
+    req: express.Request,
+    res: express.Response
+  ): Promise<void> => {
+    try {
+      const user = req.user;
+      const { name, display_name, work, phone, away, avatar } = req.body;
+
+      const updatedUser = await UserModel.findByIdAndUpdate(
+        user._id,
+        {
+          name: name,
+          display_name: display_name,
+          work: work,
+          phone: phone,
+          away: away,
+          avatar: avatar,
+        },
+        {
+          new: true,
+          omitUndefined: true,
+        }
+      ).populate("company");
+
+      res.json({
+        status: "success",
+        data: updatedUser,
+      });
+      this.io.emit("SERVER:UPDATE_USER", updatedUser);
+    } catch (error) {
+      res.status(500).json({
+        status: "error",
+        errors: JSON.stringify(error),
+      });
+      console.log("Error on AuthController / login:", error);
+    }
+  };
+
   getMe = async (
     req: express.Request,
     res: express.Response
   ): Promise<void> => {
     try {
       const userId = req.user._id;
-      const user = await UserModel.findById(userId).populate("company");
+      const user = await UserModel.findByIdAndUpdate(
+        userId,
+        { online: true },
+        { new: true }
+      ).populate("company");
       res.json({
         status: "success",
         data: user,
@@ -188,24 +233,44 @@ class AuthController {
     }
   };
 
-  create100Test = async (
+  delete = async (
+    req: express.Request,
+    res: express.Response
+  ): Promise<void> => {
+    try {
+      req.session = null;
+      res.cookie("session", null);
+      res.json({ status: "success", data: true });
+    } catch (error) {
+      res.status(500).json({
+        status: "error",
+        data: JSON.stringify(error),
+      });
+      console.log("Error on AuthController / delete:", error);
+    }
+  };
+
+  create500Test = async (
     req: express.Request,
     res: express.Response
   ): Promise<void> => {
     try {
       const createRandUser = (index: number) => {
         return {
-          name: "Xest" + index,
-          email: "Xest" + index + "@mail.ru",
-          passwords: "123456"
-        }
-      }
-      for(let i = 0; i<1000; i++) {
+          name: "Test" + index,
+          email: "Test" + index + "@mail.ru",
+          passwords: "123456",
+        };
+      };
+      for (let i = 0; i < 500; i++) {
         const user = createRandUser(i);
         const newUser = new UserModel(user);
-        await newUser.save()
+        await newUser.save();
       }
-
+      res.json({
+        status: "success",
+        data: true,
+      });
     } catch (error) {
       if (error.message === "Email must be unique") {
         res.status(409).json({
@@ -218,12 +283,10 @@ class AuthController {
           status: "error",
           errors: JSON.stringify(error),
         });
-        console.log("Error on AuthController / create:", error);
+        console.log("Error on AuthController / create500Test: ", error);
       }
     }
   };
-
-
 }
 
 export default AuthController;
