@@ -1,7 +1,12 @@
 import { Grid, makeStyles } from "@material-ui/core";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { clearSearchState, setSearch } from "../store/modules/search/search";
+import {
+  clearSearchState,
+  fetchSearchConversations,
+  fetchSearchUsers,
+  setSearch,
+} from "../store/modules/search/search";
 import { selectSearch } from "../store/modules/search/selectors";
 import SearchIcon from "@material-ui/icons/Search";
 import Button from "@material-ui/core/Button";
@@ -39,7 +44,11 @@ export const SearchCompanyForm = () => {
   const ref = React.useRef<HTMLInputElement | null>(null);
 
   const handleChange = React.useCallback(() => {
-    if (ref.current) dispatch(setSearch(ref.current.value));
+    if (ref.current) {
+      dispatch(setSearch(ref.current.value));
+      dispatch(fetchSearchConversations());
+      dispatch(fetchSearchUsers());
+    }
   }, [dispatch]);
 
   const handleClear = React.useCallback(() => {
