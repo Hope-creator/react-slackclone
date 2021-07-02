@@ -3,29 +3,29 @@ import conversationMembers from "./modules/conversationMembers/conversationMembe
 import conversations from "./modules/conversations/conversations";
 import currentConversation from "./modules/currentConversation/currentConversation";
 import currentConversations from "./modules/currentConversations/currentConversations";
-import currentInfo from "./modules/currentInfo_side/currentInfo";
+import infoSide from "./modules/infoSide/infoSide";
 import currentUsers from "./modules/currentUsers/currentUsers";
 import messages from "./modules/messages/messages";
-import readMessage from "./modules/readMessage/readMessage";
+import messagesAffect from "./modules/messagesAffect/messagesAffect";
 import search from "./modules/search/search";
 import SideInfoMembers from "./modules/SideInfoMembers/SideInfoMembers";
 import user from "./modules/user/user";
 import conversationsAccess from "./modules/conversationsAccess/conversationsAccess";
 import users from "./modules/users/users";
-import currentDM from "./modules/currentDM/currentDM";
-import currentAllDM from "./modules/currentAllDM/currentAllDM";
+import currentDialog from "./modules/currentDialog/currentDialog";
+import currentAllDialogs from "./modules/currentAllDialogs/currentAllDialogs";
 
 export const rootReducer = combineReducers({
   user: user,
   users: users,
-  currentDM: currentDM,
-  currentAllDM: currentAllDM,
+  currentDialog: currentDialog,
+  currentAllDialogs: currentAllDialogs,
   conversations: conversations,
   currentConversation: currentConversation,
   currentConversations: currentConversations,
-  currentInfo: currentInfo,
+  infoSide: infoSide,
   currentUsers: currentUsers,
-  readMessage: readMessage,
+  messagesAffect: messagesAffect,
   messages: messages,
   conversationMembers: conversationMembers,
   sideInfoMembers: SideInfoMembers,
