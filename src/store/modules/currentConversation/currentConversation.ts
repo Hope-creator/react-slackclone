@@ -26,13 +26,21 @@ const currentConversationSlicer = createSlice({
     ) {
       state.loadingState = action.payload;
     },
-    updateCurrentConversation(state, action: PayloadAction<IConversation>){
-     if(state.currentConversation) state.currentConversation = action.payload;
+    updateCurrentConversation(state, action: PayloadAction<IConversation>) {
+      if (state.currentConversation) state.currentConversation = action.payload;
     },
     addMemberCurrentConversation(state) {
       if (state.currentConversation) state.currentConversation.num_members++;
     },
-    clearCurrentConversation() {
+    clearCurrentConversation(state, action: PayloadAction<string>) {
+      if (
+        state.currentConversation &&
+        state.currentConversation._id === action.payload
+      ) {
+        return initialState;
+      }
+    },
+    clearCurrentConversationState() {
       return initialState;
     },
   },
@@ -45,5 +53,6 @@ export const {
   addMemberCurrentConversation,
   updateCurrentConversation,
   clearCurrentConversation,
+  clearCurrentConversationState,
 } = currentConversationSlicer.actions;
 export default currentConversationSlicer.reducer;
