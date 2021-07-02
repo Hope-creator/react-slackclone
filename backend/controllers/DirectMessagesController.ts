@@ -71,7 +71,10 @@ class DirectMessagesController {
       if (!partner) {
         res.status(400).json({ status: "error", data: "User doesn't exist" });
       } else {
-        const unreadBy = partner._id;
+        const unreadBy =
+          partner._id.toString() !== user._id.toString()
+            ? partner._id
+            : undefined;
         const postData = {
           creator: req.userId,
           dest: partner._id,
@@ -89,7 +92,8 @@ class DirectMessagesController {
           .to([message.dest.toString(), user._id.toString()])
           .emit("SERVER:NEW_DIRECTMESSAGE", message);
 
-        this.io.to(unreadBy.toString()).emit("SERVER:NEW_UNREAD", message);
+        unreadBy &&
+          this.io.to(unreadBy.toString()).emit("SERVER:NEW_UNREAD", message);
         res.json({ status: "success", data: message });
       }
     } catch (error) {
