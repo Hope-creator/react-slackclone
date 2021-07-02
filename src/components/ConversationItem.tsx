@@ -13,15 +13,13 @@ import { IUser } from "../store/modules/user/types";
 import DoneIcon from "@material-ui/icons/Done";
 import LockIcon from "@material-ui/icons/Lock";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  fetchJoinOneConversation,
-  fetchLeaveOneConversation,
-} from "../store/modules/conversationsAccess/conversationsAccess";
+import { fetchJoinOneConversation } from "../store/modules/conversationsAccess/conversationsAccess";
 import {
   selectIsConversationsAccessError,
   selectIsConversationsAccessFetching,
 } from "../store/modules/conversationsAccess/selectors";
 import { useHistory } from "react-router-dom";
+import { LeaveConversationModal } from "./LeaveConversationModal";
 
 interface IConversationItemProps {
   conversation: IConversation;
@@ -50,8 +48,8 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     lockIcon: {
       fontSize: 14,
-      minWidth: 0
-    }
+      minWidth: 0,
+    },
   })
 );
 
@@ -85,19 +83,14 @@ export const ConversationItem: React.FC<IConversationItemProps> = ({
     setIsHovered(false);
   };
 
-  const handleLeaveButton = (event: React.MouseEvent<HTMLButtonElement>) => {
-    event.stopPropagation();
-    dispatch(fetchLeaveOneConversation(conversation._id));
-  };
-
   const handleJoinButton = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.stopPropagation();
     dispatch(fetchJoinOneConversation(conversation._id));
   };
 
   const handleClickContainer = () => {
-    history.push(conversation._id)
-  }
+    history.push(conversation._id);
+  };
 
   return (
     <Grid
@@ -114,7 +107,7 @@ export const ConversationItem: React.FC<IConversationItemProps> = ({
         <Typography variant="subtitle2">
           <>
             {conversation.is_private ? (
-              <ListItemIcon className={classes.lockIcon}   >
+              <ListItemIcon className={classes.lockIcon}>
                 <LockIcon className={classes.lockIcon} color="inherit" />
               </ListItemIcon>
             ) : (
@@ -144,16 +137,14 @@ export const ConversationItem: React.FC<IConversationItemProps> = ({
           ) : (
             <Grid item>
               {isMember ? (
-                <Button
-                  onClick={handleLeaveButton}
-                  color="inherit"
-                  variant="outlined"
-                  className={
-                    isConversationAccessError ? classes.errorButton : undefined
+                <LeaveConversationModal
+                  conversation={conversation}
+                  opener={
+                    <Button color="inherit" variant="outlined">
+                      Leave
+                    </Button>
                   }
-                >
-                  Leave
-                </Button>
+                />
               ) : (
                 <Button
                   onClick={handleJoinButton}
