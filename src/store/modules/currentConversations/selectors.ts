@@ -1,4 +1,5 @@
 import { IRootState } from "../../store";
+import { LoadingCurrentConversationsState } from "./types";
 
 export const selectCurrentConversationsState = (state: IRootState) =>
   state.currentConversations;
@@ -6,7 +7,7 @@ export const selectCurrentConversationsState = (state: IRootState) =>
 export const selectCurrentConversations = (state: IRootState) =>
   selectCurrentConversationsState(state).conversations;
 
-  export const selectCurrentConversationsPage = (state: IRootState) =>
+export const selectCurrentConversationsPage = (state: IRootState) =>
   selectCurrentConversationsState(state).page;
 
 export const selectCurrentConversationsSearchName = (state: IRootState) =>
@@ -20,3 +21,7 @@ export const selectCurrentConversationsTotalCount = (state: IRootState) =>
 
 export const selectCurrentConversationsLoadingState = (state: IRootState) =>
   selectCurrentConversationsState(state).loadingState;
+
+export const selectIsCurrentConversationsLoaded = (state: IRootState) =>
+  selectCurrentConversationsState(state).loadingState ===
+  LoadingCurrentConversationsState.LOADED;

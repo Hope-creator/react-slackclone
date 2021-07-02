@@ -1,5 +1,6 @@
 import { createSelector } from "reselect";
 import { IRootState } from "../../store";
+import { LoadingMessagesState } from "./types";
 
 export const selectMessagesState = (state: IRootState) => state.messages;
 
@@ -17,6 +18,9 @@ export const selectMessagesTotalCount = (state: IRootState) =>
 
 export const selectMessagesLoadingState = (state: IRootState) =>
   selectMessagesState(state).loadingState;
+
+export const selectIsMessagesLoaded = (state: IRootState) =>
+  selectMessagesState(state).loadingState === LoadingMessagesState.LOADED;
 
 export const selectSendNewMessageLoadingState = (state: IRootState) =>
   selectMessagesState(state).loadingSendMessageState;

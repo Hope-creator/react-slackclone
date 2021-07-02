@@ -1,4 +1,5 @@
 import { IRootState } from "../../store";
+import { LoadingCurrentUsersState } from "./types";
 
 export const selectCurrentUsersState = (state: IRootState) =>
   state.currentUsers;
@@ -20,3 +21,7 @@ export const selectCurrentUsersTotalCount = (state: IRootState) =>
 
 export const selectCurrentUsersLoadingState = (state: IRootState) =>
   selectCurrentUsersState(state).loadingState;
+
+export const selectIsCurrentUsersLoaded = (state: IRootState) =>
+  selectCurrentUsersState(state).loadingState ===
+  LoadingCurrentUsersState.LOADED;

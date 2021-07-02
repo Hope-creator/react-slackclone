@@ -10,9 +10,6 @@ export const selectFetchingAccessConversations = (state: IRootState) =>
 export const selectErrorAccessConversations = (state: IRootState) =>
   selectConversationsAccessState(state).errorConversations;
 
-export const selectConversationsAccessLoadingState = (state: IRootState) =>
-  selectConversationsAccessState(state).loadingState;
-
 export const selectIsConversationsAccessFetching = (conv: string) => {
   return createSelector(selectFetchingAccessConversations, (items) =>
     items.includes(conv)
