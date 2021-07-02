@@ -3,7 +3,7 @@ import React from "react";
 import CloseIcon from "@material-ui/icons/Close";
 import { createStyles, makeStyles } from "@material-ui/core/styles";
 import { useDispatch } from "react-redux";
-import { clearCurrentInfo } from "../../store/modules/currentInfo_side/currentInfo";
+import { clearInfoSideState } from "../../store/modules/infoSide/infoSide";
 
 interface HeaderProps {
   headerTitle: string;
@@ -39,7 +39,7 @@ export const Header: React.FC<HeaderProps> = ({
   const classes = useStyles();
   const dispatch = useDispatch();
   const closeButtonHandleClick = () => {
-    dispatch(clearCurrentInfo());
+    dispatch(clearInfoSideState());
   };
 
   return (
@@ -49,7 +49,7 @@ export const Header: React.FC<HeaderProps> = ({
       justify="space-between"
       className={classes.headerContainer}
     >
-      <Grid>
+      <Grid xs={11} item>
         <Typography variant="subtitle2" className={classes.headerTitle}>
           {headerTitle}
         </Typography>
@@ -57,11 +57,13 @@ export const Header: React.FC<HeaderProps> = ({
           {headerSubText && `#${headerSubText}`}
         </Typography>
       </Grid>
-      <Tooltip title="Close">
-        <IconButton onClick={closeButtonHandleClick}>
-          <CloseIcon />
-        </IconButton>
-      </Tooltip>
+      <Grid xs={1} item>
+        <Tooltip title="Close">
+          <IconButton onClick={closeButtonHandleClick}>
+            <CloseIcon />
+          </IconButton>
+        </Tooltip>
+      </Grid>
     </Grid>
   );
 };
