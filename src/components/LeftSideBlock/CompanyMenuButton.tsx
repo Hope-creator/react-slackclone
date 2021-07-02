@@ -1,9 +1,10 @@
 import React from "react";
 import Button from "@material-ui/core/Button";
 import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown";
-import CreateIcon from "@material-ui/icons/Create";
 import { Grid, IconButton } from "@material-ui/core";
 import { StyledMenu } from "../StyledMenu";
+import { useHistory } from "react-router-dom";
+import { useUnreadCount } from "../../hooks/useUnreadCount";
 
 interface CompanyMenuButtonProps {
   children: React.ReactNode;
@@ -17,8 +18,12 @@ export const CompanyMenuButton: React.FC<CompanyMenuButtonProps> = ({
   children,
   className,
   buttonClassName,
-}: CompanyMenuButtonProps): React.ReactElement => {
+}) => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+
+  const history = useHistory();
+
+  const unreadCount = useUnreadCount();
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -30,7 +35,7 @@ export const CompanyMenuButton: React.FC<CompanyMenuButtonProps> = ({
 
   const handleIconClick = (event: React.MouseEvent<HTMLElement>) => {
     event.stopPropagation();
-    console.log("click");
+    history.push("/unreads");
   };
 
   return (
@@ -55,14 +60,16 @@ export const CompanyMenuButton: React.FC<CompanyMenuButtonProps> = ({
             <ArrowDropDownIcon />
           </Grid>
           <Grid item>
-            <IconButton
-              component="div"
-              id="iconbtn"
-              onClick={handleIconClick}
-              color="primary"
-            >
-              <CreateIcon />
-            </IconButton>
+            {unreadCount > 0 && (
+              <IconButton
+                component="div"
+                id="iconbtn"
+                onClick={handleIconClick}
+                color="primary"
+              >
+                {unreadCount}
+              </IconButton>
+            )}
           </Grid>
         </Grid>
       </Button>
