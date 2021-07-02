@@ -48,8 +48,13 @@ const conversationsSlice = createSlice({
       if (index !== -1) state.conversations[index].num_members++;
     },
     addOneConversation(state, action: PayloadAction<IConversation>) {
-      state.conversations = [...state.conversations, action.payload];
-      state.conversations.sort((a, b) => (a.name > b.name ? 1 : -1));
+      state.conversations = [action.payload, ...state.conversations];
+    },
+    deleteOneConversation(state, action: PayloadAction<string>) {
+      const index = state.conversations.findIndex(
+        (conversation) => conversation._id === action.payload
+      );
+      if (index !== -1) state.conversations.splice(index, 1);
     },
   },
 });
@@ -60,6 +65,7 @@ export const {
   setConversationsLoadingState,
   addOneConversation,
   updateConversation,
+  deleteOneConversation,
   addMemberConversations,
   setPageConversations,
   setTotalCountConversations,
