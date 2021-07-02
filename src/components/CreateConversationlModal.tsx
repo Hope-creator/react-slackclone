@@ -23,6 +23,9 @@ const useStyles = makeStyles((theme: Theme) =>
       boxShadow: theme.shadows[5],
       padding: theme.spacing(2, 4, 3),
       transform: `translate(-50%, -50%)`,
+      [theme.breakpoints.down("sm")]: {
+        width: 200,
+      },
     },
     conversationName: {
       width: "600px",
@@ -37,41 +40,36 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-export const CreateConversationModal: React.FC<ICreateConversationModalProps> = ({
-  opener,
-}) => {
-  const classes = useStyles();
+export const CreateConversationModal: React.FC<ICreateConversationModalProps> =
+  ({ opener }) => {
+    const classes = useStyles();
 
-  const [open, setOpen] = React.useState(false);
+    const [open, setOpen] = React.useState(false);
 
-  const handleOpen = () => {
-    setOpen(true);
+    const handleOpen = () => {
+      setOpen(true);
+    };
+
+    const handleClose = () => {
+      setOpen(false);
+    };
+
+    return (
+      <div>
+        <div onClick={handleOpen}>{opener}</div>
+        <Modal
+          open={open}
+          onClose={handleClose}
+          aria-labelledby="simple-modal-title"
+          aria-describedby="simple-modal-description"
+        >
+          <Paper className={classes.paper}>
+            <Grid container alignItems="center" direction="column">
+              <Typography variant="subtitle2">Name</Typography>
+              <CreateConversationForm closeModalFunction={handleClose} />
+            </Grid>
+          </Paper>
+        </Modal>
+      </div>
+    );
   };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
-
-  const children = () => (
-    <Paper className={classes.paper}>
-      <Grid container alignItems="center" direction="column" >
-          <Typography variant="subtitle2">Name</Typography>
-          <CreateConversationForm closeModalFunction={handleClose} />
-      </Grid>
-    </Paper>
-  );
-
-  return (
-    <div>
-      <div onClick={handleOpen}>{opener}</div>
-      <Modal
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="simple-modal-title"
-        aria-describedby="simple-modal-description"
-      >
-        {children()}
-      </Modal>
-    </div>
-  );
-};
