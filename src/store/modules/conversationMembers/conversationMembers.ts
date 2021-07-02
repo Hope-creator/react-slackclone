@@ -14,14 +14,33 @@ const conversationMembersSlice = createSlice({
   name: "ConversationMembers",
   initialState,
   reducers: {
-    fetchConverastionMembers(state, action: PayloadAction<string>) {
+    fetchConversationMembers(state, action: PayloadAction<string>) {
       state.loadingState = LoadingConversationsMembersState.LOADING;
     },
-    setConverastionMembers(state, action: PayloadAction<IUser[]>) {
+    setConversationMembers(state, action: PayloadAction<IUser[]>) {
       state.members = action.payload;
       state.loadingState = LoadingConversationsMembersState.LOADED;
     },
-    setConverastionMembersLoadingState(
+    addOneConversationMembers(state, action: PayloadAction<IUser>) {
+      state.members = [action.payload, ...state.members];
+    },
+    updateOneConversationMembers(state, action: PayloadAction<IUser>) {
+      const index = state.members.findIndex(
+        (member) => member._id === action.payload._id
+      );
+      if (index !== -1) {
+        state.members[index] = action.payload;
+      }
+    },
+    deleteOneConversationMembers(state, action: PayloadAction<IUser>) {
+      const index = state.members.findIndex(
+        (member) => member._id === action.payload._id
+      );
+      if (index !== -1) {
+        state.members.splice(index, 1);
+      }
+    },
+    setConversationMembersLoadingState(
       state,
       action: PayloadAction<LoadingConversationsMembersState>
     ) {
@@ -34,9 +53,12 @@ const conversationMembersSlice = createSlice({
 });
 
 export const {
-  fetchConverastionMembers,
-  setConverastionMembers,
-  setConverastionMembersLoadingState,
+  fetchConversationMembers,
+  setConversationMembers,
+  setConversationMembersLoadingState,
+  addOneConversationMembers,
+  updateOneConversationMembers,
+  deleteOneConversationMembers,
   clearConversationMembers,
 } = conversationMembersSlice.actions;
 export default conversationMembersSlice.reducer;
