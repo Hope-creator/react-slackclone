@@ -2,22 +2,22 @@ import React from "react";
 
 import { makeStyles, createStyles, Theme } from "@material-ui/core/styles";
 import { IUser } from "../../../../store/modules/user/types";
-import { DMItem } from "../../../DMItem";
+import { DialogItem } from "../../../DialogItem";
 import { useDispatch, useSelector } from "react-redux";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { CircularProgress } from "@material-ui/core";
 import {
-  selectCurrentAllDM,
-  selectCurrentAllDMCount,
-  selectCurrentAllDMPage,
-  selectCurrentAllDMTotalCount,
-} from "../../../../store/modules/currentAllDM/selectors";
+  selectCurrentAllDialogs,
+  selectCurrentAllDialogsCount,
+  selectCurrentAllDialogsPage,
+  selectCurrentAllDialogsTotalCount,
+} from "../../../../store/modules/currentAllDialogs/selectors";
 import {
-  clearCurrentAllDMState,
-  fetchCurrentAllDM,
-} from "../../../../store/modules/currentAllDM/currentAllDM";
+  clearCurrentAllDialogsState,
+  fetchCurrentAllDialogs,
+} from "../../../../store/modules/currentAllDialogs/currentAllDialogs";
 
-export interface IAllDMContentProps {
+export interface IAllDialogsContentProps {
   user: IUser;
 }
 
@@ -36,39 +36,39 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-export const AllDMContent: React.FC<IAllDMContentProps> = ({ user }) => {
+export const AllDialogsContent: React.FC<IAllDialogsContentProps> = ({ user }) => {
   const classes = useStyles();
 
   const dispatch = useDispatch();
 
-  const partners = useSelector(selectCurrentAllDM);
+  const partners = useSelector(selectCurrentAllDialogs);
 
-  const pageCurrentAllDM = useSelector(selectCurrentAllDMPage);
-  const countCurrentAllDM = useSelector(selectCurrentAllDMCount);
-  const totalCountCurrentAllDM = useSelector(selectCurrentAllDMTotalCount);
+  const pageCurrentAllDialogs = useSelector(selectCurrentAllDialogsPage);
+  const countCurrentAllDialogs = useSelector(selectCurrentAllDialogsCount);
+  const totalCountCurrentAllDialogs = useSelector(selectCurrentAllDialogsTotalCount);
 
   React.useEffect(() => {
-    dispatch(fetchCurrentAllDM());
+    dispatch(fetchCurrentAllDialogs());
     return function clearUsers() {
-      dispatch(clearCurrentAllDMState());
+      dispatch(clearCurrentAllDialogsState());
     };
   }, [dispatch]);
 
-  const fetchDataCurrentAllDM = () => {
-    dispatch(fetchCurrentAllDM());
+  const fetchDataCurrentAllDialogs = () => {
+    dispatch(fetchCurrentAllDialogs());
   };
 
   return (
     <div
-      id="scrollableDiv"
+      id="scrollableDivAllDialogs"
       className={classes.workspaceContentMessages}
       style={{ height: "100%" }}
     >
       <InfiniteScroll
-        scrollableTarget="scrollableDiv"
+        scrollableTarget="scrollableDivAllDM"
         dataLength={partners.length}
-        next={() => fetchDataCurrentAllDM()}
-        hasMore={pageCurrentAllDM * countCurrentAllDM < totalCountCurrentAllDM}
+        next={() => fetchDataCurrentAllDialogs()}
+        hasMore={pageCurrentAllDialogs * countCurrentAllDialogs < totalCountCurrentAllDialogs}
         loader={<CircularProgress />}
         style={{ overflowY: "hidden" }}
         endMessage={
@@ -78,7 +78,7 @@ export const AllDMContent: React.FC<IAllDMContentProps> = ({ user }) => {
         }
       >
         {partners.map((partner) => (
-          <DMItem me={user} key={partner._id} partner={partner} />
+          <DialogItem me={user} key={partner._id} partner={partner} />
         ))}
       </InfiniteScroll>
     </div>
