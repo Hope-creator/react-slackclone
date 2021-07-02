@@ -1,16 +1,8 @@
 import React from "react";
-import {
-  Link,
-  makeStyles,
-  Typography,
-} from "@material-ui/core";
+import { Link, makeStyles, Typography } from "@material-ui/core";
 import FlareIcon from "@material-ui/icons/Flare";
-import { LoginFooter } from "../components/LoginFooter";
 import { LoginHeader } from "../components/LoginHeader";
 import { SignInForm } from "../components/SignInForm";
-
-
-
 
 const useStyles = makeStyles((theme) => ({
   wrapper: {
@@ -38,11 +30,14 @@ const useStyles = makeStyles((theme) => ({
   signInText: {
     marginBottom: 32,
   },
-  
+
   signInForm: {
     maxWidth: "400px",
     marginTop: "40px",
     marginBottom: "20px",
+    [theme.breakpoints.down("sm")]: {
+      width: 200,
+    },
   },
   emailPrompt: {
     textAlign: "left",
@@ -76,15 +71,24 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: "column",
     textAlign: "right",
   },
+  header: {
+    [theme.breakpoints.down("sm")]: {
+      width: 200,
+      "& h3": {
+        fontSize: "2rem",
+      },
+    },
+  },
 }));
 
 export const SignIn = () => {
   const classes = useStyles();
-  
 
   return (
     <div className={classes.wrapper}>
-      <LoginHeader newToSlackShow={true} title={"Sign in to Slack"} />
+      <div className={classes.header}>
+        <LoginHeader newToSlackShow={true} title={"Sign in to Slack"} />
+      </div>
       <div className={classes.signInForm}>
         <SignInForm />
         <div className={classes.emailPrompt}>
@@ -95,7 +99,6 @@ export const SignIn = () => {
           </Typography>
         </div>
       </div>
-      <LoginFooter />
     </div>
   );
 };
