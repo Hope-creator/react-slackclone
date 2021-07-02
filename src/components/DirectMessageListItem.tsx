@@ -1,10 +1,10 @@
-import { Avatar, ListItem, ListItemAvatar } from "@material-ui/core";
+import { ListItem, ListItemAvatar } from "@material-ui/core";
 import React from "react";
 import ListItemText from "@material-ui/core/ListItemText";
-import defaultAvatar from "../images/defaultAvatar.png";
 import { IUser } from "../store/modules/user/types";
 import { useHistory } from "react-router-dom";
 import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
+import { AvatarWithBadge } from "./AvatarWithBadge";
 
 interface IDirectMessageListItemProps {
   user: IUser;
@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme: Theme) =>
       backgroundColor: "pink",
     },
     container: {
-      height: 35
+      height: 35,
     },
     avatar: {
       width: 20,
@@ -45,8 +45,8 @@ const useStyles = makeStyles((theme: Theme) =>
       marginLeft: "auto",
       textAlign: "center",
       width: 20,
-      color: theme.palette.secondary.main
-    }
+      color: theme.palette.secondary.main,
+    },
   })
 );
 
@@ -68,10 +68,9 @@ export const DirectMessageListItem: React.FC<IDirectMessageListItemProps> = ({
       onClick={() => history.push(`/d/${user._id}`)}
     >
       <ListItemAvatar>
-        <Avatar
+        <AvatarWithBadge
+          user={user}
           className={classes.avatar}
-          alt={`user_avatar_+${user.name}`}
-          src={user.avatar || defaultAvatar}
           sizes="width: 10px; height: 10px"
         />
       </ListItemAvatar>
@@ -80,12 +79,16 @@ export const DirectMessageListItem: React.FC<IDirectMessageListItemProps> = ({
       >
         {user.name}
       </ListItemText>
-     {me._id === user._id ? <ListItemText primaryTypographyProps={{variant: "caption", className: classes.selfText}}>
-        you
-      </ListItemText> :  <ListItemText
-        primaryTypographyProps={{ color: "primary", className: classes.count }}
-      >
-      </ListItemText>}
+      {me._id === user._id && (
+        <ListItemText
+          primaryTypographyProps={{
+            variant: "caption",
+            className: classes.selfText,
+          }}
+        >
+          you
+        </ListItemText>
+      )}
     </ListItem>
   );
 };
