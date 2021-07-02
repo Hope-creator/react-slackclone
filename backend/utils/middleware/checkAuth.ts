@@ -14,36 +14,28 @@ export const authencticateToken = (
   res: Response,
   next: NextFunction
 ) => {
-  const token = req.session.token;
+  const token = req.session ? req.session.token : null;
   if (!token) {
     res.status(401).json({ status: "error", data: "Not authorazite" });
   } else {
     jwt.verify(
       token,
       process.env.JWT_SECRET as string,
-      (err: jwt.VerifyErrors | null, decoded) => {
+      (err: jwt.VerifyErrors | null, decoded: object | undefined) => {
         if (err) {
           res.sendStatus(401);
         } else {
           req.userId = (decoded as IToken).userId;
-          UserModel.findOneAndUpdate(
-            { _id: req.userId },
-            {
-              last_seen: new Date(),
-            },
-            { new: true }
-          )
+          UserModel.findById(req.userId)
             .then((user) => {
               if (user) {
                 req.user = user;
                 next();
               } else {
-                res
-                  .status(404)
-                  .json({
-                    status: "error",
-                    data: "Token check failed: user do not exists",
-                  });
+                res.status(404).json({
+                  status: "error",
+                  data: "Token check failed: user do not exists",
+                });
                 return;
               }
             })
