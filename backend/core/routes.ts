@@ -12,7 +12,7 @@ import {
   DirectMessagesController,
 } from "../controllers";
 import MessagesController from "../controllers/MessagesController";
-import { authencticateToken } from "../utils/middleware/checkAuthWithUpdate";
+import { authencticateToken } from "../utils/middleware/checkAuth";
 import { loginValidators } from "../validations/login";
 import { registerValidators } from "../validations/register";
 import upload from "./multer";
@@ -41,7 +41,11 @@ const createRoutes = (app: express.Express, io: socket.Server) => {
   //# Auth
   app.get("/api/auth/me", authencticateToken, AuthCtrl.getMe);
   app.post("/api/auth/login", loginValidators, AuthCtrl.login);
+  app.post("/api/auth/update", authencticateToken, AuthCtrl.update);
+
   app.post("/api/auth/register", registerValidators, AuthCtrl.create);
+  app.post("/api/auth/logout", registerValidators, AuthCtrl.delete);
+
   app.get(
     "/api/auth/verification/verify-account/:userId/:secretCode",
     authencticateToken,
@@ -77,9 +81,17 @@ const createRoutes = (app: express.Express, io: socket.Server) => {
   app.get("/api/conversations", authencticateToken, ConversationCtrl.index);
   app.get("/api/conversations/:id", authencticateToken, ConversationCtrl.show);
   app.post("/api/conversations", authencticateToken, ConversationCtrl.create);
-  app.post("/api/conversations/update", authencticateToken, ConversationCtrl.update);
+  app.post(
+    "/api/conversations/update",
+    authencticateToken,
+    ConversationCtrl.update
+  );
 
-  app.post("/api/conversations/100", authencticateToken, ConversationCtrl.create100);
+  app.post(
+    "/api/conversations/100",
+    authencticateToken,
+    ConversationCtrl.create100
+  );
 
   //# Direct Messages
   app.get("/api/messages/dm/:id", authencticateToken, DirectMessageCtrl.index);
@@ -93,7 +105,7 @@ const createRoutes = (app: express.Express, io: socket.Server) => {
   //# Unread Messages
   app.get("/api/messages/unread", authencticateToken, UnreadMessagesCtrl.index);
   app.get(
-    "/api/messages/unread/count/:id",
+    "/api/messages/unread/count",
     authencticateToken,
     UnreadMessagesCtrl.count
   );
@@ -109,8 +121,9 @@ const createRoutes = (app: express.Express, io: socket.Server) => {
   );
 
   //# Messages
-  app.get("/api/messages/:id", authencticateToken, MessagesCtrl.index);
-  app.post("/api/messages/:id", authencticateToken, MessagesCtrl.create);
+  app.get("/api/messages/get/:id", authencticateToken, MessagesCtrl.index);
+  app.post("/api/messages/create/:id", authencticateToken, MessagesCtrl.create);
+  app.post("/api/messages/delete", authencticateToken, MessagesCtrl.delete);
 
   //# Files
   app.post(
@@ -119,12 +132,15 @@ const createRoutes = (app: express.Express, io: socket.Server) => {
     upload.array("images", 10),
     FileCtrl.upload
   );
+  app.post(
+    "/api/files/avatar",
+    authencticateToken,
+    upload.single("avatar"),
+    FileCtrl.avatar
+  );
 
   //# Test
-  app.post(
-    "/api/100",
-    AuthCtrl.create100Test
-  );
+  app.post("/api/test/create500users", AuthCtrl.create500Test);
 };
 
 export default createRoutes;
