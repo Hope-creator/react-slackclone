@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Avatar, Grid } from "@material-ui/core";
+import { Grid } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { createStyles } from "@material-ui/core/styles";
 import { MessageButtons } from "./MessageButtons";
@@ -9,7 +9,7 @@ import Typography from "@material-ui/core/Typography";
 import BookmarkIcon from "@material-ui/icons/Bookmark";
 import { IMessage } from "../../store/modules/messages/types";
 import { IUser } from "../../store/modules/user/types";
-import defaultAvatar from "../../images/defaultAvatar.png";
+import { AvatarWithBadge } from "../AvatarWithBadge";
 
 interface MessagePaneProps {
   message: IMessage;
@@ -68,7 +68,7 @@ export const MessagePane: React.FC<MessagePaneProps> = ({
   message,
   children,
   user,
-}: MessagePaneProps): React.ReactElement => {
+}) => {
   const classes = useStyles();
 
   const [isHovered, setIsHovered] = React.useState<boolean>(false);
@@ -88,7 +88,6 @@ export const MessagePane: React.FC<MessagePaneProps> = ({
       onMouseEnter={setIsHoveredTrue}
       onMouseLeave={setIsHoveredFalse}
       container
-      wrap="nowrap"
       className={
         (message.marked
           ? classes.markedMessageContainer
@@ -97,22 +96,21 @@ export const MessagePane: React.FC<MessagePaneProps> = ({
         (isUnread && classes.unread)
       }
     >
-      <Grid item xs={1} sm={2} lg={1} className={classes.avatar}>
+      <Grid item xs={2} lg={1} className={classes.avatar}>
         {message.marked && <BookmarkIcon className={classes.bookmarkIcon} />}
-        <Avatar
-          alt={`profile__picture__${message.creator.avatar}`}
-          src={message.creator.avatar || defaultAvatar}
-        />
+        <AvatarWithBadge user={message.creator} style={{ marginRight: 10 }} />
       </Grid>
       <Grid
         item
+        xs={10}
+        lg={11}
         container
-        wrap="nowrap"
+        wrap="wrap"
         alignItems="center"
         justify="space-between"
         className={classes.maxWidthContent}
       >
-        <Grid item lg={10}>
+        <Grid item xs={12} sm={10}>
           <Grid container direction="column">
             {message.marked && (
               <Typography className={classes.markedText}>
@@ -122,13 +120,14 @@ export const MessagePane: React.FC<MessagePaneProps> = ({
             <MessageHeader
               text={message.creator.name}
               time={message.createdAt}
+              user={message.creator}
             />
             <Grid item className={classes.maxWidthText}>
               {children}
             </Grid>
           </Grid>
         </Grid>
-        <Grid item container wrap="nowrap" justify="center" lg={2}>
+        <Grid item xs={false} sm={2} container wrap="nowrap" justify="center">
           {isHovered && <MessageButtons message={message} user={user} />}
         </Grid>
       </Grid>
