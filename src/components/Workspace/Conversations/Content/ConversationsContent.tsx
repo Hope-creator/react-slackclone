@@ -12,12 +12,17 @@ import {
   selectCurrentConversationsCount,
   selectCurrentConversationsPage,
   selectCurrentConversationsTotalCount,
+  selectIsCurrentConversationsLoaded,
 } from "../../../../store/modules/currentConversations/selectors";
 import { CircularProgress, Typography } from "@material-ui/core";
 import {
+  addOneCurrentConversations,
   clearCurrentConversationsState,
+  deleteOneCurrentConversations,
   fetchCurrentConversations,
+  updateOneCurrentConversations,
 } from "../../../../store/modules/currentConversations/currentConversations";
+import socket from "../../../../services/socket/socket";
 
 export interface IConversationsContentProps {
   conversations: IConversation[];
@@ -54,12 +59,65 @@ export const ConversationsContent: React.FC<IConversationsContentProps> = ({
   const classes = useStyles();
   const dispatch = useDispatch();
 
+  const isConversationsLoaded = useSelector(selectIsCurrentConversationsLoaded);
+
   React.useEffect(() => {
     dispatch(fetchCurrentConversations());
     return function clearUsers() {
       dispatch(clearCurrentConversationsState());
     };
   }, [dispatch]);
+
+  const handleListenerNewConversation = React.useCallback(
+    (conversation) => {
+      dispatch(addOneCurrentConversations(conversation));
+    },
+    [dispatch]
+  );
+
+  const handleListenerConversationUpdate = React.useCallback(
+    (conversation: IConversation) => {
+      dispatch(updateOneCurrentConversations(conversation));
+    },
+    [dispatch]
+  );
+
+  const handleListenerConversationKicked = React.useCallback(
+    (conversation: IConversation) => {
+      if (conversation.is_private) {
+        dispatch(deleteOneCurrentConversations(conversation._id));
+      }
+    },
+    [dispatch]
+  );
+
+  React.useEffect(() => {
+    if (isConversationsLoaded) {
+      socket.on("SERVER:CONVERSATION_CREATED", handleListenerNewConversation);
+      socket.on("SERVER:CONVERSATION_UPDATE", handleListenerConversationUpdate);
+      socket.on("SERVER:CONVERSATION_KICKED", handleListenerConversationKicked);
+    }
+    return () => {
+      socket.removeListener(
+        "SERVER:CONVERSATION_CREATED",
+        handleListenerNewConversation
+      );
+      socket.removeListener(
+        "SERVER:CONVERSATION_UPDATE",
+        handleListenerConversationUpdate
+      );
+      socket.removeListener(
+        "SERVER:CONVERSATION_KICKED",
+        handleListenerConversationKicked
+      );
+    };
+  }, [
+    isConversationsLoaded,
+    dispatch,
+    handleListenerNewConversation,
+    handleListenerConversationUpdate,
+    handleListenerConversationKicked,
+  ]);
 
   const pageCurrentConversations = useSelector(selectCurrentConversationsPage);
   const countCurrenConversations = useSelector(selectCurrentConversationsCount);
@@ -79,13 +137,14 @@ export const ConversationsContent: React.FC<IConversationsContentProps> = ({
         className={classes.workspaceContent}
         direction="column"
         wrap="nowrap"
-        id="scrollableDiv"
+        id="scrollableDivConvsContent"
       >
         <ConversationSearchForm />
         <Typography className={classes.channelNumText}>
-          {totalCountCurrentConversations > 0
-            ? totalCountCurrentConversations + " channels"
-            : "No results"}
+          {isConversationsLoaded &&
+            (totalCountCurrentConversations > 0
+              ? totalCountCurrentConversations + " channels"
+              : "No results")}
         </Typography>
         <InfiniteScroll
           dataLength={conversations.length}
@@ -95,7 +154,7 @@ export const ConversationsContent: React.FC<IConversationsContentProps> = ({
             totalCountCurrentConversations
           }
           loader={<CircularProgress />}
-          scrollableTarget="scrollableDiv"
+          scrollableTarget="scrollableDivConvsContent"
           style={{ overflowY: "hidden" }}
           endMessage={
             <p style={{ textAlign: "center" }}>
