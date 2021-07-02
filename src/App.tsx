@@ -4,12 +4,12 @@ import { SignIn } from "./pages/SignIn";
 import { Redirect, Route, Switch } from "react-router";
 import { Company } from "./pages/Company";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchMe } from "./store/modules/user/user";
+import { fetchMe, setUser } from "./store/modules/user/user";
 import {
   selectUser,
   selectUserLoadingState,
 } from "./store/modules/user/selectors";
-import { LoadingUserState } from "./store/modules/user/types";
+import { IUser, LoadingUserState } from "./store/modules/user/types";
 import { CentralCircularProgress } from "./components/CentralCircularProgress";
 import socket from "./services/socket/socket";
 
@@ -22,16 +22,26 @@ function App() {
     dispatch(fetchMe());
   }, [dispatch]);
 
+  const onConnectListener = React.useCallback(
+    (user: IUser) => {
+      dispatch(setUser(user));
+    },
+    [dispatch]
+  );
+
   React.useEffect(() => {
     if (user) {
       const isConnected = sessionStorage.getItem("connection");
-      console.log(isConnected);
       if (isConnected === "0") {
         socket.connect();
         sessionStorage.setItem("connection", "1");
       }
+      socket.on("SERVER:SOCKET_CONNECTED", onConnectListener);
     }
-  }, [user]);
+    return function cleanUp() {
+      socket.removeListener("SERVER:SOCKET_CONNECTED", onConnectListener);
+    };
+  }, [user, onConnectListener]);
 
   if (userLoadingState === LoadingUserState.LOADING)
     return <CentralCircularProgress size={80} />;
