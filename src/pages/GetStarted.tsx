@@ -1,11 +1,6 @@
-import {
-  Link,
-  makeStyles,
-  Typography,
-} from "@material-ui/core";
+import { Link, makeStyles, Typography } from "@material-ui/core";
 import React from "react";
 import { GetStartedForm } from "../components/GetStartedForm";
-import { LoginFooter } from "../components/LoginFooter";
 import { LoginHeader } from "../components/LoginHeader";
 
 const useStyles = makeStyles((theme) => ({
@@ -29,6 +24,18 @@ const useStyles = makeStyles((theme) => ({
     maxWidth: "400px",
     marginTop: "40px",
     marginBottom: "20px",
+    [theme.breakpoints.down("sm")]: {
+      width: 200,
+      marginTop: "20px",
+    },
+  },
+  header: {
+    [theme.breakpoints.down("sm")]: {
+      width: 200,
+      "& h3": {
+        fontSize: "2rem",
+      },
+    },
   },
   inputFocused: {
     transition: theme.transitions.create(["border", "box-shadow"], {
@@ -59,17 +66,19 @@ export const GetStarted: React.FC = (): React.ReactElement => {
 
   return (
     <div className={classes.wrapper}>
-      <LoginHeader newToSlackShow={false} title={"First, enter your email"} />
+      <div className={classes.header}>
+        <LoginHeader newToSlackShow={false} title={"First, enter your email"} />
+      </div>
       <div className={classes.signInForm}>
-        <GetStartedForm />
+        <div className={classes.signInForm}>
+          <GetStartedForm />
+        </div>
         <Typography variant="body2" className={classes.formTsAndCs}>
           By continuing, you’re agreeing to our{" "}
           <Link>Customer Terms of Service</Link>, <Link>Privacy Policy</Link>,
           and <Link>Cookie Policy</Link>.
         </Typography>
       </div>
-
-      <LoginFooter />
     </div>
   );
 };
