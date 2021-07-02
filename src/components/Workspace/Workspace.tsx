@@ -1,11 +1,11 @@
 import React from "react";
 import { useHistory } from "react-router";
 import { IUser } from "../../store/modules/user/types";
-import { AllDMWorkspace } from "./AllDM/AllDMWorkspace";
+import { AllDialogsWorkspace } from "./AllDialogs/AllDialogsWorkspace";
 import { ConversationWorkspace } from "./Conversation/ConversationWorkspace";
 import { ConversationsWorkspace } from "./Conversations/ConversationsWorkspace";
 import { DefaultWorkspace } from "./DefaultWorkspace";
-import { DMWorkspace } from "./DM/DMWorkspace";
+import { DialogWorkspace } from "./Dialog/DialogWorkspace";
 import { MarkedWorkspace } from "./Marked/MarkedWorkspace";
 import { UsersWorkspace } from "./Members/UsersWorkspace";
 import { UnreadsWorkspace } from "./Unreads/UnreadsWorkspace";
@@ -23,7 +23,7 @@ export const Workspace: React.FC<IWorkspaceProps> = ({ user }) => {
   }
 
   if (path.match(/^\/d\/\w{24}$/)) {
-    return <DMWorkspace user={user} />;
+    return <DialogWorkspace user={user} />;
   }
 
   if (path.match(/^\/members$/)) {
@@ -31,7 +31,7 @@ export const Workspace: React.FC<IWorkspaceProps> = ({ user }) => {
   }
 
   if (path.match(/^\/all-dialogs$/)) {
-    return <AllDMWorkspace user={user} />;
+    return <AllDialogsWorkspace user={user} />;
   }
 
   if (path.match(/^\/browse-channels$/)) {
