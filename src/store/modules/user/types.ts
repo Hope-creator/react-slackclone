@@ -20,16 +20,21 @@ export interface IUser {
   work?: string;
   phone?: number;
   createdAt: string;
+  last_seen: Date;
+  online: boolean;
+  away: boolean;
 }
 
 export enum LoadingUserState {
   ERROREMAIL = "ERROREMAIL",
-  ERRORLOGIN= "ERRORLOGIN",
+  ERRORLOGIN = "ERRORLOGIN",
+  ERRORUPDATE = "ERRORUPDATE",
   LOADED = "LOADED",
   ERROR = "ERROR",
   LOADING = "LOADING",
   LOADINGCREATE = "LOADINGCREATE",
   LOADINGLOGIN = "LOADINGLOGIN",
+  LOADINGUPDATE = "LOADINGUPDATE",
   NEVER = "NEVER",
 }
 
