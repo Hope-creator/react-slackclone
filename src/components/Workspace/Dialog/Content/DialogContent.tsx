@@ -16,7 +16,7 @@ import {
 import InfiniteScroll from "react-infinite-scroll-component";
 import { useDispatch, useSelector } from "react-redux";
 
-export interface IDMContentProps {
+export interface IDialogContentProps {
   messages: IMessage[];
   user: IUser;
   partner: IUser;
@@ -49,7 +49,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-export const DMContent: React.FC<IDMContentProps> = ({
+export const DialogContent: React.FC<IDialogContentProps> = ({
   messages,
   user,
   partner,
@@ -72,7 +72,7 @@ export const DMContent: React.FC<IDMContentProps> = ({
       className={classes.workspaceContentMessages}
       direction="column-reverse"
       wrap="nowrap"
-      id="scrollableDiv"
+      id="scrollableDivDMContent"
     >
       <Grid className={classes.textareaBlock}>
         <SendMessageForm dm={true} dest={partner._id} />
@@ -83,7 +83,7 @@ export const DMContent: React.FC<IDMContentProps> = ({
         next={() => fetchDataCurrentMembers()}
         hasMore={pageMessages * countMessages < totalCountMessages}
         loader={<CircularProgress />}
-        scrollableTarget="scrollableDiv"
+        scrollableTarget="scrollableDivDMContent"
         style={{
           height: "100%",
           overflowY: "hidden",

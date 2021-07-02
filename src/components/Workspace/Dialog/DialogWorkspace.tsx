@@ -3,7 +3,7 @@ import { IUser } from "../../../store/modules/user/types";
 
 import { WorkspaceContent } from "../WorkspaceContent";
 import { WorkspaceHeader } from "../WorkspaceHeader";
-import { RighHeaderDM } from "./Header/RighHeaderDM";
+import { HeaderRightDialog } from "./Header/HeaderRightDialog";
 import { useDispatch, useSelector } from "react-redux";
 import {
   selectMessages,
@@ -16,31 +16,32 @@ import {
 import {
   addNewMessage,
   clearMessagesState,
+  deleteOneMessage,
   fetchMessagesDialog,
 } from "../../../store/modules/messages/messages";
 import { CircularProgress } from "@material-ui/core";
 import { useHistory } from "react-router-dom";
 import socket from "../../../services/socket/socket";
-import { LeftHeaderDM } from "./Header/LeftHeaderDM";
-import { DMContent } from "./Content/DMContent";
+import { HeaderLeftDialog } from "./Header/HeaderLeftDialog";
+import { DialogContent } from "./Content/DialogContent";
 import { DefaultWorkspace } from "../DefaultWorkspace";
 import {
-  selectCurrentDMLoadingState,
-  selectCurrentDMPartner,
-} from "../../../store/modules/currentDM/selectors";
-import { fetchCurrentDM } from "../../../store/modules/currentDM/currentDM";
-import { LoadingCurrentDMState } from "../../../store/modules/currentDM/types";
+  selectCurrentDialogLoadingState,
+  selectCurrentDialogPartner,
+} from "../../../store/modules/currentDialog/selectors";
+import { fetchCurrentDialog } from "../../../store/modules/currentDialog/currentDialog";
+import { LoadingCurrentDialogState } from "../../../store/modules/currentDialog/types";
 
-interface IDMWorkspaceProps {
+interface IDialogWorkspaceProps {
   user: IUser;
 }
 
-export const DMWorkspace: React.FC<IDMWorkspaceProps> = ({ user }) => {
-  const DMLoadingState = useSelector(selectCurrentDMLoadingState);
+export const DialogWorkspace: React.FC<IDialogWorkspaceProps> = ({ user }) => {
+  const DialogLoadingState = useSelector(selectCurrentDialogLoadingState);
   const dispatch = useDispatch();
   const history = useHistory();
   const path = history.location.pathname;
-  const partner = useSelector(selectCurrentDMPartner);
+  const partner = useSelector(selectCurrentDialogPartner);
 
   const messages = useSelector(selectMessages);
   const messagesLoadingState = useSelector(selectMessagesLoadingState);
@@ -48,7 +49,7 @@ export const DMWorkspace: React.FC<IDMWorkspaceProps> = ({ user }) => {
   React.useEffect(() => {
     if (path.match(/^\/d\/\w{24}$/)) {
       const fetchPath = path.split("/d/").slice(1).join("");
-      dispatch(fetchCurrentDM(fetchPath));
+      dispatch(fetchCurrentDialog(fetchPath));
     }
     return function clearConversation() {
       dispatch(clearMessagesState());
@@ -66,38 +67,62 @@ export const DMWorkspace: React.FC<IDMWorkspaceProps> = ({ user }) => {
 
   const newMessageHandleListener = React.useCallback(
     (message: IMessage) => {
-      if(partner)
-      if(message.creator._id === partner._id || message.dest === partner._id)
-      dispatch(addNewMessage(message));
+      if (partner)
+        if (message.creator._id === partner._id || message.dest === partner._id)
+          dispatch(addNewMessage(message));
     },
     [dispatch, partner]
   );
 
+  const deleteMessageHandleListener = React.useCallback(
+    (messageId: string) => {
+      dispatch(deleteOneMessage(messageId));
+    },
+    [dispatch]
+  );
+
   React.useEffect(() => {
     if (partner && messagesLoadingState === LoadingMessagesState.LOADED) {
-      socket.on("SERVER:NEW_DIRECTMESSAGE", newMessageHandleListener);
+      socket.addEventListener(
+        "SERVER:NEW_DIRECTMESSAGE",
+        newMessageHandleListener
+      );
+      socket.addEventListener(
+        "SERVER:MESSAGE_DELETED",
+        deleteMessageHandleListener
+      );
     }
     return function clearConnect() {
       socket.removeListener(
         "SERVER:NEW_DIRECTMESSAGE",
         newMessageHandleListener
       );
+      socket.removeListener(
+        "SERVER:MESSAGE_DELETED",
+        deleteMessageHandleListener
+      );
     };
-  }, [partner, dispatch, messagesLoadingState, newMessageHandleListener]);
+  }, [
+    partner,
+    dispatch,
+    messagesLoadingState,
+    newMessageHandleListener,
+    deleteMessageHandleListener,
+  ]);
 
-  if (DMLoadingState === LoadingCurrentDMState.LOADING)
+  if (DialogLoadingState === LoadingCurrentDialogState.LOADING)
     return <CircularProgress />;
 
-  if (DMLoadingState === LoadingCurrentDMState.LOADED && partner) {
+  if (DialogLoadingState === LoadingCurrentDialogState.LOADED && partner) {
     return (
       <>
         <WorkspaceHeader
-          leftSideContent={<LeftHeaderDM partner={partner} />}
-          rightSideContent={<RighHeaderDM partner={partner} />}
+          leftSideContent={<HeaderLeftDialog partner={partner} />}
+          rightSideContent={<HeaderRightDialog partner={partner} />}
         />
         <WorkspaceContent
           children={
-              <DMContent user={user} partner={partner} messages={messages} />
+            <DialogContent user={user} partner={partner} messages={messages} />
           }
         />
       </>

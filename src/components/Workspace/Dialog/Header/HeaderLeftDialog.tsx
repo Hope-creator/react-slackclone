@@ -5,7 +5,7 @@ import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import { IUser } from "../../../../store/modules/user/types";
 
-interface ILeftHeaderDMProps {
+interface IHeaderLeftDialogProps {
   partner: IUser;
 }
 
@@ -29,21 +29,22 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-export const LeftHeaderDM: React.FC<ILeftHeaderDMProps> =
-  ({ partner }) => {
-    const classes = useStyles();
+export const HeaderLeftDialog: React.FC<IHeaderLeftDialogProps> = ({
+  partner,
+}) => {
+  const classes = useStyles();
 
-    return (
-      <Grid container direction="column">
-        <Grid item container wrap="nowrap">
-          <Typography
-            variant="subtitle2"
-            color="initial"
-            className={classes.name}
-          >
-            {partner.name}
-          </Typography>
-        </Grid>
+  return (
+    <Grid container direction="column">
+      <Grid item container wrap="nowrap">
+        <Typography
+          variant="subtitle2"
+          color="initial"
+          className={classes.name}
+        >
+          {partner.name}
+        </Typography>
       </Grid>
-    );
-  };
+    </Grid>
+  );
+};

@@ -1,23 +1,23 @@
 import React from "react";
 import { useDispatch } from "react-redux";
-import { fetchCurrentInfoProfile } from "../../../../store/modules/currentInfo_side/currentInfo";
+import { fetchInfoSideProfile } from "../../../../store/modules/infoSide/infoSide";
 
 import ErrorOutlineIcon from "@material-ui/icons/ErrorOutline";
 import Tooltip from "@material-ui/core/Tooltip";
 import IconButton from "@material-ui/core/IconButton";
 import { IUser } from "../../../../store/modules/user/types";
 
-interface IRighHeaderDMProps {
+interface IHeaderRightDialogProps {
   partner: IUser;
 }
 
-export const RighHeaderDM: React.FC<IRighHeaderDMProps> = ({
+export const HeaderRightDialog: React.FC<IHeaderRightDialogProps> = ({
   partner,
 }) => {
   const dispatch = useDispatch();
 
   const infoButtonHandleClick = () => {
-    dispatch(fetchCurrentInfoProfile(partner._id));
+    dispatch(fetchInfoSideProfile(partner._id));
   };
 
   return (
