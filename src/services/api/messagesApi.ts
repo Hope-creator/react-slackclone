@@ -10,7 +10,7 @@ export const messagesApi = {
     count: number = 40
   ): Promise<IPaginationData<IMessage[]>> {
     const response = await axios.get<IResponsePagination<IMessage[]>>(
-      `/api/messages/${id}${"?page=" + page + "&count=" + count}`
+      `/api/messages/get/${id}${"?page=" + page + "&count=" + count}`
     );
     return response.data.data;
   },
@@ -30,7 +30,7 @@ export const messagesApi = {
     attachments,
   }: ISendMessageForm): Promise<IMessage> {
     const response = await axios.post<IResponse<IMessage>>(
-      `/api/messages/${dest}`,
+      `/api/messages/create/${dest}`,
       {
         text,
         attachments,
@@ -53,9 +53,9 @@ export const messagesApi = {
     );
     return response.data.data;
   },
-  async getUnreadCount(conversationId: string): Promise<number> {
+  async getUnreadCount(): Promise<number> {
     const response = await axios.get<IResponse<number>>(
-      `/api/messages/unread/count/${conversationId}`
+      `/api/messages/unread/count`
     );
     return response.data.data;
   },
@@ -109,6 +109,13 @@ export const messagesApi = {
   async unmarkMessage(messageId: string): Promise<boolean> {
     const response = await axios.patch<IResponse<boolean>>(
       `/api/messages/mark`,
+      { messageId: messageId }
+    );
+    return response.data.data;
+  },
+  async deleteMessage(messageId: string): Promise<IMessage> {
+    const response = await axios.post<IResponse<IMessage>>(
+      `/api/messages/delete`,
       { messageId: messageId }
     );
     return response.data.data;
