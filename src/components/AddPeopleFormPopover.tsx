@@ -1,15 +1,15 @@
 import React from "react";
 import { IUser } from "../store/modules/user/types";
-import defaultAvatar from "../images/defaultAvatar.png";
+import InfiniteScroll from "react-infinite-scroll-component";
 
 import { makeStyles, createStyles, Theme } from "@material-ui/core/styles";
 import ListItem from "@material-ui/core/ListItem";
 import Grid from "@material-ui/core/Grid";
-import Avatar from "@material-ui/core/Avatar";
 import Typography from "@material-ui/core/Typography";
 import Popover from "@material-ui/core/Popover";
 import { CircularProgress } from "@material-ui/core";
 import { userApi } from "../services/api/userApi";
+import { AvatarWithBadge } from "./AvatarWithBadge";
 
 interface IAddPeopleFormPopoverProps {
   opener: React.ReactNode;
@@ -33,38 +33,44 @@ export const AddPeopleFormPopover: React.FC<IAddPeopleFormPopoverProps> = ({
   username,
   isUserSelected,
   setUserFunction,
-}: IAddPeopleFormPopoverProps): React.ReactElement => {
+}) => {
   const [isOpen, setIsOpen] = React.useState<boolean>(false);
   const [users, setUsers] = React.useState<IUser[]>([]);
-  const [searchUserLoading, setSearchUserLoading] =
-    React.useState<boolean>(false);
+  const [page, setPage] = React.useState<number>(1);
+  const [totalCount, setTotalCount] = React.useState<number>(30);
 
   const div = React.useRef(null);
 
   const classes = useStyles();
 
+  const fetchDataUsers = () => {
+    userApi
+      .getAllUsers(username, page, 20) // 20 is count
+      .then((res) => {
+        setUsers((prev) => [...prev, ...res.results]);
+        setTotalCount(res.totalCount ? res.totalCount : 0);
+        setPage((prev) => prev + 1);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   const handleKeyPress = (event: React.KeyboardEvent): any => {
     if (!isUserSelected) {
       if (event.code === "Enter" || event.code === "NumpadEnter") {
         event.preventDefault();
-        setSearchUserLoading(true);
         setIsOpen(true);
-        userApi
-          .getUsersByNameOrEmail(username)
-          .then((users) => {
-            setUsers(users);
-            setSearchUserLoading(false);
-          })
-          .catch((err) => {
-            console.log(err);
-            setSearchUserLoading(false);
-          });
+        fetchDataUsers();
       }
     }
   };
 
   const handleClose = () => {
     setIsOpen(false);
+    setUsers([]);
+    setPage(1);
+    setTotalCount(30);
   };
 
   const open = isOpen;
@@ -90,11 +96,25 @@ export const AddPeopleFormPopover: React.FC<IAddPeopleFormPopoverProps> = ({
           horizontal: "center",
         }}
       >
-        {searchUserLoading ? (
-          <CircularProgress />
-        ) : users.length > 0 ? (
-          users.map((user: IUser) => (
+        <InfiniteScroll
+          height={300}
+          dataLength={users.length}
+          next={() => fetchDataUsers()}
+          hasMore={page * 20 < totalCount} // 20 is count
+          loader={<CircularProgress />}
+          endMessage={
+            <p style={{ textAlign: "center" }}>
+              <b>
+                {totalCount > 0
+                  ? "That's all matched users"
+                  : "No matches found"}
+              </b>
+            </p>
+          }
+        >
+          {users.map((user: IUser) => (
             <ListItem
+              key={user._id}
               button
               onClick={() => {
                 setUserFunction(user);
@@ -103,20 +123,13 @@ export const AddPeopleFormPopover: React.FC<IAddPeopleFormPopoverProps> = ({
             >
               <Grid container justify="space-between">
                 <Grid item container alignItems="center" xs={10}>
-                  <Avatar
-                    style={{ marginRight: 10 }}
-                    src={user.avatar || defaultAvatar}
-                  />
+                  <AvatarWithBadge user={user} style={{ marginRight: 10 }} />
                   <Typography>{user.name}</Typography>
                 </Grid>
               </Grid>
             </ListItem>
-          ))
-        ) : (
-          <Typography variant="h6">
-            No matches found - Try using their email instead
-          </Typography>
-        )}
+          ))}
+        </InfiniteScroll>
       </Popover>
     </div>
   );
