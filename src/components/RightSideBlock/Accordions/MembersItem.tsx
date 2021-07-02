@@ -2,9 +2,8 @@ import React from "react";
 import { IUser } from "../../../store/modules/user/types";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import MenuItem from "@material-ui/core/MenuItem";
-import Avatar from "@material-ui/core/Avatar";
-import defaultAvatar from "../../../images/defaultAvatar.png";
 import { UserPopover } from "../../UserPopover";
+import { AvatarWithBadge } from "../../AvatarWithBadge";
 
 interface IMembersItemProps {
   user: IUser;
@@ -34,9 +33,9 @@ export const MembersItem: React.FC<IMembersItemProps> = ({ user }) => {
           className={classes.itemContainer}
           aria-describedby="Administation"
         >
-          <Avatar
+          <AvatarWithBadge
+            user={user}
             className={classes.smallAvatar}
-            src={user.avatar || defaultAvatar}
             sizes="width: 20px; height: 20px"
           />
           {user.display_name ? user.display_name : user.name}
