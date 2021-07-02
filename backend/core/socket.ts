@@ -2,6 +2,7 @@ import { Server, Socket } from "socket.io";
 import http from "http";
 import cookie from "cookie";
 import { checkAuthByToken } from "../utils/function/checkAuthByToken";
+import { UserModel } from "../models/UserModel";
 
 interface ISocket extends Socket {
   user?: string;
@@ -39,6 +40,26 @@ const socket = (http: http.Server) => {
   });
 
   io.on("connection", function (socket: ISocket) {
+    if (socket.user) {
+      UserModel.findByIdAndUpdate(
+        socket.user,
+        {
+          online: true,
+        },
+        { new: true }
+      )
+        .populate("company")
+        .then((user) => {
+          io.emit("SERVER:UPDATE_USER", user);
+          io.to(socket.id).emit("SERVER:SOCKET_CONNECTED", user);
+        })
+        .catch((e) =>
+          console.log(
+            "Error on socket: connect / update user by connection:",
+            e
+          )
+        );
+    }
     if (socket.user) socket.join(socket.user);
     socket.on("CONVERSATION:JOIN", (conversationId: string) => {
       socket.conversationId = conversationId;
@@ -46,6 +67,26 @@ const socket = (http: http.Server) => {
     });
     socket.on("CONVERSATION:LEAVE", () => {
       if (socket.conversationId) socket.leave(socket.conversationId);
+    });
+
+    socket.on("disconnect", () => {
+      if (socket.user) {
+        UserModel.findByIdAndUpdate(
+          socket.user,
+          {
+            online: false,
+          },
+          { new: true }
+        )
+          .populate("company")
+          .then((user) => io.emit("SERVER:UPDATE_USER", user))
+          .catch((e) =>
+            console.log(
+              "Error on socket: disconnect / update user by connection:",
+              e
+            )
+          );
+      }
     });
   });
 
