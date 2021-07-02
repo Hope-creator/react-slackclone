@@ -2,7 +2,7 @@ import React from "react";
 import { IConversation } from "../../../../store/modules/conversations/types";
 import { useDispatch } from "react-redux";
 import { MembersModal } from "../../../MembersModal";
-import { fetchCurrentInfoChannel } from "../../../../store/modules/currentInfo_side/currentInfo";
+import { fetchInfoSideChannel } from "../../../../store/modules/infoSide/infoSide";
 import { AddPeopleModal } from "../../../AddPeopleModal";
 
 import ErrorOutlineIcon from "@material-ui/icons/ErrorOutline";
@@ -10,16 +10,16 @@ import PersonAddIcon from "@material-ui/icons/PersonAdd";
 import Tooltip from "@material-ui/core/Tooltip";
 import IconButton from "@material-ui/core/IconButton";
 
-interface IRightSideConversationContentProps {
+interface IHeaderRightConversationContentProps {
   conversation: IConversation;
 }
 
-export const RightSideConversationContent: React.FC<IRightSideConversationContentProps> =
-  ({ conversation }: IRightSideConversationContentProps) => {
+export const HeaderRightConversationContent: React.FC<IHeaderRightConversationContentProps> =
+  ({ conversation }) => {
     const dispatch = useDispatch();
 
     const infoButtonHandleClick = () => {
-      dispatch(fetchCurrentInfoChannel(conversation._id));
+      dispatch(fetchInfoSideChannel(conversation._id));
     };
 
     return (

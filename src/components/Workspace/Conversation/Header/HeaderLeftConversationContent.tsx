@@ -7,7 +7,7 @@ import Typography from "@material-ui/core/Typography";
 import LockIcon from "@material-ui/icons/Lock";
 import { ConvTopicEditModal } from "../../../ConvTopicEditModal";
 
-interface ILeftSideConversationContentProps {
+interface IHeaderLeftConversationContentProps {
   conversation: IConversation;
 }
 
@@ -31,7 +31,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-export const LeftSideConversationContent: React.FC<ILeftSideConversationContentProps> =
+export const HeaderLeftConversationContent: React.FC<IHeaderLeftConversationContentProps> =
   ({ conversation }) => {
     const classes = useStyles();
     return (
