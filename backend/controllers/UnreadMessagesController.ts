@@ -42,32 +42,18 @@ class UnreadMessagesController {
     req: express.Request,
     res: express.Response
   ): Promise<void> => {
-    const user = req.user
-    const parnterId = req.params.id;
-    if (!isValidObjectId(parnterId)) {
-      res.status(400).json({ status: "error", data: "Wrong type of ID" });
-    } else {
-      try {
-        const partner = await UserModel.findById(parnterId);
-        if (!partner) {
-          res
-            .status(400)
-            .json({ status: "error", data: "Required user doesn't exist" });
-        } else {
-          const count = await MessageModel.countDocuments({
-            creator: partner._id,
-            dest: user._id,
-            unreadBy: req.user._id,
-          });
-          res.json({ status: "success", data: count });
-        }
-      } catch (error) {
-        res.status(500).json({
-          status: "error",
-          errors: JSON.stringify(error),
-        });
-        console.log("Error on MessagesController / index:", error);
-      }
+    const user = req.user;
+    try {
+      const count = await MessageModel.countDocuments({
+        unreadBy: user._id,
+      });
+      res.json({ status: "success", data: count });
+    } catch (error) {
+      res.status(500).json({
+        status: "error",
+        errors: JSON.stringify(error),
+      });
+      console.log("Error on MessagesController / index:", error);
     }
   };
 
@@ -129,8 +115,7 @@ class UnreadMessagesController {
         )
           .populate("creator")
           .exec();
-        message &&
-          this.io.to(userId.toString()).emit("SERVER:READ_ONE", message.dest);
+        message && this.io.to(userId.toString()).emit("SERVER:READ_ONE");
         res.json({ status: "success", data: true });
       } catch (error) {
         res.status(500).json({
