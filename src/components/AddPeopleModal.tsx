@@ -24,6 +24,12 @@ const useStyles = makeStyles((theme: Theme) =>
       boxShadow: theme.shadows[5],
       padding: theme.spacing(2, 4, 3),
       transform: `translate(-50%, -50%)`,
+      [theme.breakpoints.down("sm")]: {
+        width: 350,
+      },
+      [theme.breakpoints.down("xs")]: {
+        width: 200,
+      },
     },
     conversationName: {
       width: "600px",
@@ -54,25 +60,6 @@ export const AddPeopleModal: React.FC<IAddPeopleModalProps> = ({
     setOpen(false);
   };
 
-  const children = () => (
-    <Paper className={classes.paper}>
-      <Grid alignItems="center" container justify="space-between" wrap="nowrap">
-        <Grid container wrap="nowrap" direction="column">
-          <Typography className={classes.headerText} variant="h6">
-            Add people
-          </Typography>
-          <Typography className={classes.conversationName} variant="caption">
-            #{conversation.name}
-          </Typography>
-        </Grid>
-        <IconButton onClick={handleClose}>
-          <CloseIcon />
-        </IconButton>
-      </Grid>
-      <AddPeopleModalForm conversationId={conversation._id} />
-    </Paper>
-  );
-
   return (
     <div>
       <div onClick={handleOpen}>{opener}</div>
@@ -82,7 +69,32 @@ export const AddPeopleModal: React.FC<IAddPeopleModalProps> = ({
         aria-labelledby="simple-modal-title"
         aria-describedby="simple-modal-description"
       >
-        {children()}
+        <Paper className={classes.paper}>
+          <Grid
+            alignItems="center"
+            container
+            justify="space-between"
+            wrap="nowrap"
+          >
+            <Grid container item xs={11} wrap="nowrap" direction="column">
+              <Typography className={classes.headerText} variant="h6">
+                Add people
+              </Typography>
+              <Typography
+                className={classes.conversationName}
+                variant="caption"
+              >
+                #{conversation.name}
+              </Typography>
+            </Grid>
+            <Grid item xs={1}>
+              <IconButton onClick={handleClose}>
+                <CloseIcon />
+              </IconButton>
+            </Grid>
+          </Grid>
+          <AddPeopleModalForm conversationId={conversation._id} />
+        </Paper>
       </Modal>
     </div>
   );
