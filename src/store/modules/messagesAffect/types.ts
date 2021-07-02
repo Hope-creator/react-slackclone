@@ -1,4 +1,4 @@
-export interface IReadMessageState {
+export interface IMessagesAffectState {
   fetchingMessages: string[];
   errorMessages: string[];
 }

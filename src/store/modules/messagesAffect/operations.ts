@@ -1,14 +1,15 @@
-import { IMessage } from "./../messages/types";
+import { IMessage } from "../messages/types";
 import { PayloadAction } from "@reduxjs/toolkit";
 import { takeEvery, call, put } from "redux-saga/effects";
 import {
   fetchReadMessage,
-  setReadMessageGetReaded,
-  setReadMessageGetError,
+  fetchDeleteMessage,
+  setMessageAffectSuccess,
+  setMessageAffectError,
   clearReadMessageState,
   setErrorMessages,
   fetchReadingAllMessagesUnread,
-} from "./readMessage";
+} from "./messagesAffect";
 import { messagesApi } from "../../../services/api/messagesApi";
 import {
   readedAllInStateUnread,
@@ -18,11 +19,22 @@ import {
 function* fetchReadMessageSaga(action: PayloadAction<string>) {
   try {
     yield call(messagesApi.readOneByMessageId, action.payload);
-    yield put(setReadMessageGetReaded(action.payload));
+    yield put(setMessageAffectSuccess(action.payload));
     yield put(readMessageInState(action.payload));
   } catch (e) {
     console.log(e);
-    yield put(setReadMessageGetError(action.payload));
+    yield put(setMessageAffectError(action.payload));
+  }
+}
+
+function* fetchDeleteMessageSaga(action: PayloadAction<string>) {
+  try {
+    yield call(messagesApi.deleteMessage, action.payload);
+    yield put(setMessageAffectSuccess(action.payload));
+    yield put(readMessageInState(action.payload));
+  } catch (e) {
+    console.log(e);
+    yield put(setMessageAffectError(action.payload));
   }
 }
 
@@ -37,10 +49,11 @@ function* fetchReadAllMessagesUnreadSaga(action: PayloadAction<IMessage[]>) {
   }
 }
 
-export function* readMessageSaga() {
+export function* messagesAffectSaga() {
   yield takeEvery(fetchReadMessage.type, fetchReadMessageSaga);
   yield takeEvery(
     fetchReadingAllMessagesUnread.type,
     fetchReadAllMessagesUnreadSaga
   );
+  yield takeEvery(fetchDeleteMessage.type, fetchDeleteMessageSaga);
 }
