@@ -27,6 +27,14 @@ const currentConversationSlicer = createSlice({
     setCurrentUsers(state, action: PayloadAction<IUser[] | []>) {
       state.users = [...state.users, ...action.payload];
     },
+    updateOneCurrentUsers(state, action: PayloadAction<IUser>) {
+      const index = state.users.findIndex(
+        (user) => user._id === action.payload._id
+      );
+      if (index !== -1) {
+        state.users[index] = action.payload;
+      }
+    },
     setCurrentUsersSearchName(state, action: PayloadAction<string>) {
       state.loadingState = LoadingCurrentUsersState.LOADING;
       state.users = [];
@@ -58,6 +66,7 @@ export const {
   setCurrentUsers,
   addOneCurrentUsers,
   setPageCurrentUsers,
+  updateOneCurrentUsers,
   setCurrentUsersSearchName,
   setCountCurrentUsers,
   setTotalCountCurrentUsers,
