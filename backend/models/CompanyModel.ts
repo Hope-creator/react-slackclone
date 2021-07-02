@@ -3,10 +3,6 @@ import { mongoose } from "../core/db";
 
 export interface ICompany {
   name: string;
-  primary_owner: {
-    user_id: string;
-    email: string;
-  };
 }
 
 export interface ICompanyDocument extends ICompany, Document {}
@@ -21,16 +17,6 @@ const CompanySchema = new Schema(
       required: true,
       type: String,
       default: "My new company",
-    },
-    primary_owner: {
-      user_id: {
-        type: String,
-        default: "608e5c3854920a1b14202ab5",
-      },
-      email: {
-        type: String,
-        default: "goryachkin.ivan1@mail.ru",
-      },
     },
   },
   { versionKey: false }
