@@ -1,15 +1,11 @@
 import React from "react";
 
-import defaultAvatar from "../images/defaultAvatar.png";
-
 import { SimplePopover } from "./SimplePopover";
-import { StyledBadge } from "./StyledBadge";
 
 import AppBar from "@material-ui/core/AppBar/AppBar";
 import Grid from "@material-ui/core/Grid/Grid";
 import Toolbar from "@material-ui/core/Toolbar/Toolbar";
 
-import Avatar from "@material-ui/core/Avatar/Avatar";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import { IUser } from "../store/modules/user/types";
 import { AvatarProfileMenu } from "./AvatarProfileMenu";
@@ -17,6 +13,7 @@ import { HelpButton } from "./HelpButton";
 
 import { SearchCompanyButton } from "./SearchCompanyButton";
 import { HistoryIconButton } from "./HistoryIconButton";
+import { AvatarWithBadge } from "./AvatarWithBadge";
 
 interface ICompanyHeaderProps {
   user: IUser;
@@ -73,27 +70,14 @@ export const CompanyHeader: React.FC<ICompanyHeaderProps> = ({ user }) => {
           <Grid container item justify="flex-end" xs={3}>
             <SimplePopover
               opener={
-                <StyledBadge
-                  overlap="circle"
-                  anchorOrigin={{
-                    vertical: "bottom",
-                    horizontal: "right",
-                  }}
-                  variant="dot"
-                >
-                  <Avatar
-                    className={classes.avatar}
-                    alt="Remy Sharp"
-                    src={user ? user.avatar : defaultAvatar}
-                  />
-                </StyledBadge>
+                <AvatarWithBadge user={user} className={classes.avatar} />
               }
               anchorOriginBlockVertical="bottom"
               anchorOriginBlockHorizontal="center"
               anchorPopupBlockVertical="top"
               anchorPopupBlockHorizontal="center"
             >
-              <AvatarProfileMenu user={user} />
+              <AvatarProfileMenu me={user} />
             </SimplePopover>
           </Grid>
         </Grid>
