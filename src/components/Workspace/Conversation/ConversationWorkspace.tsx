@@ -7,10 +7,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { selectMessagesLoadingState } from "../../../store/modules/messages/selectors";
 import { LoadingMessagesState } from "../../../store/modules/messages/types";
 import socket from "../../../services/socket/socket";
-import { addNewMessage } from "../../../store/modules/messages/messages";
+import {
+  addNewMessage,
+  deleteOneMessage,
+} from "../../../store/modules/messages/messages";
 import { useHistory } from "react-router";
 import {
-  clearCurrentConversation,
+  clearCurrentConversationState,
   fetchCurrentConversation,
   updateCurrentConversation,
 } from "../../../store/modules/currentConversation/currentConversation";
@@ -20,8 +23,8 @@ import {
 } from "../../../store/modules/currentConversation/selectors";
 import { DefaultWorkspace } from "../DefaultWorkspace";
 import { WorkspaceHeader } from "../WorkspaceHeader";
-import { LeftSideConversationContent } from "./Header/LeftSideConversationContent";
-import { RightSideConversationContent } from "./Header/RightSideConversationContent";
+import { HeaderLeftConversationContent } from "./Header/HeaderLeftConversationContent";
+import { HeaderRightConversationContent } from "./Header/HeaderRightConversationContent";
 import { WorkspaceContent } from "../WorkspaceContent";
 import { ConversationContent } from "./Content/ConversationContent";
 import { IConversation } from "../../../store/modules/conversations/types";
@@ -48,13 +51,20 @@ export const ConversationWorkspace: React.FC<IConversationWorkspaceProps> = ({
       dispatch(fetchCurrentConversation(fetchPath));
     }
     return function clearConversation() {
-      dispatch(clearCurrentConversation());
+      dispatch(clearCurrentConversationState());
     };
   }, [path, dispatch]);
 
   const newMessageHandleListener = React.useCallback(
     (message: IMessage) => {
       dispatch(addNewMessage(message));
+    },
+    [dispatch]
+  );
+
+  const deleteMessageHandleListener = React.useCallback(
+    (messageId: string) => {
+      dispatch(deleteOneMessage(messageId));
     },
     [dispatch]
   );
@@ -68,34 +78,70 @@ export const ConversationWorkspace: React.FC<IConversationWorkspaceProps> = ({
     [dispatch, conversation]
   );
 
+  const conversationKickedHandleListener = React.useCallback(
+    (_conversation: IConversation) => {
+      if (
+        conversation &&
+        conversation._id === _conversation._id &&
+        _conversation.is_private
+      ) {
+        history.push("/");
+      }
+    },
+    [history, conversation]
+  );
+
   React.useEffect(() => {
     if (
       conversation &&
       conversationLoadingState === LoadingCurrentConversationState.LOADED
     ) {
       socket.on("SERVER:CONVERSATION_UPDATE", conversationUpdateHandleListener);
+      socket.on("SERVER:CONVERSATION_KICKED", conversationKickedHandleListener);
     }
     return function clearConnect() {
-      socket.removeListener("SERVER:CONVERSATION_UPDATE", conversationUpdateHandleListener);
+      socket.removeListener(
+        "SERVER:CONVERSATION_UPDATE",
+        conversationUpdateHandleListener
+      );
+      socket.removeListener(
+        "SERVER:CONVERSATION_KICKED",
+        conversationKickedHandleListener
+      );
     };
   }, [
     conversation,
     dispatch,
     messagesLoadingState,
     conversationLoadingState,
-    conversationUpdateHandleListener
+    conversationUpdateHandleListener,
+    conversationKickedHandleListener,
   ]);
 
   React.useEffect(() => {
     if (conversation && messagesLoadingState === LoadingMessagesState.LOADED) {
       socket.emit("CONVERSATION:JOIN", conversation._id);
-      socket.on("SERVER:NEW_MESSAGE", newMessageHandleListener);
+      socket.addEventListener("SERVER:NEW_MESSAGE", newMessageHandleListener);
+      socket.addEventListener(
+        "SERVER:MESSAGE_DELETED",
+        deleteMessageHandleListener
+      );
     }
     return function clearConnect() {
       socket.emit("CONVERSATION:LEAVE");
       socket.removeListener("SERVER:NEW_MESSAGE", newMessageHandleListener);
+      socket.removeListener(
+        "SERVER:MESSAGE_DELETED",
+        deleteMessageHandleListener
+      );
     };
-  }, [conversation, dispatch, messagesLoadingState, newMessageHandleListener]);
+  }, [
+    conversation,
+    dispatch,
+    messagesLoadingState,
+    newMessageHandleListener,
+    deleteMessageHandleListener,
+  ]);
 
   if (
     conversationLoadingState === LoadingCurrentConversationState.LOADED &&
@@ -105,10 +151,10 @@ export const ConversationWorkspace: React.FC<IConversationWorkspaceProps> = ({
       <>
         <WorkspaceHeader
           leftSideContent={
-            <LeftSideConversationContent conversation={conversation} />
+            <HeaderLeftConversationContent conversation={conversation} />
           }
           rightSideContent={
-            <RightSideConversationContent conversation={conversation} />
+            <HeaderRightConversationContent conversation={conversation} />
           }
         />
         <WorkspaceContent
