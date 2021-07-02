@@ -35,14 +35,14 @@ export const conversationsApi = {
     );
     return response.data.data;
   },
-   async updateConversation(
+  async updateConversation(
     conversationId: string,
     name?: string,
     topic?: string,
     description?: string,
     is_private?: boolean
   ): Promise<IConversation | void> {
-     const response = await axios.post<IResponse<IConversation>>(
+    const response = await axios.post<IResponse<IConversation>>(
       `/api/conversations/update`,
       {
         id: conversationId,
@@ -51,7 +51,7 @@ export const conversationsApi = {
         description: description,
         is_private: is_private,
       }
-    )
+    );
     return response.data.data;
   },
   async createDirectMessage(id: string): Promise<IConversation> {
@@ -64,8 +64,8 @@ export const conversationsApi = {
     );
     return response.data.data;
   },
-  async joinConversations(conversationId?: string): Promise<string[]> {
-    const response = await axios.post<IResponse<string[]>>(
+  async joinConversations(conversationId: string): Promise<IConversation> {
+    const response = await axios.post<IResponse<IConversation>>(
       `/api/conversations/members/join`,
       { id: conversationId }
     );
@@ -78,8 +78,8 @@ export const conversationsApi = {
     );
     return response.data.data;
   },
-  async leave(conversationId: string): Promise<boolean> {
-    const response = await axios.post<IResponse<boolean>>(
+  async leave(conversationId: string): Promise<IConversation> {
+    const response = await axios.post<IResponse<IConversation>>(
       `/api/conversations/members/kick`,
       { conversationId: conversationId }
     );
