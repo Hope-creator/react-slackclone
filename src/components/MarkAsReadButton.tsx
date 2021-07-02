@@ -4,17 +4,20 @@ import { makeStyles } from "@material-ui/core/styles";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { IMessage } from "../store/modules/messages/types";
-import { fetchReadMessage } from "../store/modules/readMessage/readMessage";
+import { fetchReadMessage } from "../store/modules/messagesAffect/messagesAffect";
 import {
-  selectErrorReadMessages,
-  selectFetchingReadMessages,
-} from "../store/modules/readMessage/selectors";
+  selectIsFetchingAffectMessage,
+  selectIsErrorAffectMessage,
+} from "../store/modules/messagesAffect/selectors";
 
 export interface MarkAsReadButtonProps {
   message: IMessage;
 }
 
 const useStyles = makeStyles(() => ({
+  button: {
+    minWidth: 100,
+  },
   errorButton: {
     border: "1px solid red",
     backgroundColor: "pink",
@@ -26,14 +29,8 @@ export const MarkAsReadButton: React.FC<MarkAsReadButtonProps> = ({
 }) => {
   const dispatch = useDispatch();
   const classes = useStyles();
-  const isFetching =
-    useSelector(selectFetchingReadMessages).findIndex(
-      (_message) => _message === message._id
-    ) !== -1;
-  const isError =
-    useSelector(selectErrorReadMessages).findIndex(
-      (_message) => _message === message._id
-    ) !== -1;
+  const isFetching = useSelector(selectIsFetchingAffectMessage(message._id));
+  const isError = useSelector(selectIsErrorAffectMessage(message._id));
 
   const handleClick = () => {
     dispatch(fetchReadMessage(message._id));
@@ -44,7 +41,7 @@ export const MarkAsReadButton: React.FC<MarkAsReadButtonProps> = ({
   }
   return (
     <Button
-      className={isError ? classes.errorButton : undefined}
+      className={isError ? classes.errorButton : classes.button}
       onClick={handleClick}
     >
       Mark as read
