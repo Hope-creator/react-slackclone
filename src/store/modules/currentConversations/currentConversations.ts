@@ -24,6 +24,10 @@ const currentConversationsSlicer = createSlice({
     setCurrentConversations(state, action: PayloadAction<IConversation[]>) {
       state.conversations = [...state.conversations, ...action.payload];
     },
+    addOneCurrentConversations(state, action: PayloadAction<IConversation>) {
+      state.conversations = [action.payload, ...state.conversations];
+      state.totalCount = state.totalCount + 1;
+    },
     setCurrentConversationsLoadingState(
       state,
       action: PayloadAction<LoadingCurrentConversationsState>
@@ -45,6 +49,22 @@ const currentConversationsSlicer = createSlice({
     setTotalCountCurrentConversations(state, action: PayloadAction<number>) {
       state.totalCount = action.payload;
     },
+    updateOneCurrentConversations(state, action: PayloadAction<IConversation>) {
+      const index = state.conversations.findIndex(
+        (conversation) => conversation._id === action.payload._id
+      );
+      if (index !== -1) {
+        state.conversations[index] = action.payload;
+      }
+    },
+    deleteOneCurrentConversations(state, action: PayloadAction<string>) {
+      const index = state.conversations.findIndex(
+        (conversation) => conversation._id === action.payload
+      );
+      if (index !== -1) {
+        state.conversations.splice(index, 1);
+      }
+    },
     clearCurrentConversationsState() {
       return initialState;
     },
@@ -58,6 +78,9 @@ export const {
   clearCurrentConversationsState,
   setCurrentConversationsSearchName,
   setPageCurrentConversations,
+  updateOneCurrentConversations,
+  addOneCurrentConversations,
+  deleteOneCurrentConversations,
   setCountCurrentConversations,
   setTotalCountCurrentConversations,
 } = currentConversationsSlicer.actions;
