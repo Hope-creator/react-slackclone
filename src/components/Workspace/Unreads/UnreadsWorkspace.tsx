@@ -2,8 +2,8 @@ import React from "react";
 
 import { WorkspaceContent } from "../WorkspaceContent";
 import { WorkspaceHeader } from "../WorkspaceHeader";
-import { LeftSideUnreads } from "./Header/LeftSideUnreads";
-import { RightSideUnreads } from "./Header/RightSideUnreads";
+import { HeaderLeftUnreads } from "./Header/HeaderLeftUnreads";
+import { HeaderRightUnreads } from "./Header/HeaderRightUnreads";
 import { UnreadsContent } from "./Content/UnreadsContent";
 import { IUser } from "../../../store/modules/user/types";
 import socket from "../../../services/socket/socket";
@@ -11,6 +11,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   addNewMessage,
   clearMessagesState,
+  deleteOneMessage,
   fetchMessagesUnread,
 } from "../../../store/modules/messages/messages";
 import {
@@ -40,27 +41,54 @@ export const UnreadsWorkspace: React.FC<IUnreadsWorkspaceProps> = ({
     };
   }, [dispatch]);
 
-  const handleListener = React.useCallback(
+  const newUnreadHandleListener = React.useCallback(
     (message) => {
       dispatch(addNewMessage(message));
     },
     [dispatch]
   );
 
+  const deleteMessageHandleListener = React.useCallback(
+    (messageId: string) => {
+      dispatch(deleteOneMessage(messageId));
+    },
+    [dispatch]
+  );
+
   React.useEffect(() => {
     if (messagesLoadingState === LoadingMessagesState.LOADED) {
-      socket.addEventListener("SERVER:NEW_UNREAD", handleListener);
+      socket.addEventListener("SERVER:NEW_UNREAD", newUnreadHandleListener);
+      socket.addEventListener(
+        "SERVER:MESSAGE_DELETED",
+        deleteMessageHandleListener
+      );
     }
     return function cleanUp() {
-      socket.removeEventListener("SERVER:NEW_UNREAD", handleListener);
+      socket.removeEventListener("SERVER:NEW_UNREAD", newUnreadHandleListener);
+      socket.removeEventListener(
+        "SERVER:MESSAGE_DELETED",
+        deleteMessageHandleListener
+      );
     };
-  }, [handleListener, messagesLoadingState]);
+  }, [
+    newUnreadHandleListener,
+    messagesLoadingState,
+    deleteMessageHandleListener,
+  ]);
 
   return (
     <>
       <WorkspaceHeader
-        leftSideContent={<LeftSideUnreads unreadsCount={messagesTotalCount} />}
-        rightSideContent={<RightSideUnreads messages={messages} />}
+        leftSideContent={
+          <HeaderLeftUnreads
+            unreadsCount={
+              messagesLoadingState === LoadingMessagesState.LOADED
+                ? messagesTotalCount
+                : 0
+            }
+          />
+        }
+        rightSideContent={<HeaderRightUnreads messages={messages} />}
       />
       <WorkspaceContent
         children={<UnreadsContent user={user} messages={messages} />}
