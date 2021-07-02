@@ -1,7 +1,7 @@
 import { IConversation } from "../conversations/types";
 import { IUser } from "../user/types";
 
-export enum LoadingCurrentInfoState {
+export enum LoadingInfoSideState {
   LOADED = "LOADED",
   ERROR = "ERROR",
   LOADING = "LOADING",
@@ -14,8 +14,8 @@ export enum InfoItemTypeState {
   PROFILE = "PROFILE",
 }
 
-export interface ICurrentInfoState {
+export interface IInfoSideState {
   item: IUser | IConversation | undefined;
-  type: InfoItemTypeState,
-  loadingState: LoadingCurrentInfoState;
+  type: InfoItemTypeState;
+  loadingState: LoadingInfoSideState;
 }
