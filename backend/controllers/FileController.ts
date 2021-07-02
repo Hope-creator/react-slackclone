@@ -76,6 +76,43 @@ class FileController {
       }
     }
   };
+
+  avatar = async (
+    req: express.Request,
+    res: express.Response
+  ): Promise<void> => {
+    const user = req.user;
+    const file = req.file;
+    if (!file) {
+      res.status(400).json({ status: "error", message: "No files attached" });
+    } else {
+      try {
+        const uploadedFile = await cloudinary.v2.uploader.upload(
+          file.path,
+          function (error, result) {
+            if (error || !result) {
+              console.log(error);
+              return res.status(500).json({
+                status: "error",
+                data: "Some error on upload file server was occured",
+              });
+            }
+          }
+        );
+        const data = {
+          filename: uploadedFile.original_filename,
+          url: uploadedFile.url,
+          dest: user._id,
+          user: user._id,
+        };
+        const savedAvatar = await new FileModel(data).save();
+        res.json({ status: "sucess", data: savedAvatar.url });
+      } catch (err) {
+        console.log(err);
+        res.status(500).json({ status: "error", data: "File upload error" });
+      }
+    }
+  };
 }
 
 export default FileController;
