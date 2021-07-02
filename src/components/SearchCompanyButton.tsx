@@ -3,11 +3,18 @@ import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 import Popover from "@material-ui/core/Popover";
 import { SearchCompanyForm } from "./SearchCompanyForm";
-import { SearchCompanyContent } from "./SearchCompanyContent";
+import { DirectMessageListItem } from "./DirectMessageListItem";
+
+import { Channel } from "./Channel";
 
 import {
   selectSearch,
+  selectSearchedResult,
   selectSearchLoadingState,
+  selectSearchPageConversations,
+  selectSearchPageUsers,
+  selectSearchTotalCountConversations,
+  selectSearchTotalCountUsers,
 } from "../store/modules/search/selectors";
 import { useDispatch, useSelector } from "react-redux";
 import { IUser } from "../store/modules/user/types";
@@ -15,8 +22,19 @@ import Divider from "@material-ui/core/Divider";
 import IconButton from "@material-ui/core/IconButton";
 import CancelIcon from "@material-ui/icons/Cancel";
 import SearchIcon from "@material-ui/icons/Search";
-import { LoadingSearchState } from "../store/modules/search/types";
-import { clearSearchState } from "../store/modules/search/search";
+import {
+  LoadingSearchState,
+  SearchItemType,
+} from "../store/modules/search/types";
+import {
+  clearSearchState,
+  fetchSearchConversations,
+  fetchSearchUsers,
+} from "../store/modules/search/search";
+import { selectSearchCount } from "../store/modules/search/selectors";
+import InfiniteScroll from "react-infinite-scroll-component";
+import { SidebarListCreator } from "../functions/SidebarListCreator";
+import { IConversation } from "../store/modules/conversations/types";
 
 interface ISearchCompanyButtonProps {
   user: IUser;
@@ -49,6 +67,12 @@ const useStyles = makeStyles((theme: Theme) =>
       "&::-webkit-scrollbar-thumb": {
         backgroundColor: "#A493A7",
         borderRadius: "4px",
+      },
+      [theme.breakpoints.down("sm")]: {
+        width: "350px",
+      },
+      [theme.breakpoints.down("xs")]: {
+        width: "250px",
       },
     },
     styledBottomBlock: {
@@ -94,8 +118,21 @@ export const SearchCompanyButton: React.FC<ISearchCompanyButtonProps> = ({
     [dispatch]
   );
 
-  const [anchorEl, setAnchorEl] =
-    React.useState<HTMLButtonElement | null>(null);
+  const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
+    null
+  );
+
+  const pageSearchUsers = useSelector(selectSearchPageUsers);
+  const pageSearchConversations = useSelector(selectSearchPageConversations);
+
+  const searchedResults = useSelector(selectSearchedResult);
+
+  const totalCountUsers = useSelector(selectSearchTotalCountUsers);
+  const totalCountConversations = useSelector(
+    selectSearchTotalCountConversations
+  );
+
+  const count = useSelector(selectSearchCount);
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
@@ -103,6 +140,11 @@ export const SearchCompanyButton: React.FC<ISearchCompanyButtonProps> = ({
 
   const handleClose = () => {
     setAnchorEl(null);
+  };
+
+  const fetchDataSearch = () => {
+    dispatch(fetchSearchConversations());
+    dispatch(fetchSearchUsers());
   };
 
   const open = Boolean(anchorEl);
@@ -144,12 +186,59 @@ export const SearchCompanyButton: React.FC<ISearchCompanyButtonProps> = ({
         }}
       >
         <>
-          <div className={classes.contentContainer}>
+          <div id="scrollableDivSearch" className={classes.contentContainer}>
             <SearchCompanyForm />
             <Divider />
-            <div onClick={handleClose}>
-              <SearchCompanyContent me={user} />
-            </div>
+
+            <InfiniteScroll
+              dataLength={searchedResults.length}
+              scrollableTarget="scrollableDivSearch"
+              style={{ overflowY: "hidden" }}
+              next={() => fetchDataSearch()}
+              hasMore={
+                pageSearchUsers * count < totalCountUsers ||
+                pageSearchConversations * count < totalCountConversations
+              }
+              loader={<></>}
+              endMessage={
+                <p style={{ textAlign: "center" }}>
+                  <b>Yay! You have seen it all</b>
+                </p>
+              }
+            >
+              {searchedResults.map((result) => {
+                if (result.type === SearchItemType.CUSTOM) {
+                  return (
+                    <div key={result.item as string} onClick={handleClose}>
+                      <SidebarListCreator
+                        componentName={result.item as string}
+                      />
+                    </div>
+                  );
+                }
+                if (result.type === SearchItemType.CONVERSATION) {
+                  return (
+                    <div
+                      key={(result.item as IConversation)._id}
+                      onClick={handleClose}
+                    >
+                      <Channel channel={result.item as IConversation} />
+                    </div>
+                  );
+                }
+                if (result.type === SearchItemType.USER) {
+                  return (
+                    <div key={(result.item as IUser)._id} onClick={handleClose}>
+                      <DirectMessageListItem
+                        user={result.item as IUser}
+                        me={user}
+                      />
+                    </div>
+                  );
+                }
+                return null;
+              })}
+            </InfiniteScroll>
           </div>
           <div className={classes.styledBottomBlock}>
             <IconButton onClick={handleClose} className={classes.closeIcon}>
