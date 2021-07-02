@@ -18,7 +18,15 @@ const usersSlice = createSlice({
       state.loadingState = LoadingUsersState.LOADING;
     },
     setUsers(state, action: PayloadAction<IUser[]>) {
-      state.users = [...state.users,...action.payload];
+      state.users = [...state.users, ...action.payload];
+    },
+    updateOneUsers(state, action: PayloadAction<IUser>) {
+      const index = state.users.findIndex(
+        (user) => user._id === action.payload._id
+      );
+      if (index !== -1) {
+        state.users[index] = action.payload;
+      }
     },
     setPageUsers(state, action: PayloadAction<number>) {
       state.page = action.payload;
@@ -30,7 +38,7 @@ const usersSlice = createSlice({
       state.totalCount = action.payload;
     },
     addUser(state, action: PayloadAction<IUser>) {
-      state.users.unshift(action.payload);
+      state.users = [action.payload, ...state.users];
     },
     setUsersLoadingState(state, action: PayloadAction<LoadingUsersState>) {
       state.loadingState = action.payload;
@@ -45,10 +53,11 @@ export const {
   fetchUsers,
   setUsers,
   addUser,
+  updateOneUsers,
   setUsersLoadingState,
   setCountUsers,
   clearUsersState,
   setPageUsers,
-setTotalCountUsers
+  setTotalCountUsers,
 } = usersSlice.actions;
 export default usersSlice.reducer;
