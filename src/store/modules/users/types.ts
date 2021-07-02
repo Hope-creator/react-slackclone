@@ -2,7 +2,7 @@ import { IUser } from "../user/types";
 
 export enum LoadingUsersState {
   ERROREMAIL = "ERROREMAIL",
-  ERRORLOGIN= "ERRORLOGIN",
+  ERRORLOGIN = "ERRORLOGIN",
   LOADED = "LOADED",
   ERROR = "ERROR",
   LOADING = "LOADING",
