@@ -12,6 +12,7 @@ import { IUser } from "../../store/modules/user/types";
 import { useSelector } from "react-redux";
 import { selectUser } from "../../store/modules/user/selectors";
 import { useHistory } from "react-router-dom";
+import { EditProfileModal } from "../EditProfileModal";
 
 interface IProfileInfoProps {
   user: IUser;
@@ -25,6 +26,19 @@ const useStyles = makeStyles((theme: Theme) =>
     profileField: {
       padding: "8px 16px",
     },
+    button: {
+      width: "100%"
+    },
+    avatar: {
+      height: "218px",
+      width: "218px",
+      borderRadius: "4px",
+      margin: "16px auto",
+      [theme.breakpoints.down("sm")]: {
+        height: "128px",
+      width: "128px",
+      },
+    }
   })
 );
 
@@ -44,12 +58,7 @@ export const ProfileInfo: React.FC<IProfileInfoProps> = ({ user }) => {
   return (
     <Box>
       <Avatar
-        style={{
-          height: "256px",
-          width: "256px",
-          borderRadius: "4px",
-          margin: "16px auto",
-        }}
+        className={classes.avatar}
         src={user.avatar ? user.avatar : defaultAvatar}
         alt={`profile_${user.name}_image_${user.avatar}`}
       />
@@ -63,13 +72,14 @@ export const ProfileInfo: React.FC<IProfileInfoProps> = ({ user }) => {
           ) : user.work ? (
             <Link>Add a title</Link>
           ) : null}
-          {isMe ? (
-            <IconButton>
+          {isMe ? (<EditProfileModal opener={
+          <IconButton className={classes.button}>
               <CreateIcon />
               Edit profile
             </IconButton>
-          ) : (
-            <IconButton onClick={handleStartDialogButtonClick}>
+          } me={user} />)
+             : (
+            <IconButton className={classes.button} onClick={handleStartDialogButtonClick}>
               <CommentOutlinedIcon />
               Message
             </IconButton>
