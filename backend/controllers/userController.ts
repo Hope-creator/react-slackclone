@@ -88,30 +88,6 @@ class UserController {
       console.log("Error on UserController / show:", error);
     }
   }
-
-  async showByNameOrEmail(
-    req: express.Request,
-    res: express.Response
-  ): Promise<void> {
-    try {
-      const userId = req.userId;
-      const query = req.params.query;
-      const users = await UserModel.find({
-        _id: { $ne: userId },
-        $or: [{ name: query }, { email: query }],
-      }).exec();
-      res.json({
-        status: "success",
-        data: users,
-      });
-    } catch (error) {
-      res.status(500).json({
-        status: "error",
-        errors: JSON.stringify(error),
-      });
-      console.log("Error on UserController / showByNameOrEmail:", error);
-    }
-  }
 }
 
 export default UserController;
