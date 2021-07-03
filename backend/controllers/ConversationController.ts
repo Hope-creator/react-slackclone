@@ -3,6 +3,7 @@ import { isValidObjectId } from "mongoose";
 import socket from "socket.io";
 import { ConversationModel } from "../models/ConversationModel";
 import { UserModel } from "../models/UserModel";
+import { getConversationUsers } from "../utils/function/getConversationUsers";
 
 class ConversationController {
   io: socket.Server;
@@ -15,18 +16,10 @@ class ConversationController {
     req: express.Request,
     res: express.Response
   ): Promise<void> => {
-    const userId = req.userId;
-    const _user = req.user;
+    const user = req.user;
     const { page = 1, count = 10, search } = req.query;
     const skipPage = page > 0 ? (Number(page) - 1) * Number(count) : 0;
     try {
-      const user = await UserModel.findById(userId);
-      if (!user) {
-        res
-          .status(404)
-          .json({ status: "error", data: "User doest not exists" });
-        return;
-      }
       const searchQuery =
         typeof search === "string"
           ? search.replace(/[-[\]{}()*+?.,\\/^$|#\s]/g, "\\$&")
@@ -150,6 +143,9 @@ class ConversationController {
         { _id: user._id },
         { $addToSet: { conversations: conversation._id } }
       );
+      // if conversation private client update conversations
+      // by add conversation from res.data
+      // else conversation will be added from socket handler
       !conversation.is_private &&
         this.io.emit("SERVER:CONVERSATION_CREATED", conversation);
       res.json({ status: "success", data: conversation });
@@ -210,13 +206,12 @@ class ConversationController {
           });
           return;
         }
-
-        const users = (
-          await UserModel.find({
-            conversations: conversation._id,
-          }).distinct("_id")
-        ).map((id) => id.toString());
-        this.io.to(users).emit("SERVER:CONVERSATION_UPDATE", conversation);
+        if(conversation.is_private) {
+          const users = await getConversationUsers(conversation._id);
+          this.io.to(users).emit("SERVER:CONVERSATION_UPDATE", conversation);
+        } else {
+          this.io.emit("SERVER:CONVERSATION_UPDATE", conversation);
+        }
         res.json({ status: "success", conversation });
       }
     } catch (error) {
@@ -225,39 +220,6 @@ class ConversationController {
         errors: JSON.stringify(error),
       });
       console.log("Error on ConversationController / update:", error);
-    }
-  };
-
-  create100 = async (
-    req: express.Request,
-    res: express.Response
-  ): Promise<void> => {
-    try {
-      const user = req.user;
-      console.time("start 100");
-      for (let i = 0; i < 1000; i++) {
-        const postData = {
-          name: "Test" + i,
-          creator: user._id,
-          num_members: 1,
-          unread_count: 0,
-        };
-        const conversation = await new ConversationModel(postData).save();
-        await UserModel.updateOne(
-          { _id: user._id },
-          { $addToSet: { conversations: conversation._id } }
-        );
-        !conversation.is_private &&
-          this.io.emit("SERVER:CONVERSATION_CREATED", conversation);
-      }
-      console.timeEnd("start 100");
-      res.json({ status: true });
-    } catch (error) {
-      res.status(500).json({
-        status: "error",
-        errors: JSON.stringify(error),
-      });
-      console.log("Error on ConversationController / create:", error);
     }
   };
 }
