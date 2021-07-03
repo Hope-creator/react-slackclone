@@ -1,6 +1,8 @@
 import mongoose from "mongoose";
+import dotenv from "dotenv";
+dotenv.config();
 
-const url = "mongodb://localhost:27017/slackclone";
+const url = process.env.MONGODB_URL as string;
 
 mongoose
   .connect(url, {
