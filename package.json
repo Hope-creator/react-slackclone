@@ -39,8 +39,11 @@
     "web-vitals": "^1.0.1"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
+    "start": "cd server && yarn start",
+    "start-client": "react-scripts start",
+    "build": "react-scripts build && (cd backend && yarn add)",
+    "build-client": "react-scripts build",
+    "deploy": "git add . && git commit -m Heroku && git push heroku master",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "json-server": "json-server --watch db.json --port 5000"
