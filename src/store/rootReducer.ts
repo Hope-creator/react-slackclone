@@ -1,4 +1,4 @@
-import { combineReducers } from "redux";
+import { AnyAction, combineReducers } from "redux";
 import conversationMembers from "./modules/conversationMembers/conversationMembers";
 import conversations from "./modules/conversations/conversations";
 import currentConversation from "./modules/currentConversation/currentConversation";
@@ -9,13 +9,13 @@ import messages from "./modules/messages/messages";
 import messagesAffect from "./modules/messagesAffect/messagesAffect";
 import search from "./modules/search/search";
 import SideInfoMembers from "./modules/SideInfoMembers/SideInfoMembers";
-import user from "./modules/user/user";
+import user, { logoutUser } from "./modules/user/user";
 import conversationsAccess from "./modules/conversationsAccess/conversationsAccess";
 import users from "./modules/users/users";
 import currentDialog from "./modules/currentDialog/currentDialog";
 import currentAllDialogs from "./modules/currentAllDialogs/currentAllDialogs";
 
-export const rootReducer = combineReducers({
+export const appReducer = combineReducers({
   user: user,
   users: users,
   currentDialog: currentDialog,
@@ -32,3 +32,10 @@ export const rootReducer = combineReducers({
   conversationsAccess: conversationsAccess,
   search: search,
 });
+
+export const rootReducer = (state: any, action: AnyAction) => {
+  if (action.type === logoutUser.type) {
+    return appReducer(undefined, action);
+  }
+  return appReducer(state, action);
+};
