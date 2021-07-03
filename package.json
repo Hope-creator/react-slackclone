@@ -42,7 +42,7 @@
     "web-vitals": "^1.0.1"
   },
   "scripts": {
-    "start": "cd server && yarn start",
+    "start": "cd backend && yarn start",
     "start-client": "react-scripts start",
     "build": "react-scripts build && (cd backend && yarn)",
     "build-client": "react-scripts build",
