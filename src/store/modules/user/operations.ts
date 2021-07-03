@@ -106,7 +106,7 @@ function* logoutUserSaga() {
     const isLoggedOut: boolean = yield call(authApi.logout);
     if (isLoggedOut) {
       socket.disconnect();
-      sessionStorage.removeItem("connection");
+      sessionStorage.setItem("connection", "0");
       localStorage.clear();
       yield put(clearUserState());
     }
