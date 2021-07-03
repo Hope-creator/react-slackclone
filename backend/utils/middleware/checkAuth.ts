@@ -1,7 +1,7 @@
 import { NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import { Response, Request } from "express";
-import { UserModel } from "../../models/UserModel";
+import { IUserDocument, UserModel } from "../../models/UserModel";
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -27,7 +27,7 @@ export const authencticateToken = (
         } else {
           req.userId = (decoded as IToken).userId;
           UserModel.findById(req.userId)
-            .then((user) => {
+            .then((user: IUserDocument | null) => {
               if (user) {
                 req.user = user;
                 next();
@@ -39,7 +39,7 @@ export const authencticateToken = (
                 return;
               }
             })
-            .catch((err) => {
+            .catch((err: any) => {
               res
                 .status(500)
                 .json({ status: "error", data: "Something went wrong" });

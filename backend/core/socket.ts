@@ -2,7 +2,7 @@ import { Server, Socket } from "socket.io";
 import http from "http";
 import cookie from "cookie";
 import { checkAuthByToken } from "../utils/function/checkAuthByToken";
-import { UserModel } from "../models/UserModel";
+import { IUserDocument, UserModel } from "../models/UserModel";
 
 interface ISocket extends Socket {
   user?: string;
@@ -49,11 +49,11 @@ const socket = (http: http.Server) => {
         { new: true }
       )
         .populate("company")
-        .then((user) => {
+        .then((user: IUserDocument | null) => {
           io.emit("SERVER:UPDATE_USER", user);
           io.to(socket.id).emit("SERVER:SOCKET_CONNECTED", user);
         })
-        .catch((e) =>
+        .catch((e: any) =>
           console.log(
             "Error on socket: connect / update user by connection:",
             e
@@ -79,8 +79,10 @@ const socket = (http: http.Server) => {
           { new: true }
         )
           .populate("company")
-          .then((user) => io.emit("SERVER:UPDATE_USER", user))
-          .catch((e) =>
+          .then((user: IUserDocument | null) =>
+            io.emit("SERVER:UPDATE_USER", user)
+          )
+          .catch((e: any) =>
             console.log(
               "Error on socket: disconnect / update user by connection:",
               e
