@@ -247,14 +247,15 @@ export const EditProfileModal: React.FC<SimpleModalProps> = ({
                   name="phone"
                   control={control}
                   defaultValue={me.phone}
-                  rules={{ required: true }}
                   render={({ field }) => (
                     <FormControl fullWidth>
                       <Input
                         {...field}
                         onChange={(e) => {
-                          if (!+e.target.value) return;
-                          field.onChange(+e.target.value);
+                          if (isNaN(+e.target.value)) field.onChange("");
+                          else {
+                            field.onChange(+e.target.value);
+                          }
                         }}
                         placeholder="(123) 555-5555"
                         id="phone"
