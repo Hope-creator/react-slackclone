@@ -119,7 +119,9 @@ export const EditProfileModal: React.FC<SimpleModalProps> = ({
     handleSubmit,
     control,
     formState: { errors },
+    watch,
     reset,
+    setValue,
   } = useForm();
   const onSubmit: SubmitHandler<IEditProfileForm> = (data) =>
     dispatch(updateProfile(data));
@@ -150,6 +152,12 @@ export const EditProfileModal: React.FC<SimpleModalProps> = ({
       dispatch(updateAvatar(formData));
     }
   };
+  const phoneNum = watch("phone");
+
+  // hook is for fix problem with rendering setvalue before modal rendered
+  React.useEffect(() => {
+    if (isNaN(+phoneNum)) setValue("phone", "");
+  }, [phoneNum, setValue]);
 
   return (
     <div>
@@ -251,12 +259,6 @@ export const EditProfileModal: React.FC<SimpleModalProps> = ({
                     <FormControl fullWidth>
                       <Input
                         {...field}
-                        onChange={(e) => {
-                          if (isNaN(+e.target.value)) field.onChange("");
-                          else {
-                            field.onChange(+e.target.value);
-                          }
-                        }}
                         placeholder="(123) 555-5555"
                         id="phone"
                         aria-describedby="my-helper-text"
