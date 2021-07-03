@@ -35,7 +35,7 @@ const UserSchema = new Schema(
     },
     email: {
       required: true,
-      unique: [true, "Email is already taken"],
+      unique: true,
       type: String,
     },
     status: {
