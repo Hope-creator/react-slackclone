@@ -2,17 +2,31 @@ import express from "express";
 import { CompanyModel } from "../models/CompanyModel";
 
 class CompanyController {
-  async show(req: express.Request, res: express.Response): Promise<void> {
+
+  async create(req: express.Request, res: express.Response): Promise<void> {
     try {
-      const companyId = req.params.id;
-      const company = await CompanyModel.findById(companyId).exec();
-      if (!company) {
-        res.status(404).json({ status: "error", message: "Company not found" });
-      } else {
+      const company = await CompanyModel.findOne({_id: "T01TE7T5WEV"});
+      console.log(company)
+      if (company) {
         res.json({
           status: "success",
           data: company,
         });
+      } else {
+        const createCompany = await CompanyModel.create({});
+        if(createCompany) {
+          console.log("CREAT",createCompany)
+          res.json({
+            status: "success",
+            data: createCompany,
+          });
+        } else {
+          res.json({
+            status: "error",
+            data: false,
+          });
+        }
+        
       }
     } catch (error) {
       res.status(500).json({
