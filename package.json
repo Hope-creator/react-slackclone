@@ -2,7 +2,8 @@
   "name": "slackclone",
   "version": "0.1.0",
   "engines": {
-    "node": "12.16.3"
+    "node": "12.16.3",
+    "yarn": "1.22.10"
   },
   "private": true,
   "dependencies": {
@@ -44,7 +45,7 @@
   "scripts": {
     "start": "cd server && yarn start",
     "start-client": "react-scripts start",
-    "build": "react-scripts build && (cd backend && yarn add)",
+    "build": "react-scripts build && (cd backend && yarn)",
     "build-client": "react-scripts build",
     "deploy": "git add . && git commit -m Heroku && git push heroku master",
     "test": "react-scripts test",
