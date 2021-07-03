@@ -1,8 +1,9 @@
 import express from "express";
-import { isValidObjectId } from "mongoose";
+import { isValidObjectId, Schema } from "mongoose";
 import socket from "socket.io";
 import { ConversationModel } from "../models/ConversationModel";
 import { UserModel } from "../models/UserModel";
+import { getConversationUsers } from "../utils/function/getConversationUsers";
 
 class ConversationMembersController {
   io: socket.Server;
@@ -79,11 +80,7 @@ class ConversationMembersController {
           }
           if (userWithNewConversations) {
             if (conversation.is_private) {
-              const users = (
-                await UserModel.find({
-                  conversations: conversation._id,
-                }).distinct("_id")
-              ).map((id) => id.toString());
+              const users = await getConversationUsers(conversation._id)
               this.io
                 .to(users)
                 .emit("SERVER:CONVERSATION_UPDATE", conversation);
@@ -188,17 +185,21 @@ class ConversationMembersController {
           });
           return;
         }
-        const users = (
-          await UserModel.find({
-            conversations: conversation._id,
-          }).distinct("_id")
-        ).map((id) => id.toString());
-        this.io
-          .to(users)
+        if(updatedConversation.is_private) {
+          const users = await getConversationUsers(conversation._id)
+          this.io
+            .to(users)
+            .emit("SERVER:CONVERSATION_UPDATE", updatedConversation);
+          this.io
+            .to(users)
+            .emit("SERVER:NEW_CONVERSATION_MEMBER", addedUser, conversation._id);
+        } else {
+          this.io
           .emit("SERVER:CONVERSATION_UPDATE", updatedConversation);
         this.io
-          .to(users)
           .emit("SERVER:NEW_CONVERSATION_MEMBER", addedUser, conversation._id);
+        }
+        
         res.json({ status: "success", data: true });
       } else {
         // if userId not provided then add all people in company
@@ -241,11 +242,7 @@ class ConversationMembersController {
 
         if (updatedConversation.is_private) {
           // if channel private emit only users in
-          const users = (
-            await UserModel.find({
-              conversations: conversation._id,
-            }).distinct("_id")
-          ).map((id) => id.toString());
+          const users = await getConversationUsers(conversation._id)
           this.io
             .to(users)
             .emit("SERVER:CONVERSATION_UPDATE", updatedConversation);
@@ -363,11 +360,7 @@ class ConversationMembersController {
 
       if (conversation.is_private) {
         // if channel private emit only users in
-        const users = (
-          await UserModel.find({
-            conversations: conversation._id,
-          }).distinct("_id")
-        ).map((id) => id.toString());
+        const users = await getConversationUsers(conversation._id);
         this.io.to(users).emit("SERVER:CONVERSATION_UPDATE", conversation);
         this.io
           .to(users)

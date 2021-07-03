@@ -7,6 +7,7 @@ import { MessageModel } from "../models/MessageModel";
 import { UserModel } from "../models/UserModel";
 import { getAggregateMessage } from "../utils/function/getAggregateMessage";
 import { getAggregateMessageWithPagination } from "../utils/function/getAggregateMessageWithPagination";
+import { getConversationUsers } from "../utils/function/getConversationUsers";
 
 class MessagesController {
   io: socket.Server;
@@ -142,15 +143,16 @@ class MessagesController {
         } else {
           const convDest = await ConversationModel.findById(message.dest);
           if (convDest) {
-            const users = [
-              user._id.toString(),
-              ...(
-                await UserModel.find({
-                  conversations: convDest._id,
-                }).distinct("_id")
-              ).map((id) => id.toString()),
-            ];
-            this.io.to(users).emit("SERVER:MESSAGE_DELETED", messageId);
+            if (convDest.is_private) {
+              const users = [
+                user._id.toString(),
+                ...(await getConversationUsers(convDest._id)),
+              ];
+              this.io.to(users).emit("SERVER:MESSAGE_DELETED", messageId);
+            } else {
+              this.io.emit("SERVER:MESSAGE_DELETED", messageId);
+            }
+
             res.json({ status: "success", data: message });
             return;
           }
