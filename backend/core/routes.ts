@@ -32,11 +32,6 @@ const createRoutes = (app: express.Express, io: socket.Server) => {
   // # Users
   app.get("/api/users", UserCtrl.index);
   app.get("/api/users/:id", authencticateToken, UserCtrl.show);
-  app.get(
-    "/api/users/name/:query",
-    authencticateToken,
-    UserCtrl.showByNameOrEmail
-  );
 
   //# Auth
   app.get("/api/auth/me", authencticateToken, AuthCtrl.getMe);
@@ -53,7 +48,10 @@ const createRoutes = (app: express.Express, io: socket.Server) => {
   );
 
   //# Company
-  app.get("/api/company/:id", authencticateToken, CompanyCtrl.show);
+  // This using only one time to create main company
+  // GET is just for simply download , start server and create company
+  app.get("/api/company/create", authencticateToken, CompanyCtrl.create);
+
 
   //# Conversation Members
   app.get(
@@ -85,12 +83,6 @@ const createRoutes = (app: express.Express, io: socket.Server) => {
     "/api/conversations/update",
     authencticateToken,
     ConversationCtrl.update
-  );
-
-  app.post(
-    "/api/conversations/100",
-    authencticateToken,
-    ConversationCtrl.create100
   );
 
   //# Direct Messages
