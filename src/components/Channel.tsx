@@ -26,6 +26,13 @@ const useStyles = makeStyles((theme: Theme) =>
     container: {
       height: 35,
     },
+    name: {
+      width: "auto",
+      whiteSpace: "nowrap",
+      overflow: "hidden",
+      textOverflow: "ellipsis",
+      color: theme.palette.primary.main
+    },
   })
 );
 
@@ -66,12 +73,8 @@ export const Channel: React.FC<ChannelProps> = ({ channel }) => {
       )}
       <ListItemText
         primaryTypographyProps={{
-          color: "primary",
+          className: classes.name,
           style: {
-            width: "200px",
-            whiteSpace: "nowrap",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
             color: isActive ? "#fff" : undefined,
           },
         }}
