@@ -88,13 +88,17 @@ const useStyles = makeStyles((theme: Theme) =>
       width: "40px",
     },
     searchBlock: {
-      width: "100%",
       textAlign: "start",
+      width: "auto",
+      whiteSpace: "nowrap",
+      overflow: "hidden",
+      textOverflow: "ellipsis",
     },
     searchBlockIcon: {
       color: "rgb(210,210,210)",
       fontSize: 20,
       padding: 0,
+      marginLeft: "auto"
     },
   })
 );
