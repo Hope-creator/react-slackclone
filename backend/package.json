@@ -37,7 +37,6 @@
   },
   "scripts": {
     "postinstall": "tsc",
-    "watch-node": "nodemon server.js",
     "watch-ts": "tsc -w",
     "start": "node server.js",
     "dev": "ts-node server.ts",
