@@ -79,7 +79,7 @@ export const GetStartedForm = () => {
         name="name"
         control={control}
         defaultValue={""}
-        rules={{ required: true }}
+        rules={{ required: true, minLength: 2, maxLength: 40 }}
         render={({ field }) => (
           <TextField
             {...field}
@@ -94,9 +94,19 @@ export const GetStartedForm = () => {
             size="small"
             variant="outlined"
             label="Your name"
-            error={errors.name && errors.name.type === "required"}
+            error={
+              (errors.name && errors.name.type === "required") ||
+              (errors.name && errors.name.type === "maxLength") ||
+              (errors.name && errors.name.type === "minLength")
+            }
             helperText={
-              errors.name && errors.name.type === "required" && "Required"
+              (errors.name && errors.name.type === "required" && "Required") ||
+              (errors.name &&
+                errors.name.type === "maxLength" &&
+                "Max name length is 40 characters") ||
+              (errors.name &&
+                errors.name.type === "minLength" &&
+                "Min name length is 2 characters")
             }
           />
         )}
@@ -105,7 +115,7 @@ export const GetStartedForm = () => {
         name="email"
         control={control}
         defaultValue={""}
-        rules={{ required: true }}
+        rules={{ required: true, maxLength: 100 }}
         render={({ field }) => (
           <TextField
             {...field}
@@ -121,9 +131,17 @@ export const GetStartedForm = () => {
             size="small"
             variant="outlined"
             label="Your email"
-            error={errors.email && errors.email.type === "required"}
+            error={
+              (errors.email && errors.email.type === "required") ||
+              (errors.email && errors.email.type === "maxLength")
+            }
             helperText={
-              errors.email && errors.email.type === "required" && "Required"
+              (errors.email &&
+                errors.email.type === "required" &&
+                "Required") ||
+              (errors.email &&
+                errors.email.type === "maxLength" &&
+                "Max email length is 100 characters")
             }
           />
         )}
