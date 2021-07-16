@@ -25,7 +25,7 @@ function* fetchMeSaga() {
   try {
     const user: IUser = yield call(authApi.getMe);
     yield put(setUser(user));
-  } catch (e) {
+  } catch (e: any) {
     if (e.message.includes("401")) {
       yield put(setUserLoadingState(LoadingUserState.LOADED));
     } else {
@@ -83,7 +83,7 @@ function* removeProfileAvatarSaga() {
     const user: IUser = yield call(authApi.updateAvatar, "");
     yield put(setUser(user));
     setUserLoadingState(LoadingUserState.LOADED);
-  } catch (e) {
+  } catch (e: any) {
     yield put(setUserLoadingState(LoadingUserState.ERRORUPDATE));
   }
 }
@@ -92,7 +92,7 @@ function* createUserSaga(action: PayloadAction<IGetStartedForm>) {
   try {
     const user: IUser = yield call(authApi.signUp, action.payload);
     yield put(setUser(user));
-  } catch (e) {
+  } catch (e: any) {
     if (e.message.match("409"))
       yield put(setUserLoadingState(LoadingUserState.ERROREMAIL));
     else {
