@@ -38,7 +38,14 @@ const useStyles = makeStyles((theme: Theme) =>
         height: "128px",
       width: "128px",
       },
-    }
+    },
+    name: {
+      width: "auto",
+      whiteSpace: "nowrap",
+      overflow: "hidden",
+      textOverflow: "ellipsis",
+      padding: "0 15px"
+    },
   })
 );
 
@@ -64,7 +71,7 @@ export const ProfileInfo: React.FC<IProfileInfoProps> = ({ user }) => {
       />
       <Box>
         <Box className={classes.profileName}>
-          <Typography variant="h6" color="textPrimary">
+          <Typography className={classes.name} variant="h6" color="textPrimary">
             {user.name}
           </Typography>
           {user.work ? (
