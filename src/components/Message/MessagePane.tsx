@@ -110,7 +110,7 @@ export const MessagePane: React.FC<MessagePaneProps> = ({
         justify="space-between"
         className={classes.maxWidthContent}
       >
-        <Grid item xs={12} sm={10}>
+        <Grid item sm={7} md={9}>
           <Grid container direction="column">
             {message.marked && (
               <Typography className={classes.markedText}>
@@ -127,7 +127,7 @@ export const MessagePane: React.FC<MessagePaneProps> = ({
             </Grid>
           </Grid>
         </Grid>
-        <Grid item xs={false} sm={2} container wrap="nowrap" justify="center">
+        <Grid item  sm={5} md={3} container wrap="nowrap" justify="center">
           {isHovered && <MessageButtons message={message} user={user} />}
         </Grid>
       </Grid>
