@@ -56,9 +56,16 @@ export const UserListItem: React.FC<IUserListItemProps> = ({
         <Box height={60}>
           <ListItem button>
             <Grid container justify="space-between" wrap="nowrap">
-              <Grid item container alignItems="center" xs={10}>
+              <Grid item container wrap="nowrap" alignItems="center" xs={10}>
                 <AvatarWithBadge user={user} style={{ marginRight: 10 }} />
-                <Typography>
+                <Typography
+                  style={{
+                    width: "auto",
+                    whiteSpace: "nowrap",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                  }}
+                >
                   {user.name} {isMe && "(you)"}
                 </Typography>
               </Grid>
