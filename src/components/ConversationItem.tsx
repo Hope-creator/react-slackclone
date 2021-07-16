@@ -50,6 +50,11 @@ const useStyles = makeStyles((theme: Theme) =>
       fontSize: 14,
       minWidth: 0,
     },
+    name: {
+      whiteSpace: "nowrap",
+      overflow: "hidden",
+      textOverflow: "ellipsis",
+    },
   })
 );
 
@@ -104,7 +109,7 @@ export const ConversationItem: React.FC<IConversationItemProps> = ({
       onClick={handleClickContainer}
     >
       <Grid item>
-        <Typography variant="subtitle2">
+        <Typography className={classes.name} variant="subtitle2">
           <>
             {conversation.is_private ? (
               <ListItemIcon className={classes.lockIcon}>
