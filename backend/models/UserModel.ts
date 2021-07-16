@@ -32,11 +32,15 @@ const UserSchema = new Schema(
     name: {
       required: true,
       type: String,
+      trim: true,
+      minlength: 2,
+      maxlength: 40,
     },
     email: {
       required: true,
       unique: true,
       type: String,
+      maxlength: 100,
     },
     status: {
       type: String,
@@ -52,10 +56,15 @@ const UserSchema = new Schema(
       type: String,
       select: false,
     },
-    display_name: String,
+    display_name: {
+      type: String,
+      trim: true,
+      minlength: 2,
+      maxlength: 40,
+    },
     avatar: String,
     work: String,
-    phone: Number,
+    phone: { type: Number, max: 999999999999999 },
     conversations: [{ type: Schema.Types.ObjectId, ref: "Conversations" }],
     away: { type: Boolean, default: false },
     online: { type: Boolean, default: false },
