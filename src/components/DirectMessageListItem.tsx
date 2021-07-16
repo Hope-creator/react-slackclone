@@ -34,10 +34,18 @@ const useStyles = makeStyles((theme: Theme) =>
         backgroundColor: theme.palette.primary.dark,
       },
     },
-    activeText: {
+    activeName: {
+      width: "auto",
+      whiteSpace: "nowrap",
+      overflow: "hidden",
+      textOverflow: "ellipsis",
       color: "#fff",
     },
-    defaultText: {
+    name: {
+      width: "auto",
+      whiteSpace: "nowrap",
+      overflow: "hidden",
+      textOverflow: "ellipsis",
       color: theme.palette.primary.main,
     },
     selfText: {
@@ -75,7 +83,9 @@ export const DirectMessageListItem: React.FC<IDirectMessageListItemProps> = ({
         />
       </ListItemAvatar>
       <ListItemText
-        className={isActive ? classes.activeText : classes.defaultText}
+        primaryTypographyProps={{
+          className: isActive ? classes.activeName : classes.name,
+        }}
       >
         {user.name}
       </ListItemText>
