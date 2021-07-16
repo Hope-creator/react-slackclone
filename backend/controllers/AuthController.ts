@@ -67,7 +67,7 @@ class AuthController {
           }
         },
       });
-    } catch (error) {
+    } catch (error: any) {
       if (error.message === "Email must be unique") {
         res.status(409).json({
           status: "error",
@@ -192,6 +192,7 @@ class AuthController {
         {
           new: true,
           omitUndefined: true,
+          runValidators: true
         }
       ).populate("company");
 
@@ -271,7 +272,7 @@ class AuthController {
         status: "success",
         data: true,
       });
-    } catch (error) {
+    } catch (error: any) {
       if (error.message === "Email must be unique") {
         res.status(409).json({
           status: "error",
