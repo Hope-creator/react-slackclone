@@ -185,7 +185,7 @@ export const EditProfileModal: React.FC<SimpleModalProps> = ({
                   name="name"
                   control={control}
                   defaultValue={me.name}
-                  rules={{ required: true }}
+                  rules={{ required: true, minLength: 2, maxLength: 40 }}
                   render={({ field }) => (
                     <FormControl fullWidth>
                       <TextField
@@ -193,11 +193,17 @@ export const EditProfileModal: React.FC<SimpleModalProps> = ({
                         placeholder="Full name"
                         id="fullname"
                         aria-describedby="fullname"
-                        error={errors.name && errors.name.type === "required"}
+                        error={errors.name}
                         helperText={
-                          errors.name &&
-                          errors.name.type === "required" &&
-                          "Name cannot be empty"
+                          (errors.name &&
+                            errors.name.type === "required" &&
+                            "Name cannot be empty") ||
+                          (errors.name &&
+                            errors.name.type === "maxLength" &&
+                            "Max name length is 40 characters") ||
+                          (errors.name &&
+                            errors.name.type === "minLength" &&
+                            "Min name length is 2 characters")
                         }
                       />
                     </FormControl>
@@ -210,13 +216,23 @@ export const EditProfileModal: React.FC<SimpleModalProps> = ({
                   name="display_name"
                   control={control}
                   defaultValue={me.display_name}
+                  rules={{ minLength: 2, maxLength: 40 }}
                   render={({ field }) => (
                     <FormControl fullWidth>
-                      <Input
+                      <TextField
                         {...field}
                         placeholder="Display name"
                         id="displayname"
                         aria-describedby="my-helper-text"
+                        error={errors.display_name}
+                        helperText={
+                          (errors.display_name &&
+                            errors.display_name.type === "maxLength" &&
+                            "Max name display length is 40 characters") ||
+                          (errors.display_name &&
+                            errors.display_name.type === "minLength" &&
+                            "Min display name length is 2 characters")
+                        }
                       />
                       <FormHelperText id="my-helper-text">
                         This could be your first name, or a nickname — however
@@ -235,7 +251,7 @@ export const EditProfileModal: React.FC<SimpleModalProps> = ({
                   defaultValue={me.work}
                   render={({ field }) => (
                     <FormControl fullWidth>
-                      <Input
+                      <TextField
                         {...field}
                         placeholder="What I do"
                         id="work"
@@ -255,13 +271,20 @@ export const EditProfileModal: React.FC<SimpleModalProps> = ({
                   name="phone"
                   control={control}
                   defaultValue={me.phone}
+                  rules={{ maxLength: 15 }}
                   render={({ field }) => (
                     <FormControl fullWidth>
-                      <Input
+                      <TextField
                         {...field}
                         placeholder="(123) 555-5555"
                         id="phone"
                         aria-describedby="my-helper-text"
+                        error={errors.phone}
+                        helperText={
+                          errors.phone &&
+                          errors.phone.type === "maxLength" &&
+                          "Max phone length is 15 digits"
+                        }
                       />
                       <FormHelperText id="my-helper-text">
                         Enter a phone number
