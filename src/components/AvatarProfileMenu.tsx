@@ -28,6 +28,13 @@ const useStyles = makeStyles(() =>
     avatarMenuHeader: {
       textAlign: "center",
     },
+    name: {
+      width: "250px",
+      whiteSpace: "nowrap",
+      margin: "0 auto",
+      overflow: "hidden",
+      textOverflow: "ellipsis",
+    },
   })
 );
 
@@ -54,7 +61,7 @@ export const AvatarProfileMenu: React.FC<IAvatarProfileMenuProps> = ({
     <Paper className={classes.submenuContainer}>
       <Box className={classes.avatarMenuHeader}>
         <AvatarWithBadge user={me} />
-        <Typography variant="subtitle2">{me.name}</Typography>
+        <Typography className={classes.name} variant="subtitle2">{me.name}</Typography>
         <Typography variant="caption">{me.away ? "Away" : "Active"}</Typography>
       </Box>
       <Divider />
