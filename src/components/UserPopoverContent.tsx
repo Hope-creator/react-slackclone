@@ -23,6 +23,12 @@ const useStyles = makeStyles((theme: Theme) =>
       marginTop: theme.spacing(2),
       border: "1px solid #c9c9c9",
     },
+    name: {
+      width: "250px",
+      whiteSpace: "nowrap",
+      overflow: "hidden",
+      textOverflow: "ellipsis",
+    },
   })
 );
 
@@ -56,7 +62,9 @@ export const UserPopoverContent: React.FC<IUserPopoverContentProps> = ({
         wrap="nowrap"
       >
         <Link onClick={userInfoHandleClick} color="inherit">
-          <Typography variant="h5">{user.name}</Typography>
+          <Typography className={classes.name} variant="h5">
+            {user.name}
+          </Typography>
         </Link>
         {user.work && <Typography variant="h5">{user.work}</Typography>}
         <Link onClick={userInfoHandleClick} color="secondary">
