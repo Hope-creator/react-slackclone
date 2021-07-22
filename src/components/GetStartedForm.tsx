@@ -93,6 +93,7 @@ export const GetStartedForm = () => {
             color="secondary"
             size="small"
             variant="outlined"
+            id="name-outlined-basic"
             label="Your name"
             error={
               (errors.name && errors.name.type === "required") ||
@@ -128,6 +129,7 @@ export const GetStartedForm = () => {
             type="email"
             fullWidth
             color="secondary"
+            id="email-outlined-basic"
             size="small"
             variant="outlined"
             label="Your email"
@@ -161,7 +163,7 @@ export const GetStartedForm = () => {
               },
             }}
             label="Your password"
-            id="outlined-basic"
+            id="pass-outlined-basic"
             color="secondary"
             size="small"
             variant="outlined"
@@ -195,7 +197,7 @@ export const GetStartedForm = () => {
               },
             }}
             label="Confirm password"
-            id="outlined-basic"
+            id="pass-c-outlined-basic"
             color="secondary"
             size="small"
             variant="outlined"
