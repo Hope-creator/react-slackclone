@@ -1,18 +1,13 @@
 export interface ICompany {
   _id: string;
   name: string;
-  primary_owner: {
-    user_id: string;
-    email: string;
-  };
-  members: IUser[] | never[];
 }
 
 export interface IUser {
   _id: string;
   company: ICompany;
   name: string;
-  avatar: string;
+  avatar?: string;
   email: string;
   is_admin: boolean;
   conversations: string[];
@@ -20,7 +15,6 @@ export interface IUser {
   work?: string;
   phone?: number;
   createdAt: string;
-  last_seen: Date;
   online: boolean;
   away: boolean;
 }
