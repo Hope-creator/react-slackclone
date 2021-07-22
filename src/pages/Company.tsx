@@ -34,7 +34,7 @@ import {
   selectUsers,
 } from "../store/modules/users/selectors";
 import { IUser } from "../store/modules/user/types";
-import { deleteUserConversation } from "../store/modules/user/user";
+import { removeUserConversation } from "../store/modules/user/user";
 import { updateOneSideInfoMembers } from "../store/modules/SideInfoMembers/SideInfoMembers";
 import { updateUserMessages } from "../store/modules/messages/messages";
 import { updateOneCurrentUsers } from "../store/modules/currentUsers/currentUsers";
@@ -205,7 +205,7 @@ export const Company = () => {
 
   const handleListenerConversationKicked = React.useCallback(
     (conversation: IConversation) => {
-      dispatch(deleteUserConversation(conversation._id));
+      dispatch(removeUserConversation(conversation._id));
       if (conversation.is_private) {
         dispatch(deleteOneConversation(conversation._id));
       }

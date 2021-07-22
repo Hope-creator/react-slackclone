@@ -4,7 +4,7 @@ import { ILoginForm } from "./../../../components/SignInForm";
 import { IGetStartedForm } from "../../../components/GetStartedForm";
 import { IEditProfileForm } from "../../../components/EditProfileModal";
 
-const initialState = { user: null, loadingState: "NEVER" } as IUserState;
+export const initialState = { user: null, loadingState: "NEVER" } as IUserState;
 
 const userSlice = createSlice({
   name: "user",
@@ -41,16 +41,6 @@ const userSlice = createSlice({
     addUserConversation(state, action: PayloadAction<string>) {
       if (state.user) state.user.conversations.push(action.payload);
     },
-    deleteUserConversation(state, action: PayloadAction<string>) {
-      if (state.user) {
-        const index = state.user.conversations.findIndex(
-          (convId) => convId === action.payload
-        );
-        if (index !== -1) {
-          state.user.conversations.splice(index);
-        }
-      }
-    },
     removeUserConversation(state, action: PayloadAction<string>) {
       if (state.user) {
         const index = state.user.conversations.findIndex(
@@ -79,7 +69,6 @@ export const {
   updateIsAway,
   createUser,
   addUserConversation,
-  deleteUserConversation,
   removeUserConversation,
   logoutUser,
   clearUserState,
