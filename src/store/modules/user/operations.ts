@@ -26,11 +26,7 @@ function* fetchMeSaga() {
     const user: IUser = yield call(authApi.getMe);
     yield put(setUser(user));
   } catch (e: any) {
-    if (e.message.includes("401")) {
-      yield put(setUserLoadingState(LoadingUserState.LOADED));
-    } else {
-      yield put(setUserLoadingState(LoadingUserState.ERROR));
-    }
+    yield put(setUserLoadingState(LoadingUserState.ERROR));
   }
 }
 
@@ -48,7 +44,7 @@ function* updateProfileSaga(action: PayloadAction<IEditProfileForm>) {
   try {
     const user: IUser = yield call(authApi.updateProfile, action.payload);
     yield put(setUser(user));
-    setUserLoadingState(LoadingUserState.LOADED);
+    yield put(setUserLoadingState(LoadingUserState.LOADED));
   } catch (e) {
     yield put(setUserLoadingState(LoadingUserState.ERRORUPDATE));
   }
@@ -62,7 +58,7 @@ function* updateProfileAvatarSaga(action: PayloadAction<FormData>) {
     );
     const user: IUser = yield call(authApi.updateAvatar, avatarSrc);
     yield put(setUser(user));
-    setUserLoadingState(LoadingUserState.LOADED);
+    yield put(setUserLoadingState(LoadingUserState.LOADED));
   } catch (e) {
     yield put(setUserLoadingState(LoadingUserState.ERRORUPDATE));
   }
@@ -72,7 +68,7 @@ function* updateProfileIsAwaySaga(action: PayloadAction<boolean>) {
   try {
     const user: IUser = yield call(authApi.updateIsAway, action.payload);
     yield put(setUser(user));
-    setUserLoadingState(LoadingUserState.LOADED);
+    yield put(setUserLoadingState(LoadingUserState.LOADED));
   } catch (e) {
     yield put(setUserLoadingState(LoadingUserState.ERRORUPDATE));
   }
@@ -82,7 +78,7 @@ function* removeProfileAvatarSaga() {
   try {
     const user: IUser = yield call(authApi.updateAvatar, "");
     yield put(setUser(user));
-    setUserLoadingState(LoadingUserState.LOADED);
+    yield put(setUserLoadingState(LoadingUserState.LOADED));
   } catch (e: any) {
     yield put(setUserLoadingState(LoadingUserState.ERRORUPDATE));
   }
@@ -115,7 +111,7 @@ function* logoutUserSaga() {
   }
 }
 
-export function* userSaga() {
+function* userSaga() {
   yield takeLatest(fetchUser.type, fetchUserSaga);
   yield takeLatest(fetchMe.type, fetchMeSaga);
   yield takeLatest(createUser.type, createUserSaga);
@@ -125,3 +121,15 @@ export function* userSaga() {
   yield takeLatest(updateIsAway.type, updateProfileIsAwaySaga);
   yield takeLatest(logoutUser.type, logoutUserSaga);
 }
+
+export {
+  userSaga,
+  fetchUserSaga,
+  fetchMeSaga,
+  createUserSaga,
+  updateProfileSaga,
+  updateProfileAvatarSaga,
+  removeProfileAvatarSaga,
+  updateProfileIsAwaySaga,
+  logoutUserSaga,
+};
