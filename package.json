@@ -20,6 +20,7 @@
     "@types/react-infinite-scroll-component": "^5.0.0",
     "@types/react-window": "^1.8.3",
     "@types/socket.io-client": "^1.4.36",
+    "@types/testing-library__jest-dom": "^5.14.0",
     "axios": "^0.21.1",
     "crypto-random-string": "^4.0.0",
     "date-fns": "^2.21.2",
@@ -69,6 +70,10 @@
   },
   "proxy": "http://localhost:5000",
   "devDependencies": {
-    "@types/react-router-dom": "^5.1.7"
+    "@types/axios-mock-adapter": "^1.10.0",
+    "@types/react-router-dom": "^5.1.7",
+    "axios-mock-adapter": "^1.19.0",
+    "msw": "^0.32.0",
+    "redux-saga-test-plan": "^4.0.3"
   }
 }
