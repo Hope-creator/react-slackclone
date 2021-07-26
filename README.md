@@ -1,10 +1,30 @@
-# Getting Started with Create React App
+# React Slack Clone Demo
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Stack
 
-## Available Scripts
+Backend:
+NodeJS
+TypeScript
+Express
+Mongoose
+Multer
+Nodemailer
+Socket.io
+JWT
+Cloudinary
+Cookie-Session
 
-In the project directory, you can run:
+Frontend:
+ReactJS
+TypeScript
+Redux
+Redux/Toolkit
+React Router
+Axios
+Material UI
+date-fns
+React Hook Form
+
 
 ### `yarn start`
 
