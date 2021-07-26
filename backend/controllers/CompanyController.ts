@@ -15,7 +15,6 @@ class CompanyController {
       } else {
         const createCompany = await CompanyModel.create({});
         if(createCompany) {
-          console.log("CREAT",createCompany)
           res.json({
             status: "success",
             data: createCompany,
