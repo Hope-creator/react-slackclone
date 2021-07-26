@@ -1,0 +1,222 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`GetStarted page tests should current render component 1`] = `
+<DocumentFragment>
+  <div
+    class="makeStyles-wrapper-1"
+  >
+    <div
+      class="makeStyles-header-5"
+    >
+      <div
+        class="MuiGrid-root MuiGrid-container MuiGrid-direction-xs-column"
+      >
+        <h3
+          class="MuiTypography-root MuiTypography-h3"
+        >
+          First, enter your email
+        </h3>
+        <p
+          class="MuiTypography-root MuiTypography-body1"
+        >
+          We suggest using the 
+          <strong>
+            email address you use at work.
+          </strong>
+        </p>
+      </div>
+    </div>
+    <div
+      class="makeStyles-signInForm-4"
+    >
+      <div
+        class="makeStyles-signInForm-4"
+      >
+        <form>
+          <div
+            class="MuiFormControl-root MuiTextField-root makeStyles-input-10 MuiFormControl-fullWidth"
+          >
+            <label
+              class="MuiFormLabel-root MuiFormLabel-colorSecondary MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-marginDense MuiInputLabel-outlined"
+              data-shrink="false"
+              for="name-outlined-basic"
+              id="name-outlined-basic-label"
+            >
+              Your name
+            </label>
+            <div
+              class="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-colorSecondary MuiOutlinedInput-colorSecondary MuiInputBase-fullWidth MuiInputBase-formControl MuiInputBase-marginDense MuiOutlinedInput-marginDense"
+            >
+              <input
+                aria-invalid="false"
+                class="MuiInputBase-input MuiOutlinedInput-input MuiInputBase-inputMarginDense MuiOutlinedInput-inputMarginDense"
+                id="name-outlined-basic"
+                name="name"
+                type="text"
+                value=""
+              />
+              <fieldset
+                aria-hidden="true"
+                class="PrivateNotchedOutline-root-13 MuiOutlinedInput-notchedOutline"
+              >
+                <legend
+                  class="PrivateNotchedOutline-legendLabelled-15"
+                >
+                  <span>
+                    Your name
+                  </span>
+                </legend>
+              </fieldset>
+            </div>
+          </div>
+          <div
+            class="MuiFormControl-root MuiTextField-root makeStyles-input-10 MuiFormControl-fullWidth"
+          >
+            <label
+              class="MuiFormLabel-root MuiFormLabel-colorSecondary MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-marginDense MuiInputLabel-outlined"
+              data-shrink="false"
+              for="email-outlined-basic"
+              id="email-outlined-basic-label"
+            >
+              Your email
+            </label>
+            <div
+              class="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-colorSecondary MuiOutlinedInput-colorSecondary MuiInputBase-fullWidth MuiInputBase-formControl MuiInputBase-marginDense MuiOutlinedInput-marginDense"
+            >
+              <input
+                aria-invalid="false"
+                class="MuiInputBase-input MuiOutlinedInput-input MuiInputBase-inputMarginDense MuiOutlinedInput-inputMarginDense"
+                id="email-outlined-basic"
+                name="email"
+                type="email"
+                value=""
+              />
+              <fieldset
+                aria-hidden="true"
+                class="PrivateNotchedOutline-root-13 MuiOutlinedInput-notchedOutline"
+              >
+                <legend
+                  class="PrivateNotchedOutline-legendLabelled-15"
+                >
+                  <span>
+                    Your email
+                  </span>
+                </legend>
+              </fieldset>
+            </div>
+          </div>
+          <div
+            class="MuiFormControl-root MuiTextField-root makeStyles-input-10 MuiFormControl-fullWidth"
+          >
+            <label
+              class="MuiFormLabel-root MuiFormLabel-colorSecondary MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-marginDense MuiInputLabel-outlined"
+              data-shrink="false"
+              for="pass-outlined-basic"
+              id="pass-outlined-basic-label"
+            >
+              Your password
+            </label>
+            <div
+              class="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-colorSecondary MuiOutlinedInput-colorSecondary MuiInputBase-fullWidth MuiInputBase-formControl MuiInputBase-marginDense MuiOutlinedInput-marginDense"
+            >
+              <input
+                aria-invalid="false"
+                class="MuiInputBase-input MuiOutlinedInput-input MuiInputBase-inputMarginDense MuiOutlinedInput-inputMarginDense"
+                id="pass-outlined-basic"
+                name="password"
+                type="password"
+                value=""
+              />
+              <fieldset
+                aria-hidden="true"
+                class="PrivateNotchedOutline-root-13 MuiOutlinedInput-notchedOutline"
+              >
+                <legend
+                  class="PrivateNotchedOutline-legendLabelled-15"
+                >
+                  <span>
+                    Your password
+                  </span>
+                </legend>
+              </fieldset>
+            </div>
+          </div>
+          <div
+            class="MuiFormControl-root MuiTextField-root makeStyles-input-10 MuiFormControl-fullWidth"
+          >
+            <label
+              class="MuiFormLabel-root MuiFormLabel-colorSecondary MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-marginDense MuiInputLabel-outlined"
+              data-shrink="false"
+              for="pass-c-outlined-basic"
+              id="pass-c-outlined-basic-label"
+            >
+              Confirm password
+            </label>
+            <div
+              class="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-colorSecondary MuiOutlinedInput-colorSecondary MuiInputBase-fullWidth MuiInputBase-formControl MuiInputBase-marginDense MuiOutlinedInput-marginDense"
+            >
+              <input
+                aria-invalid="false"
+                class="MuiInputBase-input MuiOutlinedInput-input MuiInputBase-inputMarginDense MuiOutlinedInput-inputMarginDense"
+                id="pass-c-outlined-basic"
+                name="password2"
+                type="password"
+                value=""
+              />
+              <fieldset
+                aria-hidden="true"
+                class="PrivateNotchedOutline-root-13 MuiOutlinedInput-notchedOutline"
+              >
+                <legend
+                  class="PrivateNotchedOutline-legendLabelled-15"
+                >
+                  <span>
+                    Confirm password
+                  </span>
+                </legend>
+              </fieldset>
+            </div>
+          </div>
+          <button
+            class="MuiButtonBase-root MuiButton-root MuiButton-contained makeStyles-button-12 MuiButton-containedPrimary MuiButton-fullWidth"
+            tabindex="0"
+            type="submit"
+          >
+            <span
+              class="MuiButton-label"
+            >
+              Sign up
+            </span>
+            <span
+              class="MuiTouchRipple-root"
+            />
+          </button>
+        </form>
+      </div>
+      <p
+        class="MuiTypography-root makeStyles-formTsAndCs-9 MuiTypography-body2"
+      >
+        By continuing, you’re agreeing to our 
+        <a
+          class="MuiTypography-root MuiLink-root MuiLink-underlineHover MuiTypography-colorPrimary"
+        >
+          Customer Terms of Service
+        </a>
+        , 
+        <a
+          class="MuiTypography-root MuiLink-root MuiLink-underlineHover MuiTypography-colorPrimary"
+        >
+          Privacy Policy
+        </a>
+        , and 
+        <a
+          class="MuiTypography-root MuiLink-root MuiLink-underlineHover MuiTypography-colorPrimary"
+        >
+          Cookie Policy
+        </a>
+        .
+      </p>
+    </div>
+  </div>
+</DocumentFragment>
+`;
