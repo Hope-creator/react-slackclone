@@ -4,26 +4,26 @@
 
 Backend:
 * NodeJS
-** TypeScript
-Express
-Mongoose
-Multer
-Nodemailer
-Socket.io
-JWT
-Cloudinary
-Cookie-Session
+* TypeScript
+* Express
+* Mongoose
+* Multer
+* Nodemailer
+* Socket.io
+* JWT
+* Cloudinary
+* Cookie-Session
 
 Frontend:
-ReactJS
-TypeScript
-Redux
-Redux/Toolkit
-React Router
-Axios
-Material UI
-date-fns
-React Hook Form
+* ReactJS
+* TypeScript
+* Redux
+* Redux/Toolkit
+* React Router
+* Axios
+* Material UI
+* date-fns
+* React Hook Form
 
 
 ### `yarn start`
