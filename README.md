@@ -1,5 +1,9 @@
 # React Slack Clone Demo
 
+## Live Demo
+Может запускаться в течении минуты
+https://slack-clone-hope-creator.herokuapp.com/
+
 ## Stack
 
 Backend:
