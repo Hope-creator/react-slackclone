@@ -52,6 +52,6 @@ Frontend:
 ## Загрузка файлов на Cloudinary
 Для хранения изображения был использован сервис Cloudinary.
 Для корректного запуска проекта необходимо зарегестрироваться на сайте cloudinary.com
-Перейти в Dashboard и скопировать API-параметры.
+Перейти в Dashboard и скопировать API-параметры. Данные параметры записать в `.env` согласно экземпляру в `.env.example`
 
 ![screen](https://user-images.githubusercontent.com/72225013/127026279-629aee3b-0eda-4c34-af24-aeb75fe74444.png)
