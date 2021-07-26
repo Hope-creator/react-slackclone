@@ -3,12 +3,12 @@
 ## Stack
 
 Backend:
-NodeJS
-TypeScript
-Express
-Mongoose
-Multer
-Nodemailer
+*NodeJS
+*TypeScript
+*Express
+*Mongoose
+*Multer
+*Nodemailer
 Socket.io
 JWT
 Cloudinary
