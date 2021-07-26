@@ -4,11 +4,11 @@
 
 Backend:
 *NodeJS
-*TypeScript
-*Express
-*Mongoose
-*Multer
-*Nodemailer
+**TypeScript
+Express
+Mongoose
+Multer
+Nodemailer
 Socket.io
 JWT
 Cloudinary
