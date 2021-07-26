@@ -1,43 +1,9 @@
 import { GetStartedForm } from "../components/GetStartedForm";
-import { render, screen, waitFor } from "@testing-library/react";
-import { configureStore, EnhancedStore } from "@reduxjs/toolkit";
-import { Provider } from "react-redux";
-import userReducer, { initialState } from "../store/modules/user/user";
+import { screen, waitFor } from "@testing-library/react";
+import { setUserLoadingState } from "../store/modules/user/user";
 import userEvent from "@testing-library/user-event";
 import { LoadingUserState } from "../store/modules/user/types";
-
-interface IRenderParams {
-  preloadedState: any;
-  store: EnhancedStore;
-}
-
-const createMockStore = (state = initialState) => {
-  return configureStore({
-    reducer: { user: userReducer },
-    preloadedState: { user: state },
-  });
-};
-
-const renderWithRedux = (
-  ui: React.ReactElement,
-  {
-    preloadedState,
-    store = configureStore({ reducer: { user: userReducer }, preloadedState }),
-    ...renderOptions
-  } = {
-    store: createMockStore(),
-  } as IRenderParams
-) => {
-  const utils = {
-    getState() {
-      return store.getState();
-    },
-  };
-  return {
-    ...render(<Provider store={store}>{ui}</Provider>),
-    ...utils,
-  };
-};
+import { renderWithRedux } from "./utils/renderWithRedux";
 
 describe("GetStartedForm tests", () => {
   it("Renders component", () => {
@@ -114,36 +80,25 @@ describe("GetStartedForm tests", () => {
   });
 
   it("Show error snackbar on error loading user state", async () => {
-    const errorState = { user: null, loadingState: LoadingUserState.ERROR };
-    renderWithRedux(<GetStartedForm />, {
-      preloadedState: errorState,
-      store: createMockStore(errorState),
-    });
-    expect(screen.getByText(/Something got wrong/i)).toBeInTheDocument();
+    const { dispatch } = renderWithRedux(<GetStartedForm />);
+    await waitFor(() => dispatch(setUserLoadingState(LoadingUserState.ERROR)));
+    expect(await screen.findByText(/Something got wrong/i)).toBeInTheDocument();
   });
 
   it("Show error snackbar on error with regisration email loading user state", async () => {
-    const errorState = {
-      user: null,
-      loadingState: LoadingUserState.ERROREMAIL,
-    };
-    renderWithRedux(<GetStartedForm />, {
-      preloadedState: errorState,
-      store: createMockStore(errorState),
-    });
-    expect(screen.getByText(/Email is already taken/i)).toBeInTheDocument();
+    const { dispatch } = renderWithRedux(<GetStartedForm />);
+    await waitFor(() =>
+      dispatch(setUserLoadingState(LoadingUserState.ERROREMAIL))
+    );
+    expect(
+      await screen.findByText(/Email is already taken/i)
+    ).toBeInTheDocument();
   });
 
   it("Close error snackbar on close icon click", async () => {
-    const errorState = {
-      user: null,
-      loadingState: LoadingUserState.ERROR,
-    };
-    renderWithRedux(<GetStartedForm />, {
-      preloadedState: errorState,
-      store: createMockStore(errorState),
-    });
-    expect(screen.queryByText(/Something got wrong/i)).toBeInTheDocument();
+    const { dispatch } = renderWithRedux(<GetStartedForm />);
+    await waitFor(() => dispatch(setUserLoadingState(LoadingUserState.ERROR)));
+    expect(await screen.findByText(/Something got wrong/i)).toBeInTheDocument();
     const closeIcon = screen.getByRole("button", { name: /Close/i });
     expect(closeIcon).toBeInTheDocument();
 
