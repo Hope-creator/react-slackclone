@@ -306,7 +306,9 @@ export const EditProfileModal: React.FC<SimpleModalProps> = ({
                   style={{ display: "none" }}
                   id="avatar"
                   type="file"
-                ></input>
+                  data-testid="avatarInput"
+                  
+                />
                 <Button
                   className={
                     profileUpdateLoading === LoadingUserState.ERRORUPDATE
