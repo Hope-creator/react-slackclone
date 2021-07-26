@@ -24,6 +24,7 @@ Frontend:
 * Material UI
 * date-fns
 * React Hook Form
+* react-window/infinite-loader
 
 
 ### `yarn start`
