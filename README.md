@@ -2,7 +2,7 @@
 
 ## Live Demo
 Может запускаться в течении минуты
-https://slack-clone-hope-creator.herokuapp.com/
+`https://slack-clone-hope-creator.herokuapp.com/`
 
 ## Stack
 
