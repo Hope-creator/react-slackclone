@@ -88,6 +88,7 @@ export const SignInForm = () => {
             color="secondary"
             size="small"
             variant="outlined"
+            id="email-outlined-basic"
             label="name@work-email.com"
             error={errors.email && errors.email.type === "required"}
             helperText={
