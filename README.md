@@ -3,8 +3,8 @@
 ## Stack
 
 Backend:
-*NodeJS
-**TypeScript
+* NodeJS
+** TypeScript
 Express
 Mongoose
 Multer
