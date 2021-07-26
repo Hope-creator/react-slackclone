@@ -19,26 +19,14 @@ import { expectSaga } from "redux-saga-test-plan";
 import { LoadingUserState } from "../../../store/modules/user/types";
 import { throwError } from "redux-saga-test-plan/providers";
 import * as matchers from "redux-saga-test-plan/matchers";
-
-const dummyUser = {
-  away: false,
-  company: { name: "My new company", _id: "T01TE7T5WEV" },
-  conversations: [],
-  createdAt: "2021-07-20T11:35:09.725Z",
-  email: "Test@mail.ru",
-  is_admin: true,
-  name: "Test",
-  online: false,
-  updatedAt: "2021-07-20T11:35:09.725Z",
-  _id: "60f6b4ed0acbf2002bb5d29b",
-};
+import { stubUser } from "../../utils/stubs";
 
 describe("User sagas tests", () => {
   describe("fetchMeSaga tests", () => {
     it("should call api and set user on good response", async () => {
       return expectSaga(userSaga)
-        .provide([[call(authApi.getMe), dummyUser]])
-        .put(setUser(dummyUser))
+        .provide([[call(authApi.getMe), stubUser]])
+        .put(setUser(stubUser))
         .dispatch(fetchMe())
         .silentRun();
     });
@@ -56,10 +44,10 @@ describe("User sagas tests", () => {
         .provide([
           [
             call(authApi.signIn, { email: "Test@mail.com", password: "Test" }),
-            dummyUser,
+            stubUser,
           ],
         ])
-        .put(setUser(dummyUser))
+        .put(setUser(stubUser))
         .put(setUserLoadingState(LoadingUserState.LOADED))
         .dispatch(fetchUser({ email: "Test@mail.com", password: "Test" }))
         .silentRun();
@@ -75,8 +63,8 @@ describe("User sagas tests", () => {
   describe("updateProfileSaga tests", () => {
     it("should call api and set updated user profile", async () => {
       return expectSaga(userSaga)
-        .provide([[call(authApi.updateProfile, { name: "Test" }), dummyUser]])
-        .put(setUser(dummyUser))
+        .provide([[call(authApi.updateProfile, { name: "Test" }), stubUser]])
+        .put(setUser(stubUser))
         .put(setUserLoadingState(LoadingUserState.LOADED))
         .dispatch(updateProfile({ name: "Test" }))
         .silentRun();
@@ -93,13 +81,13 @@ describe("User sagas tests", () => {
   describe("updateProfileAvatarSaga tests", () => {
     it("should call upload api, get src from upload and set src to user avatar,then set new user info with avatar", async () => {
       const avatarSrc = "some-src.com";
-      const dummyUserWithAvatar = { ...dummyUser, avatar: avatarSrc };
+      const stubUserWithAvatar = { ...stubUser, avatar: avatarSrc };
       return expectSaga(userSaga)
         .provide([
           [matchers.call.fn(uploadApi.uploadAvatar), avatarSrc],
-          [matchers.call.fn(authApi.updateAvatar), dummyUserWithAvatar],
+          [matchers.call.fn(authApi.updateAvatar), stubUserWithAvatar],
         ])
-        .put(setUser(dummyUserWithAvatar))
+        .put(setUser(stubUserWithAvatar))
         .put(setUserLoadingState(LoadingUserState.LOADED))
         .dispatch(updateAvatar(new FormData()))
         .silentRun();
@@ -118,8 +106,8 @@ describe("User sagas tests", () => {
   describe("updateProfileIsAwaySaga tests", () => {
     it("should call api set user with new isAwat status", async () => {
       return expectSaga(userSaga)
-        .provide([[matchers.call.fn(authApi.updateIsAway), dummyUser]])
-        .put(setUser(dummyUser))
+        .provide([[matchers.call.fn(authApi.updateIsAway), stubUser]])
+        .put(setUser(stubUser))
         .put(setUserLoadingState(LoadingUserState.LOADED))
         .dispatch(updateIsAway(false))
         .silentRun();
@@ -135,8 +123,8 @@ describe("User sagas tests", () => {
   describe("removeProfileAvatarSaga tests", () => {
     it("should call api and set new profile with empty avatar field", async () => {
       return expectSaga(userSaga)
-        .provide([[matchers.call.fn(authApi.updateAvatar), dummyUser]])
-        .put(setUser(dummyUser))
+        .provide([[matchers.call.fn(authApi.updateAvatar), stubUser]])
+        .put(setUser(stubUser))
         .put(setUserLoadingState(LoadingUserState.LOADED))
         .dispatch(removeAvatar())
         .silentRun();
@@ -152,8 +140,8 @@ describe("User sagas tests", () => {
   describe("createUserSaga tests", () => {
     it("should call api and set user on registation", async () => {
       return expectSaga(userSaga)
-        .provide([[matchers.call.fn(authApi.signUp), dummyUser]])
-        .put(setUser(dummyUser))
+        .provide([[matchers.call.fn(authApi.signUp), stubUser]])
+        .put(setUser(stubUser))
         .dispatch(
           createUser({
             name: "Test",

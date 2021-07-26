@@ -14,19 +14,7 @@ import reducer, {
   initialState,
 } from "../../../store/modules/user/user";
 import { LoadingUserState } from ".../../../src/store/modules/user/types";
-
-const dummyUser = {
-  away: false,
-  company: { name: "My new company", _id: "T01TE7T5WEV" },
-  conversations: [],
-  createdAt: "2021-07-20T11:35:09.725Z",
-  email: "Test@mail.ru",
-  is_admin: true,
-  name: "Test",
-  online: false,
-  updatedAt: "2021-07-20T11:35:09.725Z",
-  _id: "60f6b4ed0acbf2002bb5d29b",
-};
+import { stubUser } from "../../utils/stubs";
 
 describe("user slicer tests", () => {
   it("should return the initial state", () => {
@@ -104,8 +92,8 @@ describe("user slicer tests", () => {
   });
   it("setUser should change loading state to loaded and set user into state", () => {
     const previousState = { ...initialState };
-    expect(reducer(previousState, setUser({ ...dummyUser }))).toEqual({
-      user: dummyUser,
+    expect(reducer(previousState, setUser({ ...stubUser }))).toEqual({
+      user: stubUser,
       loadingState: LoadingUserState.LOADED,
     });
   });
@@ -120,21 +108,21 @@ describe("user slicer tests", () => {
   });
   it("addUserConversation should add conversation id to user conversations array", () => {
     const testId = "test-id";
-    const previousState = { ...initialState, user: { ...dummyUser } };
+    const previousState = { ...initialState, user: { ...stubUser } };
     expect(reducer(previousState, addUserConversation(testId))).toEqual({
       ...initialState,
-      user: { ...dummyUser, conversations: [testId] },
+      user: { ...stubUser, conversations: [testId] },
     });
   });
   it("removeUserConversation should remove conversation id from user conversations array", () => {
     const testId = "test-id";
     const previousState = {
       ...initialState,
-      user: { ...dummyUser, conversations: [testId] },
+      user: { ...stubUser, conversations: [testId] },
     };
     expect(reducer(previousState, removeUserConversation(testId))).toEqual({
       ...initialState,
-      user: { ...dummyUser, conversations: [] },
+      user: { ...stubUser, conversations: [] },
     });
   });
 });

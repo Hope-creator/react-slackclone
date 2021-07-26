@@ -4,19 +4,7 @@ import { setupServer } from "msw/node";
 import { IEditProfileForm } from "../../components/EditProfileModal";
 import { ILoginForm } from "../../components/SignInForm";
 import { IGetStartedForm } from "../../components/GetStartedForm";
-
-const dummyUser = {
-  away: false,
-  company: { name: "My new company", _id: "T01TE7T5WEV" },
-  conversations: [],
-  createdAt: "2021-07-20T11:35:09.725Z",
-  email: "Test@mail.com",
-  is_admin: true,
-  name: "Test",
-  online: false,
-  updatedAt: "2021-07-20T11:35:09.725Z",
-  _id: "60f6b4ed0acbf2002bb5d29b",
-};
+import { stubUser } from "../utils/stubs";
 
 interface IUpdateProfileApiTestRequst extends IEditProfileForm {
   avatar: string;
@@ -28,36 +16,36 @@ const handlers = [
   rest.post<ILoginForm>("/api/auth/login", async (req, res, ctx) => {
     const { email, password } = req.body;
     testCall();
-    if (email === dummyUser.email && password === "Test") {
-      return res(ctx.json({ status: "success", data: dummyUser }));
+    if (email === stubUser.email && password === "Test") {
+      return res(ctx.json({ status: "success", data: stubUser }));
     }
   }),
   rest.post<IGetStartedForm>("/api/auth/register", async (req, res, ctx) => {
     const { name, email, password, password2 } = req.body;
     testCall();
     if (password === password2) {
-      const createdUser = { ...dummyUser, name, email };
+      const createdUser = { ...stubUser, name, email };
       return res(ctx.json({ status: "success", data: createdUser }));
     }
   }),
   rest.get("/api/auth/me", async (req, res, ctx) => {
     testCall();
-    return res(ctx.json({ status: "success", data: dummyUser }));
+    return res(ctx.json({ status: "success", data: stubUser }));
   }),
   rest.post<IUpdateProfileApiTestRequst>(
     "/api/auth/update",
     async (req, res, ctx) => {
       testCall();
       if (req.body.avatar) {
-        const updatedUser = { ...dummyUser, avatar: req.body.avatar };
+        const updatedUser = { ...stubUser, avatar: req.body.avatar };
         return res(ctx.json({ status: "success", data: updatedUser }));
       } else if (req.body.away) {
-        const updatedUser = { ...dummyUser, away: req.body.away };
+        const updatedUser = { ...stubUser, away: req.body.away };
         return res(ctx.json({ status: "success", data: updatedUser }));
       } else {
         const { name, phone, work, display_name } = req.body;
         const updatedUser = {
-          ...dummyUser,
+          ...stubUser,
           name,
           phone,
           work,
@@ -99,7 +87,7 @@ describe("authApi tests", () => {
       };
       const response = await authApi.signIn(data);
       expect(testCall).toHaveBeenCalled();
-      expect(response).toStrictEqual(dummyUser);
+      expect(response).toStrictEqual(stubUser);
     });
   });
   describe("signUp tests", () => {
@@ -113,7 +101,7 @@ describe("authApi tests", () => {
       const response = await authApi.signUp(data);
       expect(testCall).toHaveBeenCalled();
       expect(response).toStrictEqual({
-        ...dummyUser,
+        ...stubUser,
         name: data.name,
         email: data.email,
       });
@@ -123,7 +111,7 @@ describe("authApi tests", () => {
     it("should call api and reseive user", async () => {
       const response = await authApi.getMe();
       expect(testCall).toHaveBeenCalled();
-      expect(response).toStrictEqual(dummyUser);
+      expect(response).toStrictEqual(stubUser);
     });
   });
   describe("updateProfile tests", () => {
@@ -136,7 +124,7 @@ describe("authApi tests", () => {
       };
       const response = await authApi.updateProfile(updateData);
       expect(testCall).toHaveBeenCalled();
-      expect(response).toEqual({ ...dummyUser, ...updateData });
+      expect(response).toEqual({ ...stubUser, ...updateData });
     });
   });
   describe("updateAvatar tests", () => {
@@ -144,14 +132,14 @@ describe("authApi tests", () => {
       const avatarSrc = "some-src.com";
       const response = await authApi.updateAvatar(avatarSrc);
       expect(testCall).toHaveBeenCalled();
-      expect(response).toEqual({ ...dummyUser, avatar: avatarSrc });
+      expect(response).toEqual({ ...stubUser, avatar: avatarSrc });
     });
   });
   describe("updateIsAway tests", () => {
     it("should call api and reseive updated user with true away field", async () => {
       const response = await authApi.updateIsAway(true);
       expect(testCall).toHaveBeenCalled();
-      expect(response).toEqual({ ...dummyUser, away: true });
+      expect(response).toEqual({ ...stubUser, away: true });
     });
   });
   describe("logout tests", () => {
