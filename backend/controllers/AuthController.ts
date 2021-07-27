@@ -250,44 +250,6 @@ class AuthController {
       console.log("Error on AuthController / delete:", error);
     }
   };
-
-  create500Test = async (
-    req: express.Request,
-    res: express.Response
-  ): Promise<void> => {
-    try {
-      const createRandUser = (index: number) => {
-        return {
-          name: "Test" + index,
-          email: "Test" + index + "@mail.ru",
-          passwords: "123456",
-        };
-      };
-      for (let i = 0; i < 500; i++) {
-        const user = createRandUser(i);
-        const newUser = new UserModel(user);
-        await newUser.save();
-      }
-      res.json({
-        status: "success",
-        data: true,
-      });
-    } catch (error: any) {
-      if (error.message === "Email must be unique") {
-        res.status(409).json({
-          status: "error",
-          errors: error.message,
-        });
-      } else {
-        UserModel.remove({ email: req.body.email });
-        res.status(500).json({
-          status: "error",
-          errors: JSON.stringify(error),
-        });
-        console.log("Error on AuthController / create500Test: ", error);
-      }
-    }
-  };
 }
 
 export default AuthController;

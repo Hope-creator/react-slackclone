@@ -130,9 +130,6 @@ const createRoutes = (app: express.Express, io: socket.Server) => {
     upload.single("avatar"),
     FileCtrl.avatar
   );
-
-  //# Test
-  app.post("/api/test/create500users", AuthCtrl.create500Test);
 };
 
 export default createRoutes;
