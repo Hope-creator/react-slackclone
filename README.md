@@ -23,6 +23,7 @@ Frontend:
 * TypeScript
 * Redux
 * Redux/Toolkit
+* Redux-saga
 * React Router
 * Axios
 * Material UI
