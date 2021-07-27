@@ -1,4 +1,4 @@
-# React Slack Clone Demo
+# React Slack Clone
 
 ## Live Demo
 Может запускаться в течении минуты\
