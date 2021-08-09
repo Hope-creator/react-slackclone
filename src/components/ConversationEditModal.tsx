@@ -38,6 +38,12 @@ const useStyles = makeStyles((theme: Theme) =>
       boxShadow: theme.shadows[5],
       padding: theme.spacing(2, 4, 3),
       transform: `translate(-50%, -50%)`,
+      [theme.breakpoints.down("sm")]: {
+        width: 350,
+      },
+      [theme.breakpoints.down("xs")]: {
+        width: 200,
+      },
     },
     openerWrapper: {
       "&>p": {
@@ -105,7 +111,12 @@ export const ConversationEditModal: React.FC<IConversationEditModalProps> = ({
         aria-describedby="simple-modal-description"
       >
         <div className={classes.paper}>
-          <Grid alignItems="center" justify="space-between" container>
+          <Grid
+            alignItems="center"
+            wrap="nowrap"
+            justify="space-between"
+            container
+          >
             <Grid item>
               <Typography variant="h5">{textHeader}</Typography>
             </Grid>
