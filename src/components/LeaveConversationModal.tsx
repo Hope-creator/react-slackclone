@@ -27,6 +27,12 @@ const useStyles = makeStyles((theme: Theme) =>
       boxShadow: theme.shadows[5],
       padding: theme.spacing(2, 4, 3),
       transform: `translate(-50%, -50%)`,
+      [theme.breakpoints.down("sm")]: {
+        width: 250,
+      },
+      [theme.breakpoints.down("xs")]: {
+        width: 200,
+      },
     },
     conversationName: {
       width: "150px",
@@ -95,7 +101,12 @@ export const LeaveConversationModal: React.FC<ILeaveConversationModalProps> = ({
           " You can rejoin anytime."
         )}
       </Typography>
-      <Grid className={classes.buttonsWrapper} container justify="flex-end">
+      <Grid
+        wrap="nowrap"
+        className={classes.buttonsWrapper}
+        container
+        justify="flex-end"
+      >
         <Button onClick={handleClose} variant="outlined">
           Cancel
         </Button>
