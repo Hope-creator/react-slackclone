@@ -21,10 +21,12 @@ import {
   selectCurrentUsers,
 } from "../../../../store/modules/currentUsers/selectors";
 import { CircularProgress } from "@material-ui/core";
+import useWindowDimensions from "../../../../hooks/useWindowDimensions";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    root: {
+    container: {
+      height: "100%",
       overflow: "auto",
       "&::-webkit-scrollbar": {
         width: "0.5em",
@@ -34,23 +36,8 @@ const useStyles = makeStyles((theme: Theme) =>
         borderRadius: "4px",
       },
     },
-    container: {
-      height: "100%",
-    },
     formContainer: {
       margin: 10,
-    },
-
-    infinityScrollContainer: {
-      overflowY: "auto",
-      overflowX: "hidden",
-      "&::-webkit-scrollbar": {
-        width: "0.5em",
-      },
-      "&::-webkit-scrollbar-thumb": {
-        backgroundColor: theme.palette.secondary.light,
-        borderRadius: "4px",
-      },
     },
   })
 );
@@ -60,20 +47,14 @@ export const UsersContent = () => {
 
   const dispatch = useDispatch();
 
-  const [height, setHeight] = React.useState<number>(0);
-  const [width, setWidth] = React.useState<number>(0);
+  const [isInitLoaded, setIsInitLoaded] = React.useState<boolean>(false);
 
-  const ref = React.useRef<HTMLDivElement | null>(null);
-
-  React.useEffect(() => {
-    if (ref && ref.current) setHeight(ref.current.clientHeight);
-    if (ref && ref.current) setWidth(ref.current.clientWidth);
-  }, [ref]);
+  const { height, width } = useWindowDimensions();
 
   const users = useSelector(selectCurrentUsers);
 
   React.useEffect(() => {
-    if (ref && ref.current && height > 0 && width > 0) {
+    if (height > 0 && width > 0 && !isInitLoaded) {
       // get areas of field and item for know how many items field can contain
       const areaItem = Math.ceil(150 * 250);
       const areaField = Math.ceil(width * height);
@@ -83,11 +64,15 @@ export const UsersContent = () => {
       const howManyItems = Math.ceil(areaField / areaItem);
       dispatch(setCountCurrentUsers(howManyItems));
       dispatch(fetchCurrentUsers());
+      setIsInitLoaded(true);
     }
+  }, [dispatch, height, width, isInitLoaded]);
+
+  React.useEffect(() => {
     return function clearUsers() {
       dispatch(clearCurrentUsers());
     };
-  }, [dispatch, height, width, ref]);
+  }, [dispatch]);
 
   const pageCurrentUsers = useSelector(selectCurrentUsersPage);
   const countCurrentUsers = useSelector(selectCurrentUsersCount);
@@ -106,35 +91,36 @@ export const UsersContent = () => {
   };
 
   return (
-    <div ref={ref} style={{ height: "100%" }}>
+    <Grid
+      // ref={setRef}
+      id="membersScrollableDiv"
+      container
+      className={classes.container}
+      wrap="nowrap"
+      direction="column"
+    >
       <Box className={classes.formContainer}>
         <UsersSearchForm formSubmit={formSubmit} />
       </Box>
-      {ref && ref.current && (
-        <div>
-          <InfiniteScroll
-            className={classes.root}
-            height={height}
-            dataLength={users.length}
-            next={() => fetchDataCurrentMembers()}
-            hasMore={
-              pageCurrentUsers * countCurrentUsers < totalCountCurrentUsers
-            }
-            loader={<CircularProgress />}
-            endMessage={
-              <p style={{ textAlign: "center" }}>
-                <b>Yay! You have seen it all</b>
-              </p>
-            }
-          >
-            <Grid justify="center" container wrap="wrap">
-              {users.map((user) => (
-                <UserCard key={user._id} user={user} />
-              ))}
-            </Grid>
-          </InfiniteScroll>
-        </div>
-      )}
-    </div>
+      <InfiniteScroll
+        dataLength={users.length}
+        next={() => fetchDataCurrentMembers()}
+        style={{ overflow: "hidden" }}
+        hasMore={pageCurrentUsers * countCurrentUsers < totalCountCurrentUsers}
+        scrollableTarget="membersScrollableDiv"
+        loader={<CircularProgress />}
+        endMessage={
+          <p style={{ textAlign: "center" }}>
+            <b>Yay! You have seen it all</b>
+          </p>
+        }
+      >
+        <Grid justify="center" container wrap="wrap">
+          {users.map((user) => (
+            <UserCard key={user._id} user={user} />
+          ))}
+        </Grid>
+      </InfiniteScroll>
+    </Grid>
   );
 };
