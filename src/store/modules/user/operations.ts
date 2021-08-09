@@ -26,7 +26,7 @@ function* fetchMeSaga() {
     const user: IUser = yield call(authApi.getMe);
     yield put(setUser(user));
   } catch (e: any) {
-    yield put(setUserLoadingState(LoadingUserState.ERROR));
+    yield put(setUserLoadingState(LoadingUserState.NEVER));
   }
 }
 
