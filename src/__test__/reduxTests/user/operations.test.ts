@@ -33,7 +33,7 @@ describe("User sagas tests", () => {
     it("should call api and dispatch error on error response", async () => {
       return expectSaga(userSaga)
         .provide([[call(authApi.getMe), throwError()]])
-        .put(setUserLoadingState(LoadingUserState.ERROR))
+        .put(setUserLoadingState(LoadingUserState.NEVER))
         .dispatch(fetchMe())
         .silentRun();
     });
