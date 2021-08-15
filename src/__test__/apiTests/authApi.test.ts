@@ -4,7 +4,7 @@ import { setupServer } from "msw/node";
 import { IEditProfileForm } from "../../components/EditProfileModal";
 import { ILoginForm } from "../../components/SignInForm";
 import { IGetStartedForm } from "../../components/GetStartedForm";
-import { stubUser } from "../utils/stubs";
+import { fakeUser } from "../utils/fakes";
 
 interface IUpdateProfileApiTestRequst extends IEditProfileForm {
   avatar: string;
@@ -16,36 +16,36 @@ const handlers = [
   rest.post<ILoginForm>("/api/auth/login", async (req, res, ctx) => {
     const { email, password } = req.body;
     testCall();
-    if (email === stubUser.email && password === "Test") {
-      return res(ctx.json({ status: "success", data: stubUser }));
+    if (email === fakeUser.email && password === "Test") {
+      return res(ctx.json({ status: "success", data: fakeUser }));
     }
   }),
   rest.post<IGetStartedForm>("/api/auth/register", async (req, res, ctx) => {
     const { name, email, password, password2 } = req.body;
     testCall();
     if (password === password2) {
-      const createdUser = { ...stubUser, name, email };
+      const createdUser = { ...fakeUser, name, email };
       return res(ctx.json({ status: "success", data: createdUser }));
     }
   }),
   rest.get("/api/auth/me", async (req, res, ctx) => {
     testCall();
-    return res(ctx.json({ status: "success", data: stubUser }));
+    return res(ctx.json({ status: "success", data: fakeUser }));
   }),
   rest.post<IUpdateProfileApiTestRequst>(
     "/api/auth/update",
     async (req, res, ctx) => {
       testCall();
       if (req.body.avatar) {
-        const updatedUser = { ...stubUser, avatar: req.body.avatar };
+        const updatedUser = { ...fakeUser, avatar: req.body.avatar };
         return res(ctx.json({ status: "success", data: updatedUser }));
       } else if (req.body.away) {
-        const updatedUser = { ...stubUser, away: req.body.away };
+        const updatedUser = { ...fakeUser, away: req.body.away };
         return res(ctx.json({ status: "success", data: updatedUser }));
       } else {
         const { name, phone, work, display_name } = req.body;
         const updatedUser = {
-          ...stubUser,
+          ...fakeUser,
           name,
           phone,
           work,
@@ -87,7 +87,7 @@ describe("authApi tests", () => {
       };
       const response = await authApi.signIn(data);
       expect(testCall).toHaveBeenCalled();
-      expect(response).toStrictEqual(stubUser);
+      expect(response).toStrictEqual(fakeUser);
     });
   });
   describe("signUp tests", () => {
@@ -101,7 +101,7 @@ describe("authApi tests", () => {
       const response = await authApi.signUp(data);
       expect(testCall).toHaveBeenCalled();
       expect(response).toStrictEqual({
-        ...stubUser,
+        ...fakeUser,
         name: data.name,
         email: data.email,
       });
@@ -111,7 +111,7 @@ describe("authApi tests", () => {
     it("should call api and reseive user", async () => {
       const response = await authApi.getMe();
       expect(testCall).toHaveBeenCalled();
-      expect(response).toStrictEqual(stubUser);
+      expect(response).toStrictEqual(fakeUser);
     });
   });
   describe("updateProfile tests", () => {
@@ -124,7 +124,7 @@ describe("authApi tests", () => {
       };
       const response = await authApi.updateProfile(updateData);
       expect(testCall).toHaveBeenCalled();
-      expect(response).toEqual({ ...stubUser, ...updateData });
+      expect(response).toEqual({ ...fakeUser, ...updateData });
     });
   });
   describe("updateAvatar tests", () => {
@@ -132,14 +132,14 @@ describe("authApi tests", () => {
       const avatarSrc = "some-src.com";
       const response = await authApi.updateAvatar(avatarSrc);
       expect(testCall).toHaveBeenCalled();
-      expect(response).toEqual({ ...stubUser, avatar: avatarSrc });
+      expect(response).toEqual({ ...fakeUser, avatar: avatarSrc });
     });
   });
   describe("updateIsAway tests", () => {
     it("should call api and reseive updated user with true away field", async () => {
       const response = await authApi.updateIsAway(true);
       expect(testCall).toHaveBeenCalled();
-      expect(response).toEqual({ ...stubUser, away: true });
+      expect(response).toEqual({ ...fakeUser, away: true });
     });
   });
   describe("logout tests", () => {

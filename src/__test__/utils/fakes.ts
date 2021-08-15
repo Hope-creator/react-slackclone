@@ -1,4 +1,4 @@
-const stubUser = {
+const fakeUser = {
   away: false,
   company: { name: "My new company", _id: "T01TE7T5WEV" },
   conversations: [],
@@ -13,4 +13,4 @@ const stubUser = {
   display_name: "TestName",
 };
 
-export { stubUser };
+export { fakeUser };

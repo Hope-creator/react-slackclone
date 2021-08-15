@@ -14,7 +14,7 @@ import reducer, {
   initialState,
 } from "../../../store/modules/user/user";
 import { LoadingUserState } from ".../../../src/store/modules/user/types";
-import { stubUser } from "../../utils/stubs";
+import { fakeUser } from "../../utils/fakes";
 
 describe("user slicer tests", () => {
   it("should return the initial state", () => {
@@ -92,8 +92,8 @@ describe("user slicer tests", () => {
   });
   it("setUser should change loading state to loaded and set user into state", () => {
     const previousState = { ...initialState };
-    expect(reducer(previousState, setUser({ ...stubUser }))).toEqual({
-      user: stubUser,
+    expect(reducer(previousState, setUser({ ...fakeUser }))).toEqual({
+      user: fakeUser,
       loadingState: LoadingUserState.LOADED,
     });
   });
@@ -108,21 +108,21 @@ describe("user slicer tests", () => {
   });
   it("addUserConversation should add conversation id to user conversations array", () => {
     const testId = "test-id";
-    const previousState = { ...initialState, user: { ...stubUser } };
+    const previousState = { ...initialState, user: { ...fakeUser } };
     expect(reducer(previousState, addUserConversation(testId))).toEqual({
       ...initialState,
-      user: { ...stubUser, conversations: [testId] },
+      user: { ...fakeUser, conversations: [testId] },
     });
   });
   it("removeUserConversation should remove conversation id from user conversations array", () => {
     const testId = "test-id";
     const previousState = {
       ...initialState,
-      user: { ...stubUser, conversations: [testId] },
+      user: { ...fakeUser, conversations: [testId] },
     };
     expect(reducer(previousState, removeUserConversation(testId))).toEqual({
       ...initialState,
-      user: { ...stubUser, conversations: [] },
+      user: { ...fakeUser, conversations: [] },
     });
   });
 });

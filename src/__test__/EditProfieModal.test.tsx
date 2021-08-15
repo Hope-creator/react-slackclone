@@ -3,12 +3,12 @@ import { screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { LoadingUserState } from "../store/modules/user/types";
 import { renderWithRedux } from "./utils/renderWithRedux";
-import { stubUser } from "./utils/stubs";
+import { fakeUser } from "./utils/fakes";
 
 describe("EditProfileModal tests", () => {
   it("renders component if clicked on modal opener", () => {
     renderWithRedux(
-      <EditProfileModal opener={<div>Opener</div>} me={stubUser} />
+      <EditProfileModal opener={<div>Opener</div>} me={fakeUser} />
     );
     userEvent.click(screen.getByText(/opener/i));
     expect(screen.getByText(/Edit your profile/i)).toBeInTheDocument();
@@ -16,7 +16,7 @@ describe("EditProfileModal tests", () => {
 
   it("should close modal on cancel button click", () => {
     renderWithRedux(
-      <EditProfileModal opener={<div>Opener</div>} me={stubUser} />
+      <EditProfileModal opener={<div>Opener</div>} me={fakeUser} />
     );
     userEvent.click(screen.getByText(/opener/i));
     expect(screen.getByText(/Edit your profile/i)).toBeInTheDocument();
@@ -28,7 +28,7 @@ describe("EditProfileModal tests", () => {
   it("should dispatch update avatar on upload image button click", () => {
     const file = new File([new ArrayBuffer(1)], "file.jpg");
     const { getState } = renderWithRedux(
-      <EditProfileModal opener={<div>Opener</div>} me={stubUser} />
+      <EditProfileModal opener={<div>Opener</div>} me={fakeUser} />
     );
     userEvent.click(screen.getByText(/opener/i));
     expect(screen.getByText(/Edit your profile/i)).toBeInTheDocument();
@@ -46,7 +46,7 @@ describe("EditProfileModal tests", () => {
 
   it("if user have avatar should dispatch update profile on remove photo button click", () => {
     const { getState } = renderWithRedux(
-      <EditProfileModal opener={<div>Opener</div>} me={stubUser} />
+      <EditProfileModal opener={<div>Opener</div>} me={fakeUser} />
     );
     userEvent.click(screen.getByText(/opener/i));
     expect(getState().user.loadingState).toEqual(LoadingUserState.NEVER);
@@ -61,19 +61,19 @@ describe("EditProfileModal tests", () => {
 
   it("dispatching update profile if correct form submitting", async () => {
     const { getState } = renderWithRedux(
-      <EditProfileModal opener={<div>Opener</div>} me={stubUser} />
+      <EditProfileModal opener={<div>Opener</div>} me={fakeUser} />
     );
     userEvent.click(screen.getByText(/opener/i));
     const nameInput = screen.getByPlaceholderText(/Full name/i);
-    expect(nameInput).toHaveValue(stubUser.name);
+    expect(nameInput).toHaveValue(fakeUser.name);
     userEvent.type(nameInput, "123");
-    expect(nameInput).toHaveValue(stubUser.name + "123");
+    expect(nameInput).toHaveValue(fakeUser.name + "123");
 
     const displayNameInput = screen.getByPlaceholderText(/Display name/i);
-    expect(displayNameInput).toHaveValue(stubUser.display_name);
+    expect(displayNameInput).toHaveValue(fakeUser.display_name);
     userEvent.type(displayNameInput, "Test-display-name");
     expect(displayNameInput).toHaveValue(
-      stubUser.display_name + "Test-display-name"
+      fakeUser.display_name + "Test-display-name"
     );
 
     const workInput = screen.getByPlaceholderText(/What I do/i);
@@ -98,12 +98,12 @@ describe("EditProfileModal tests", () => {
 
   it("should show name field validation errors", async () => {
     renderWithRedux(
-      <EditProfileModal opener={<div>Opener</div>} me={stubUser} />
+      <EditProfileModal opener={<div>Opener</div>} me={fakeUser} />
     );
     userEvent.click(screen.getByText(/opener/i));
 
     const nameInput = screen.getByPlaceholderText(/Full name/i);
-    expect(nameInput).toHaveValue(stubUser.name);
+    expect(nameInput).toHaveValue(fakeUser.name);
     userEvent.clear(nameInput);
     expect(nameInput).toHaveValue("");
 
@@ -135,12 +135,12 @@ describe("EditProfileModal tests", () => {
 
   it("should show display_name field validation errors", async () => {
     renderWithRedux(
-      <EditProfileModal opener={<div>Opener</div>} me={stubUser} />
+      <EditProfileModal opener={<div>Opener</div>} me={fakeUser} />
     );
     userEvent.click(screen.getByText(/opener/i));
 
     const displayNameInput = screen.getByPlaceholderText(/Display name/i);
-    expect(displayNameInput).toHaveValue(stubUser.display_name);
+    expect(displayNameInput).toHaveValue(fakeUser.display_name);
     userEvent.clear(displayNameInput);
     expect(displayNameInput).toHaveValue("");
 
@@ -167,7 +167,7 @@ describe("EditProfileModal tests", () => {
 
   it("should show phone number field validation error", async () => {
     renderWithRedux(
-      <EditProfileModal opener={<div>Opener</div>} me={stubUser} />
+      <EditProfileModal opener={<div>Opener</div>} me={fakeUser} />
     );
     userEvent.click(screen.getByText(/opener/i));
 
