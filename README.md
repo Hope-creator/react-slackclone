@@ -4,6 +4,10 @@
 Может запускаться в течении минуты\
 `https://slack-clone-hope-creator.herokuapp.com/`
 
+Тестовый аккаунт: \
+Login: `Test@mail.com`\
+Password: `Test@123`
+
 ## Stack
 
 Backend:
