@@ -6,7 +6,10 @@ import createSocket from "./core/socket";
 import createRoutes from "./core/routes";
 import cookieSession from "cookie-session";
 import dotenv from "dotenv";
+import createCompany from "./createCompany";
 dotenv.config();
+
+createCompany();
 
 const app = express();
 const port = process.env.PORT;
@@ -33,7 +36,7 @@ const staticPath = path.join(__dirname, "../build")
 app.use(express.static(staticPath));
 const index = path.join(__dirname, "../build/index.html")
 app.get("*", (req, res) => {
-    res.sendFile(index);
+  res.sendFile(index);
 });
 
 http.listen(port, () => {
