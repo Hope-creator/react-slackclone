@@ -2,7 +2,11 @@ import nodemailer from "nodemailer";
 import dotenv from "dotenv";
 dotenv.config();
 
-const emailService = nodemailer.createTransport({
+const haveEnv = () => {
+  return !!(process.env.NODEMAILER_USER && process.env.NODEMAILER_PASS) || false
+}
+
+const emailService = haveEnv() && nodemailer.createTransport({
   host: process.env.NODEMAILER_HOST || "smtp.mailtrap.io",
   port: Number(process.env.NODEMAILER_PORT) || 2525,
   auth: {
@@ -34,7 +38,7 @@ const sendEmail = ({
     html: `<p>Please use the following link within the next 10 minutes to activate your account : <strong><a href="${baseUrl}/api/auth/verification/verify-account/${userId}/${secretCode}" target="_blank">Email bestätigen</a></strong></p>`,
   };
 
-  return emailService.sendMail(mailData, callback);
+  return emailService && emailService.sendMail(mailData, callback);
 };
 
 export { emailService, sendEmail };

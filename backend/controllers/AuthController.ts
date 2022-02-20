@@ -1,6 +1,6 @@
 import express from "express";
 import { validationResult } from "express-validator/src/validation-result";
-import { sendEmail } from "../core/mailer";
+import { emailService, sendEmail } from "../core/mailer";
 import { CodeModel } from "../models/SecretCodeModel";
 import { UserModel } from "../models/UserModel";
 import { hashText, promisifyCompare } from "../utils/bcrypt";
@@ -49,24 +49,33 @@ class AuthController {
       await newCode.save();
       const savedUser = await UserModel.findById(user._id).populate("company");
 
-      await sendEmail({
-        email: email,
-        baseUrl: baseUrl,
-        userId: user._id,
-        secretCode: secretCode,
-        callback: (err: Error | null) => {
-          if (err) {
-            console.log(err);
-            res.status(500).json({ status: "error" });
-          } else {
-            this.io.emit("SERVER:NEW_USER", savedUser);
-            res.json({
-              status: "success",
-              data: savedUser,
-            });
-          }
-        },
+      if (emailService) {
+        sendEmail({
+          email: email,
+          baseUrl: baseUrl,
+          userId: user._id,
+          secretCode: secretCode,
+          callback: (err: Error | null) => {
+            if (err) {
+              console.log(err);
+              res.status(500).json({ status: "error" });
+            } else {
+              this.io.emit("SERVER:NEW_USER", savedUser);
+              res.json({
+                status: "success",
+                data: savedUser,
+              });
+            }
+          },
+        });
+      }
+
+      this.io.emit("SERVER:NEW_USER", savedUser);
+      res.json({
+        status: "success",
+        data: savedUser,
       });
+
     } catch (error: any) {
       if (error.message === "Email must be unique") {
         res.status(409).json({
