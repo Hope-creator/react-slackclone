@@ -7,9 +7,11 @@ import createRoutes from "./core/routes";
 import cookieSession from "cookie-session";
 import dotenv from "dotenv";
 import createCompany from "./createCompany";
+import createTestUser from "./createTestUser";
 dotenv.config();
 
 createCompany();
+createTestUser();
 
 const app = express();
 const port = process.env.PORT;
