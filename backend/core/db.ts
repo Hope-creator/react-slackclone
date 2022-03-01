@@ -1,5 +1,7 @@
 import mongoose from "mongoose";
 import dotenv from "dotenv";
+import createCompany from "../createCompany";
+import createTestUser from "../createTestUser";
 dotenv.config();
 
 const url = process.env.MONGODB_URL as string;
@@ -12,6 +14,12 @@ mongoose
     useFindAndModify: false,
   })
   .then(() => console.log("-----> mongoDB connected..."))
+  .then(() => {
+    return createCompany()
+  })
+  .then(() => {
+    return createTestUser()
+  })
   .catch((err) =>
     console.log("-----> Error trying to connect to mongoDB: ", err)
   );
