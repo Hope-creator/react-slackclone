@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  mongo_db_slackclone:
+    image: 'mongo'
+    container_name: 'mongo_db_slackclone'
+    restart: 'always'
+    volumes:
+      - 'mongo_data:/data/db'
+    ports:
+      - "27017:27017"
+  api:
+    image: node:16.14.0
+    container_name: 'server_slackclone'
+    working_dir: /app/backend
+    command: bash -c "../wait-for-mongodb.sh && ../wait-for-build.sh && echo Start server container  && yarn && yarn nodemon"
+    environment:
+      - MONGODB_URL=mongodb://mongo_db_slackclone/slackclone
+    env_file: backend/.env
+    ports:
+      - "5000:5000"
+    depends_on:
+      - mongo_db_slackclone
+      - web_slackclone
+    volumes:
+      - '.:/app'
+  web_slackclone:
+    image: node:16.14.0
+    container_name: 'web_slackclone'
+    working_dir: /app
+    command: bash -c "if [[ -d ./build ]]; then echo Build is up; else yarn && yarn build-prod; fi"
+    volumes:
+      - '.:/app'
+volumes:
+  mongo_data:
+  .:
