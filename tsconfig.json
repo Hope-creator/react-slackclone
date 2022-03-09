@@ -1,7 +1,12 @@
 {
   "compilerOptions": {
     "target": "es6",
-    "lib": ["es6", "dom", "dom.iterable", "esnext"],
+    "lib": [
+      "es6",
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
@@ -16,5 +21,11 @@
     "noEmit": false,
     "jsx": "react-jsx"
   },
-  "include": ["src", "./jest-setup.ts"]
+  "include": [
+    "src",
+    "./jest-setup.ts"
+  ],
+  "exclude": [
+    "src/__test__"
+  ]
 }

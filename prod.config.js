@@ -18,10 +18,11 @@ module.exports = {
     extensions: [".jsx", ".js", ".ts", ".tsx"],
   },
   module: {
+    noParse: path.join(__dirname, "src", "__test__"),
     rules: [
       {
         test: /\.tsx?$/,
-        exclude: /node_modules/,
+        exclude: [/node_modules/],
         loader: 'ts-loader'
       },
       {
@@ -29,15 +30,11 @@ module.exports = {
         use: [MiniCssExtractPlugin.loader, "css-loader", "sass-loader"],
       },
       {
-        test: /\.(jpg|jpeg|png|gif|mp3)$/,
-        use: ["file-loader"],
-      },
-      {
         test: /\.svg$/,
         use: ["@svgr/webpack"],
       },
       {
-        test: /\.(jpe|jpg|woff|woff2|eot|ttf|svg)(\?.*$|$)/,
+        test: /\.(jpe|png|gif|mp3|jpg|woff|woff2|eot|ttf|svg)(\?.*$|$)/,
         use: ["file-loader"],
       },
     ],
