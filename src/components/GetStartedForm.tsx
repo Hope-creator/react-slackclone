@@ -49,8 +49,8 @@ export const GetStartedForm = () => {
     formState: { errors },
     watch,
   } = useForm();
-  const onSubmit: SubmitHandler<IGetStartedForm> = (data) =>
-    dispatch(createUser(data));
+  const onSubmit: SubmitHandler<{ [x: string]: any; }> = (data) =>
+    dispatch(createUser(data as IGetStartedForm));
 
   const [open, setOpen] = React.useState<boolean>(false);
 

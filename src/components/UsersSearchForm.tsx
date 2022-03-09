@@ -32,7 +32,7 @@ export const UsersSearchForm: React.FC<IUsersSearchFormProps> = ({
   const classes = useStyles();
 
   const { handleSubmit, control } = useForm();
-  const onSubmit: SubmitHandler<IUsersSearchForm> = (data) =>
+  const onSubmit: SubmitHandler<{ [x: string]: any; }> = (data) =>
     formSubmit(data.name);
 
   return (

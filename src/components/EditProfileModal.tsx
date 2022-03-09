@@ -122,8 +122,8 @@ export const EditProfileModal: React.FC<SimpleModalProps> = ({
     reset,
     setValue,
   } = useForm();
-  const onSubmit: SubmitHandler<IEditProfileForm> = (data) =>
-    dispatch(updateProfile(data));
+  const onSubmit: SubmitHandler<{ [x: string]: any; }> = (data) =>
+    dispatch(updateProfile(data as IEditProfileForm));
 
   const handleOpen = () => {
     setOpen(true);
@@ -306,7 +306,7 @@ export const EditProfileModal: React.FC<SimpleModalProps> = ({
                   id="avatar"
                   type="file"
                   data-testid="avatarInput"
-                  
+
                 />
                 <Button
                   className={

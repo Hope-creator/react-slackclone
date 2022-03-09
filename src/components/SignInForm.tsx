@@ -46,8 +46,8 @@ export const SignInForm = () => {
     control,
     formState: { errors },
   } = useForm();
-  const onSubmit: SubmitHandler<ILoginForm> = (data) =>
-    dispatch(fetchUser(data));
+  const onSubmit: SubmitHandler<{ [x: string]: any; }> = (data) =>
+    dispatch(fetchUser(data as ILoginForm));
 
   const [open, setOpen] = React.useState<boolean>(false);
 

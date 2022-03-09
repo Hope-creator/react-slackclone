@@ -57,7 +57,7 @@ export const AddPeopleModalForm: React.FC<IAddPeopleModalProps> = ({
   };
 
   const { handleSubmit, control, watch, setValue } = useForm();
-  const onSubmit: SubmitHandler<IAddPeopleModalForm> = (data) =>
+  const onSubmit: SubmitHandler<{ [x: string]: any; }> = (data) =>
     conversationsApi.addUsers(conversationId, selectedUser?._id);
 
   const clearUser = () => {

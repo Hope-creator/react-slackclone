@@ -92,7 +92,7 @@ export const SendMessageForm: React.FC<ISendMessageProps> = ({ dest, dm }) => {
 
   const isText = watch("text");
 
-  const onSubmit: SubmitHandler<ISendMessageForm> = (data) => {
+  const onSubmit: SubmitHandler<{ [x: string]: any; }> = (data) => {
     if (images.length > 0) {
       // Manualy set send message state to LOADING
       // cause first is fileSend function that not in state

@@ -60,7 +60,7 @@ export const CreateConversationForm: React.FC<ICreateConversationFormProps> = ({
     watch,
     setValue,
   } = useForm();
-  const onSubmit: SubmitHandler<ICreateConversationForm> = (data) => {
+  const onSubmit: SubmitHandler<{ [x: string]: any; }> = (data) => {
     conversationsApi
       .createChannel(data.name, data.isPrivate)
       .then((conversation) => {

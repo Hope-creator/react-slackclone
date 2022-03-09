@@ -43,7 +43,7 @@ export const ConversationSearchForm = () => {
   const dispatch = useDispatch();
 
   const { handleSubmit, control, watch, reset } = useForm();
-  const onSubmit: SubmitHandler<IConversationSearchForm> = (data) => {
+  const onSubmit: SubmitHandler<{ [x: string]: any; }> = (data) => {
     dispatch(setCurrentConversationsSearchName(data.name));
     dispatch(fetchCurrentConversations());
   };
