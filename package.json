@@ -17,7 +17,7 @@
     "axios": "0.21.1",
     "crypto-random-string": "^4.0.0",
     "date-fns": "^2.21.2",
-    "immer": "^9.0.1",
+    "immer": "^9.0.6",
     "react": "^17.0.2",
     "react-hook-form": "^7.4.0",
     "react-infinite-scroll-component": "^6.1.0",
