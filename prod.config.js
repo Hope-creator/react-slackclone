@@ -12,6 +12,7 @@ module.exports = {
     path: path.join(__dirname, "build"),
     filename: "[contenthash].bundle.js",
     chunkFilename: "[contenthash].bundle.js",
+    publicPath: '/'
   },
   resolve: {
     modules: [path.resolve(__dirname, "src"), "node_modules"],
