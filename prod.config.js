@@ -45,6 +45,9 @@ module.exports = {
   plugins: [
     new CleanWebpackPlugin(),
     new HtmlWebpackPlugin({
+      favicon: "./public/favicon-32x32.png",
+      filename: "index.html",
+      manifest: "./public/manifest.json",
       template: path.join(__dirname, "public", "index.html"),
     }),
     new MiniCssExtractPlugin({
