@@ -41,5 +41,8 @@
     "start": "node server.js",
     "dev": "ts-node server.ts",
     "nodemon": "nodemon"
+  },
+  "devDependencies": {
+    "node-pre-gyp": "^0.17.0"
   }
 }
