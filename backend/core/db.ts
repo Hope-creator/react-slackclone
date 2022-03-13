@@ -7,12 +7,7 @@ dotenv.config();
 const url = process.env.MONGODB_URL as string;
 
 mongoose
-  .connect(url, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-    useCreateIndex: true,
-    useFindAndModify: false,
-  })
+  .connect(url)
   .then(() => console.log("-----> mongoDB connected..."))
   .then(() => {
     return createCompany()

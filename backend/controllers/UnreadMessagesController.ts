@@ -23,7 +23,7 @@ class UnreadMessagesController {
     const skipPage = page > 0 ? (Number(page) - 1) * Number(count) : 0;
     try {
       const messages = await getAggregateMessageWithPagination(
-        { unreadBy: mongoose.Types.ObjectId(userId) },
+        { unreadBy: new mongoose.Types.ObjectId(userId) },
         userId,
         skipPage,
         Number(count)
@@ -69,12 +69,12 @@ class UnreadMessagesController {
       try {
         const query = conversation
           ? {
-              unreadBy: userId,
-              dest: { $eq: conversation as string },
-            }
+            unreadBy: userId,
+            dest: { $eq: conversation as string },
+          }
           : {
-              unreadBy: userId,
-            };
+            unreadBy: userId,
+          };
         await MessageModel.updateMany(
           query,
           { $pull: { unreadBy: userId } },

@@ -21,7 +21,7 @@ const socket = (http: http.Server) => {
   io.use((socket: ISocket, next) => {
     const _cookie = socket.handshake.headers["cookie"];
     if (_cookie) {
-      const parsedCookie = cookie.parse(_cookie)["express:sess"];
+      const parsedCookie = cookie.parse(_cookie)["session"];
       const token = JSON.parse(Buffer.from(parsedCookie, "base64").toString())[
         "token"
       ];

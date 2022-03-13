@@ -10,7 +10,7 @@ export const getAggregateMessage = async (
     {
       $addFields: {
         marked: {
-          $in: [mongoose.Types.ObjectId(userId), "$markedBy"],
+          $in: [new mongoose.Types.ObjectId(userId), "$markedBy"],
         },
       },
     },

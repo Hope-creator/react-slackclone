@@ -3,7 +3,7 @@ import { promisify } from "util";
 
 const { genSalt, hash, compare } = bcrypt;
 
-const promisifyGenSalt = promisify(genSalt);
+const promisifyGenSalt = promisify<string>(genSalt);
 const promisifyHash = promisify(hash);
 const promisifyCompare = promisify(compare);
 

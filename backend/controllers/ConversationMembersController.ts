@@ -222,13 +222,14 @@ class ConversationMembersController {
             },
           }
         );
+
         const updatedConversation = await ConversationModel.findOneAndUpdate(
           {
             _id: conversationId,
             $or: [{ creator: user._id }, { is_private: false }],
           },
           {
-            num_members: updatedUsers.nModified,
+            num_members: updatedUsers.modifiedCount,
           },
           { new: true }
         );
