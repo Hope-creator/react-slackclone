@@ -40,7 +40,8 @@
     "watch-ts": "tsc -w",
     "start": "node server.js",
     "dev": "ts-node server.ts",
-    "nodemon": "nodemon"
+    "nodemon": "nodemon",
+    "fix-bcrypt": "cd node_modules/bcrypt && npx node-pre-gyp install --fallback-to-build"
   },
   "devDependencies": {
     "node-pre-gyp": "^0.17.0"
